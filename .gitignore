@@ -1,11 +1,15 @@
 # Fix scripts (temporary)
 *.js
 
-# Personal photos
-*.jpg
-*.JPG
-*.jpeg
-*.png
+# Personal photos (block by name)
+AYE-*.jpg
+AYE-*.JPG
+DO-*.jpg
+DO-*.JPG
+S__*.jpg
+
+# Allow infographic images (Vag0, Vag3, aye_portrait, favicon)
+# These are NOT blocked
 
 # Internal docs
 implementation_plan.md
