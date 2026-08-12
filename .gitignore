@@ -1,0 +1,19 @@
+# Fix scripts (temporary)
+*.js
+
+# Personal photos
+*.jpg
+*.JPG
+*.jpeg
+*.png
+
+# Internal docs
+implementation_plan.md
+project_plan.md
+public_sharing_plan.md
+walkthrough.md
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini

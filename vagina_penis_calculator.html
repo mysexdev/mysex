@@ -1,0 +1,3467 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anatomical & Biomechanical Compatibility Calculator | เครื่องมือคำนวณสรีระและการปะทะเชิงกลศาสตร์</title>
+  <meta name="description" content="เว็บแอปพลิเคชันคำนวณสรีระ ควยเลือด vs ควยเนื้อ ไซส์ถุงยาง ระยะปะทะปากมดลูก และกลศาสตร์ช่องคลอดแบบ Interactive — 3 Modes: Solo Male, Solo Female, Pair Compatibility">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       CSS VARIABLES — DARK THEME (DEFAULT)
+    ============================================================ */
+    :root {
+      --bg: #07070f;
+      --bg2: #0d0d1a;
+      --card: rgba(18, 18, 34, 0.72);
+      --card-hover: rgba(26, 26, 50, 0.88);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-hover: rgba(255, 255, 255, 0.2);
+
+      --pink:   #ff2a85;
+      --cyan:   #00e5ff;
+      --purple: #b44dff;
+      --gold:   #ffc600;
+      --red:    #ff4757;
+      --green:  #2ed573;
+      --violet: #9d4edd;
+
+      --male-accent:   #ff2a85;
+      --female-accent: #b44dff;
+      --pair-accent:   #ffc600;
+
+      --text:   #f1f2f6;
+      --muted:  #8a8fa8;
+      --dim:    #555872;
+
+      --input-bg:     rgba(0, 0, 0, 0.45);
+      --input-border: rgba(255,255,255,0.10);
+      --svg-bg:       rgba(5, 5, 12, 0.85);
+      --svg-grid:     rgba(255, 255, 255, 0.03);
+
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --font: 'Prompt', 'Outfit', sans-serif;
+      --shadow: 0 12px 40px rgba(0,0,0,0.55);
+      --shadow-sm: 0 4px 16px rgba(0,0,0,0.35);
+    }
+
+    /* LIGHT THEME */
+    [data-theme="light"] {
+      --bg:  #f0f2f9;
+      --bg2: #e8eaf3;
+      --card: rgba(255,255,255,0.82);
+      --card-hover: rgba(255,255,255,0.96);
+      --border: rgba(0,0,0,0.07);
+      --border-hover: rgba(0,0,0,0.15);
+
+      --pink:   #d81b60;
+      --cyan:   #00838f;
+      --purple: #7b1fa2;
+      --gold:   #c08400;
+      --red:    #d32f2f;
+      --green:  #2e7d32;
+
+      --male-accent:   #d81b60;
+      --female-accent: #7b1fa2;
+      --pair-accent:   #c08400;
+
+      --text:  #1a1c25;
+      --muted: #4a4e69;
+      --dim:   #717593;
+
+      --input-bg:     rgba(235,238,250,0.9);
+      --input-border: rgba(0,0,0,0.10);
+      --svg-bg:       #f8fafc;
+      --svg-grid:     rgba(0,0,0,0.04);
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 15% 10%, rgba(255,42,133,0.12) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 85%, rgba(180,77,255,0.10) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 50%, rgba(0,229,255,0.05) 0%, transparent 55%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.6;
+      padding: 16px 12px 80px;
+      min-height: 100vh;
+      transition: background-color 0.4s, color 0.4s;
+    }
+
+    .container { max-width: 1180px; margin: 0 auto; }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    header {
+      position: relative;
+      text-align: center;
+      padding: 16px 20px 14px; margin-bottom: 14px;
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    header h1 {
+      font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 50%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 400;
+    }
+
+    .header-actions {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-icon {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 14px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.25s;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-icon:hover {
+      border-color: var(--pink);
+      transform: scale(1.05);
+    }
+
+    /* ============================================================
+       PRESET TOOLBAR
+    ============================================================ */
+    .preset-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .btn-preset {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-preset:hover { transform: translateY(-2px); border-color: var(--pink); }
+
+    .btn-preset.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(255,42,133,0.35);
+    }
+
+    /* ============================================================
+       MODE SWITCHER — BIG segmented control
+    ============================================================ */
+    .mode-switcher-wrap {
+      margin-bottom: 16px;
+    }
+
+    .mode-switcher {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 6px;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 10px 8px;
+      border-radius: calc(var(--radius-xl) - 6px);
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: clamp(0.82rem, 1.5vw, 1rem);
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mode-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.35s;
+      border-radius: inherit;
+    }
+
+    .mode-btn:hover { color: var(--text); }
+
+    .mode-btn.active-male {
+      color: #fff;
+      background: linear-gradient(135deg, #ff2a85, #d81b60);
+      box-shadow: 0 6px 22px rgba(255,42,133,0.4);
+    }
+
+    .mode-btn.active-female {
+      color: #fff;
+      background: linear-gradient(135deg, #b44dff, #7b1fa2);
+      box-shadow: 0 6px 22px rgba(180,77,255,0.4);
+    }
+
+    .mode-btn.active-pair {
+      color: #111;
+      background: linear-gradient(135deg, #ffc600, #ff9500);
+      box-shadow: 0 6px 22px rgba(255,198,0,0.4);
+    }
+
+    .mode-icon { font-size: 1.3rem; }
+    .mode-label { display: flex; flex-direction: column; align-items: flex-start; }
+    .mode-label-main { line-height: 1.1; }
+    .mode-label-sub { font-size: 0.72rem; font-weight: 400; opacity: 0.75; }
+
+    /* ============================================================
+       MODE PANELS
+    ============================================================ */
+    .mode-panel {
+      display: none;
+      animation: fadeSlide 0.35s ease-out;
+    }
+
+    .mode-panel.active { display: block; }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       GRID LAYOUT (Input Left | Results Right)
+    ============================================================ */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 1024px) {
+      .grid-2col { grid-template-columns: 360px 1fr; gap: 14px; }
+    }
+
+                /* ============================================================
+       SCREEN CALIPER & CREDIT CARD CALIBRATION WIZARD
+    ============================================================ */
+    .screen-caliper-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(6, 3, 14, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: 999999;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .screen-caliper-overlay.active { display: flex; animation: fadeSlide 0.3s ease; }
+
+    .screen-caliper-card {
+      background: rgba(20, 12, 34, 0.97);
+      border: 1px solid rgba(0, 229, 255, 0.45);
+      border-radius: 22px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 94vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(0,229,255,0.3);
+      overflow: hidden;
+    }
+
+    .calib-card-frame {
+      border: 2px dashed var(--cyan);
+      border-radius: 12px;
+      background: rgba(0,229,255,0.06);
+      box-shadow: 0 0 25px rgba(0,229,255,0.25), inset 0 0 20px rgba(0,229,255,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: width 0.1s ease, height 0.1s ease;
+      user-select: none;
+      margin: 10px auto;
+    }
+
+    /* ============================================================
+       PHOTO REFERENCE LIGHTBOX MODAL
+    ============================================================ */
+    .photo-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(8, 4, 16, 0.88);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      z-index: 99999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .photo-modal-overlay.active { display: flex; animation: fadeSlide 0.3s ease; }
+
+    .photo-modal-card {
+      background: rgba(22, 14, 38, 0.96);
+      border: 1px solid rgba(255, 42, 133, 0.4);
+      border-radius: 20px;
+      max-width: 920px;
+      width: 100%;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.85), 0 0 35px rgba(255,42,133,0.3);
+      overflow: hidden;
+    }
+
+    .photo-modal-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .photo-modal-body {
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .photo-tab-btn {
+      padding: 6px 16px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .photo-tab-btn.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(255,42,133,0.4);
+    }
+
+                                /* ============================================================
+       TOOLTIP POPUP FOR CONDOM FIT & CITATIONS
+    ============================================================ */
+    .metric-card.tooltip-wrap {
+      overflow: visible !important;
+      position: relative !important;
+      z-index: 9999 !important;
+    }
+
+    .condom-tooltip, .citation-tooltip {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 290px;
+      background: #130a28 !important;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1.5px solid var(--cyan) !important;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 15px 45px rgba(0,0,0,0.95), 0 0 35px rgba(0,229,255,0.6);
+      z-index: 999999 !important;
+      text-align: left;
+    }
+    .citation-tooltip {
+      right: 0;
+      left: auto;
+      width: 310px;
+    }
+    .condom-tooltip[data-open="true"],
+    .tooltip-wrap:hover .condom-tooltip,
+    .citation-tooltip[data-open="true"] {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      animation: fadeSlide 0.25s ease;
+    }/* ============================================================
+       GLASS CARD
+    ============================================================ */
+    .glass-card {
+      position: relative;
+      overflow: visible;
+      background: var(--card);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 15px; box-shadow: var(--shadow-sm); margin-bottom: 12px;
+      transition: border-color 0.3s;
+    }
+
+    .glass-card:hover { border-color: var(--border-hover); }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .card-title .icon { font-size: 1.2rem; }
+
+    /* Male accent card */
+    .card-male { border-left: 3px solid var(--male-accent); }
+    .card-female { border-left: 3px solid var(--female-accent); }
+    .card-pair { border-left: 3px solid var(--pair-accent); }
+
+    /* ============================================================
+       SECTION SUBHEADER
+    ============================================================ */
+    .section-head {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--muted);
+      margin: 16px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-head::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ============================================================
+       INPUT GROUPS
+    ============================================================ */
+    .input-group { margin-bottom: 14px; }
+
+    .input-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .input-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .input-label sub {
+      font-size: 0.72rem;
+      color: var(--pink);
+      font-weight: 700;
+    }
+
+    .value-badge {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--cyan);
+      background: rgba(0,229,255,0.1);
+      padding: 2px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,229,255,0.2);
+      min-width: 70px;
+      text-align: center;
+    }
+
+    .value-badge.male { color: var(--pink); background: rgba(255,42,133,0.1); border-color: rgba(255,42,133,0.2); }
+    .value-badge.female { color: var(--purple); background: rgba(180,77,255,0.1); border-color: rgba(180,77,255,0.2); }
+    .value-badge.pair { color: var(--gold); background: rgba(255,198,0,0.1); border-color: rgba(255,198,0,0.2); }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      outline: none;
+      transition: background 0.3s;
+    }
+
+    [data-theme="light"] input[type="range"] { background: rgba(0,0,0,0.08); }
+
+    input[type="range"].male::-webkit-slider-thumb  { background: var(--male-accent); }
+    input[type="range"].female::-webkit-slider-thumb { background: var(--female-accent); }
+    input[type="range"].pair::-webkit-slider-thumb  { background: var(--pair-accent); }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--pink);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(255,42,133,0.5);
+      transition: transform 0.15s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+    .num-input {
+      width: 68px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 4px 6px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .num-input:focus { border-color: var(--pink); }
+
+    .select-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.88rem;
+      padding: 8px 10px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .select-input:focus { border-color: var(--pink); }
+
+    .two-col-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    /* Unit Switcher */
+    .unit-switcher {
+      display: inline-flex;
+      background: var(--input-bg);
+      border-radius: 20px;
+      padding: 3px;
+      border: 1px solid var(--input-border);
+    }
+
+    .unit-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 3px 10px;
+      border-radius: 15px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .unit-btn.active { background: var(--pink); color: #fff; }
+
+    /* ============================================================
+       RESULTS METRICS
+    ============================================================ */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+      overflow: visible !important;
+    }
+
+    .metric-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 15px 14px;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    [data-theme="light"] .metric-card { background: rgba(0,0,0,0.03); }
+
+    .metric-card:hover { transform: translateY(-3px); border-color: var(--border-hover); }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 0;
+    }
+
+    .metric-card.male-accent::before  { background: linear-gradient(90deg, var(--pink), var(--red)); }
+    .metric-card.female-accent::before { background: linear-gradient(90deg, var(--purple), var(--violet)); }
+    .metric-card.pair-accent::before  { background: linear-gradient(90deg, var(--gold), var(--pink)); }
+    .metric-card.cyan-accent::before  { background: linear-gradient(90deg, var(--cyan), var(--purple)); }
+
+    .metric-title {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 7px;
+      font-weight: 600;
+    }
+
+    .metric-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem; font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .metric-sub {
+      font-size: 0.75rem;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    /* ============================================================
+       BFPI GAUGE
+    ============================================================ */
+    .gauge-bar {
+      width: 100%;
+      height: 9px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    [data-theme="light"] .gauge-bar { background: rgba(0,0,0,0.07); }
+
+    .gauge-fill {
+      height: 100%;
+      width: 60%;
+      border-radius: 5px;
+      transition: width 0.4s ease, background 0.4s;
+    }
+
+    .gauge-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--dim);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       BADGE
+    ============================================================ */
+    .badge {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-blood   { background: linear-gradient(135deg, #d32f2f, #f44336); color:#fff; box-shadow: 0 4px 12px rgba(211,47,47,0.35); }
+    .badge-hybrid  { background: linear-gradient(135deg, #7b1fa2, #b44dff); color:#fff; box-shadow: 0 4px 12px rgba(123,31,162,0.35); }
+    .badge-flesh   { background: linear-gradient(135deg, #2e7d32, #43a047); color:#fff; box-shadow: 0 4px 12px rgba(46,125,50,0.35); }
+
+    /* ============================================================
+       COMPATIBILITY SCORE (BIG)
+    ============================================================ */
+    .compat-score-wrap {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 12px 16px; background: rgba(255,198,0,0.06);
+      border: 1px solid rgba(255,198,0,0.2);
+      border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+    }
+
+    .compat-score-circle {
+      width: 75px; height: 75px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--gold);
+      box-shadow: 0 0 22px rgba(255,198,0,0.3);
+      position: relative;
+    }
+
+    .compat-score-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.65rem; font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .compat-score-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .compat-score-text h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .compat-score-text p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ============================================================
+       SVG VISUALIZER
+    ============================================================ */
+    .svg-wrap {
+      width: 100%;
+      height: 320px;
+      background: var(--svg-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .svg-wrap svg { width: 100%; height: 100%; }
+
+    /* ============================================================
+       ADVICE BOX
+    ============================================================ */
+    .advice-box {
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 0.87rem;
+      margin-top: 14px;
+    }
+
+    .advice-ok {
+      background: rgba(46,213,115,0.08);
+      border-left: 4px solid var(--green);
+      color: var(--green);
+    }
+
+    .advice-warn {
+      background: rgba(255,71,87,0.08);
+      border-left: 4px solid var(--red);
+      color: #ff6b81;
+    }
+
+    [data-theme="light"] .advice-warn { color: #c62828; }
+    [data-theme="light"] .advice-ok   { color: #2e7d32; }
+
+    .advice-box h4 {
+      font-weight: 700;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ============================================================
+       MINI SUMMARY BADGE (Mode 3 pull from M1+M2)
+    ============================================================ */
+    .pull-notice {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--gold);
+      background: rgba(255,198,0,0.07);
+      border: 1px solid rgba(255,198,0,0.2);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      margin-bottom: 14px;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--dim);
+      font-size: 0.82rem;
+    }
+
+    /* ============================================================
+       SCROLLBAR
+    ============================================================ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,42,133,0.3); border-radius: 3px; }
+
+    /* ============================================================
+       RESPONSIVE HELPERS
+    ============================================================ */
+    @media (max-width: 600px) {
+      .mode-btn .mode-label-sub { display: none; }
+      .mode-icon { font-size: 1.1rem; }
+      .mode-btn { padding: 12px 6px; font-size: 0.78rem; }
+      .compat-score-wrap { flex-direction: column; text-align: center; }
+    }
+
+    hr.divider {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 14px 0;
+    }
+
+    /* Female vaginal elasticity gauge colors */
+    .gauge-fill.female-fill { background: linear-gradient(90deg, var(--purple), var(--cyan)); }
+  
+    [data-theme="light"] .glass-card {
+      background: rgba(255, 255, 255, 0.88) !important;
+      border-color: rgba(200, 210, 225, 0.6) !important;
+      color: #1e293b !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06) !important;
+    }
+    [data-theme="light"] .metric-card {
+      background: rgba(241, 245, 249, 0.95) !important;
+      border-color: rgba(203, 213, 225, 0.7) !important;
+      color: #0f172a !important;
+    }
+    [data-theme="light"] .metric-title {
+      color: #475569 !important;
+    }
+    [data-theme="light"] .card-title {
+      color: #0f172a !important;
+    }
+    [data-theme="light"] .input-label {
+      color: #334155 !important;
+    }
+    [data-theme="light"] .section-head {
+      color: #0284c7 !important;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ======== HEADER ======== -->
+  <header>
+    <div class="header-actions">
+      <div class="unit-switcher">
+        <button class="unit-btn active" id="unitMm" onclick="switchUnit('mm')">mm</button>
+        <button class="unit-btn" id="unitCm" onclick="switchUnit('cm')">cm</button>
+        <button class="unit-btn" id="unitIn" onclick="switchUnit('in')">in</button>
+      </div>
+      <button class="btn-icon" id="btnTheme" onclick="toggleTheme()">
+        <span id="themeIcon">🌙</span><span id="themeText">Light</span>
+      </button>
+    </div>
+    <h1>🔬 Anatomical & Biomechanical Compatibility Calculator</h1>
+    <p>เครื่องมือคำนวณสรีระและกลศาสตร์การปะทะ · ควยเลือด vs ควยเนื้อ · ไซส์ถุงยาง · การปะทะปากมดลูก</p>
+  </header>
+
+  <!-- ======== PRESET TOOLBAR ======== -->
+  <div class="preset-toolbar">
+  <button class="btn-preset" onclick="openScreenCaliperModal()" style="background:linear-gradient(135deg, var(--cyan), var(--pink)); color:#fff; border:none; box-shadow:0 4px 15px rgba(0,229,255,0.35);">
+    💳 วัดขนาดบนจอมือถือด้วยบัตรเครดิต/ประชาชน (ไม่ใช้ไม้บรรทัด)
+  </button>
+
+    <button class="btn-preset" id="btnPreset2" onclick="loadPreset('p2')">
+      🔷 Preset 2: ค่าเฉลี่ยมาตรฐาน
+    </button>
+    <button class="btn-preset" id="btnPreset3" onclick="loadPreset('p3')">
+      🩸 Preset 3: ควยเลือด (Grower)
+    </button>
+    <button class="btn-preset" id="btnPreset4" class="btn-preset active" onclick="loadPreset('p4')">
+      🥩 Preset 4: ควยเนื้อ (Shower)
+    </button>
+  </div>
+
+  <!-- ======== MODE SWITCHER ======== -->
+  <div class="mode-switcher-wrap">
+    <div class="mode-switcher">
+      <button class="mode-btn active-male" id="modeBtnMale" onclick="switchMode('male')">
+        <span class="mode-icon">🍆</span>
+        <span class="mode-label">
+          <span class="mode-label-main">ฝ่ายชาย</span>
+          <span class="mode-label-sub">Male Analysis</span>
+        </span>
+      </button>
+      <button class="mode-btn" id="modeBtnFemale" onclick="switchMode('female')">
+        <span class="mode-icon">🦋</span>
+        <span class="mode-label">
+          <span class="mode-label-main">ฝ่ายหญิง</span>
+          <span class="mode-label-sub">Female Analysis</span>
+        </span>
+      </button>
+      <button class="mode-btn" id="modeBtnPair" onclick="switchMode('pair')">
+        <span class="mode-icon">👩‍❤️‍👨</span>
+        <span class="mode-label">
+          <span class="mode-label-main">จำลองการปะทะคู่</span>
+          <span class="mode-label-sub">Pair Mode</span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       MODE 1: SOLO MALE
+  ====================================================== -->
+    <div class="mode-panel active" id="panelMale">
+    <div class="grid-2col">
+
+      <!-- LEFT: Male Inputs -->
+      <div>
+        <div class="glass-card card-male">
+          <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <span><span class="icon">🍆</span> ข้อมูลสรีระเพศชาย</span>
+            <button class="btn-preset" onclick="openScreenCaliperModal()" style="font-size:0.75rem; padding:4px 10px; background:rgba(0,229,255,0.15); border:1px solid var(--cyan); color:var(--cyan);">
+              💳 วัดจอมือถือ
+            </button>
+          </div>
+
+          <!-- 4 CORE BASIC INPUTS -->
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความยาวตอนอ่อนตัว (L<sub>flaccid</sub>)</span>
+              <span class="value-badge male" id="m_lblFlaccidLength">135.0 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="male" id="m_rngFlaccidLength" min="40" max="220" value="135" oninput="updateState('flaccidLength',this.value)">
+              <input type="number" class="num-input" id="m_numFlaccidLength" value="135" onchange="updateState('flaccidLength',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">เส้นรอบวงตอนอ่อนตัว (G<sub>flaccid</sub>)</span>
+              <span class="value-badge male" id="m_lblFlaccidGirth">127.0 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="male" id="m_rngFlaccidGirth" min="40" max="180" value="127" oninput="updateState('flaccidGirth',this.value)">
+              <input type="number" class="num-input" id="m_numFlaccidGirth" value="127" onchange="updateState('flaccidGirth',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความยาวมองเห็นจริงจากผิวหนัง (L<sub>erect</sub>)</span>
+              <span class="value-badge male" id="m_lblErectLength">162.0 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="male" id="m_rngErectLength" min="70" max="260" value="162" oninput="updateState('erectLength',this.value)">
+              <input type="number" class="num-input" id="m_numErectLength" value="162" onchange="updateState('erectLength',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">เส้นรอบวงตอนแข็งตัว (G<sub>erect</sub>)</span>
+              <span class="value-badge male" id="m_lblErectGirth">154.0 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="male" id="m_rngErectGirth" min="70" max="230" value="154" oninput="updateState('erectGirth',this.value)">
+              <input type="number" class="num-input" id="m_numErectGirth" value="154" onchange="updateState('erectGirth',this.value)">
+            </div>
+          </div>
+
+          <!-- ADVANCED COLLAPSIBLE SETTINGS -->
+          <details style="margin-top:14px; background:rgba(0,0,0,0.25); padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+            <summary style="cursor:pointer; font-weight:700; font-size:0.84rem; color:var(--cyan); user-select:none; outline:none;">
+              ⚙️ ตั้งค่าพารามิเตอร์เชิงลึก (วัดกดกระดูก L<sub>BPEL</sub> & ไขมันโคน T<sub>fat</sub>)
+            </summary>
+            <div style="margin-top:12px;">
+              <div class="input-group">
+                <div class="input-row">
+                  <span class="input-label">ความยาววัดกดชิดกระดูก (L<sub>BPEL</sub>) <small style="font-size:0.75rem; color:var(--muted);">*(วัดง่าย กดไม้บรรทัดชิดกระดูก)*</small></span>
+                  <span class="value-badge male" id="m_lblBPELInput">172.0 mm</span>
+                </div>
+                <div class="slider-row">
+                  <input type="range" class="male" id="m_rngBPEL" min="80" max="280" value="172" oninput="updateMaleBPEL(this.value)">
+                  <input type="number" class="num-input" id="m_numBPEL" value="172" onchange="updateMaleBPEL(this.value)">
+                </div>
+              </div>
+
+              <div class="input-group">
+                <div class="input-row">
+                  <span class="input-label">ความหนาชั้นไขมันโคนควย (T<sub>fat</sub>)</span>
+                  <span class="value-badge male" id="m_lblMaleFat">10.0 mm</span>
+                </div>
+                <div class="slider-row">
+                  <input type="range" class="male" id="m_rngMaleFat" min="0" max="45" value="10" oninput="updateState('maleFat',this.value)">
+                  <input type="number" class="num-input" id="m_numMaleFat" value="10" onchange="updateState('maleFat',this.value)">
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- RIGHT: Male Results -->
+      <div>
+
+        <!-- Card 4: Condom Fit & Volume -->
+        <div class="glass-card" id="cardCondomFit" style="position:relative; z-index:900; overflow:visible !important;">
+          <div class="card-title"><span class="icon">🛡️</span> สเปกถุงยางอนามัย & ปริมาตร (Condom Fit)</div>
+          <div class="metrics-grid">
+            <div class="metric-card male-accent tooltip-wrap" style="position:relative; cursor:pointer;" onclick="toggleCondomTooltip(event)">
+              <div class="metric-title" style="display:flex; align-items:center; justify-content:space-between;">
+                <span>ไซส์ถุงยางที่แนะนำ</span>
+                <span class="info-icon" onclick="toggleCondomTooltip(event)" style="background:rgba(0,229,255,0.2); color:var(--cyan); border-radius:50%; width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:bold; border:1px solid rgba(0,229,255,0.5); box-shadow:0 0 8px rgba(0,229,255,0.3);">ⓘ</span>
+              </div>
+              <div class="metric-val" id="m_valCondom" style="color:var(--cyan); font-size:1.9rem;">69 มม.</div>
+              <div class="metric-sub" id="m_subCondom">สูตร: 66.9 มม.</div>
+
+              <div class="condom-tooltip">
+                <div style="font-weight:700; color:var(--cyan); margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:5px; display:flex; align-items:center; gap:6px;">
+                  <span>🧮</span> วิธีคำนวณและสูตรหาไซส์ถุงยางอนามัย
+                </div>
+                <div style="font-size:0.76rem; color:var(--text); line-height:1.5;">
+                  <strong>1. สูตรคำนวณหน้ากว้างแบบราบ (Nominal Width):</strong><br>
+                  <code style="background:rgba(0,0,0,0.4); padding:3px 7px; border-radius:4px; color:var(--pink); font-family:monospace; font-size:0.76rem;">หน้ากว้างราบ = รอบวง (G<sub>erect</sub>) ÷ 2.3</code><br>
+                  <span id="m_tooltipStep1" style="color:var(--gold); font-weight:600;">154.0 มม. ÷ 2.3 = 66.9 มม.</span>
+                  <br><br>
+                  <strong>2. แมตช์ไซส์มาตรฐานในท้องตลาด:</strong><br>
+                  <span style="font-size:0.7rem; color:var(--muted);">[49, 52, 54, 56, 58, 60, 64, 69, 72 มม.]</span><br>
+                  <span id="m_tooltipStep2" style="color:var(--cyan); font-weight:600;">เลือกไซส์: 69 มม. (ใกล้เคียงที่สุด)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-card cyan-accent">
+              <div class="metric-title">เส้นผ่านศูนย์กลางลำควย (D<sub>m</sub>)</div>
+              <div class="metric-val" id="m_valDiameter" style="color:var(--text);">49.0 mm</div>
+              <div class="metric-sub">หน้ากว้างลำควยแข็ง</div>
+            </div>
+            <div class="metric-card cyan-accent">
+              <div class="metric-title">ปริมาตรรวม (V<sub>erect</sub>)</div>
+              <div class="metric-val" id="m_valVolume" style="color:var(--purple);">305.7 cc</div>
+              <div class="metric-sub">ทรงกระบอกเรขาคณิต</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Male SVG Visualizer -->
+        <div class="glass-card">
+          <div class="card-title"><span class="icon">📊</span> Flaccid vs Erect Overlay (แผนภาพเปรียบเทียบสภาวะยืดพองตัว)</div>
+          <div class="svg-wrap" style="height:320px;">
+            <svg id="svgMale" viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
+              <defs>
+                <pattern id="gridM" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.7"/>
+                </pattern>
+
+                <linearGradient id="erectShaftGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%"   stop-color="#e3a78b"/>
+                  <stop offset="30%"  stop-color="#ce8e70"/>
+                  <stop offset="70%"  stop-color="#b07254"/>
+                  <stop offset="100%" stop-color="#8d5439"/>
+                </linearGradient>
+
+                <radialGradient id="erectGlansGrad" cx="35%" cy="35%" r="65%">
+                  <stop offset="0%"   stop-color="#f29bb0"/>
+                  <stop offset="45%"  stop-color="#dc617c"/>
+                  <stop offset="85%"  stop-color="#b0334e"/>
+                  <stop offset="100%" stop-color="#78182b"/>
+                </radialGradient>
+
+                <linearGradient id="flaccidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%"   stop-color="rgba(0, 229, 255, 0.4)"/>
+                  <stop offset="100%" stop-color="rgba(0, 229, 255, 0.1)"/>
+                </linearGradient>
+
+                <filter id="glowErect" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="6" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+              </defs>
+
+              <rect width="720" height="300" fill="url(#gridM)" rx="10"/>
+
+              <!-- Grid ruler lines -->
+              <line x1="70" y1="20" x2="70" y2="270" stroke="rgba(255,255,255,0.12)" stroke-dasharray="4"/>
+              <text x="70" y="288" fill="var(--muted)" font-size="11" text-anchor="middle">0 mm (โคนกระดูก)</text>
+
+              <!-- ERECT SHAPE -->
+              <rect id="svgShaftErect" x="70" y="115" width="257.6" height="60" rx="10" fill="url(#erectShaftGrad)" stroke="#c28265" stroke-width="1.5" filter="url(#glowErect)"/>
+              <path id="svgGlansErect" d="M 327.6 110 C 377.6 110 397.6 145 397.6 145 C 397.6 145 377.6 180 327.6 180 C 322.6 180 322.6 110 327.6 110 Z" fill="url(#erectGlansGrad)" stroke="#c8506d" stroke-width="1.5" filter="url(#glowErect)"/>
+
+              <line id="svgLineBPEL" x1="70" y1="95" x2="397.6" y2="95" stroke="var(--pink)" stroke-width="2"/>
+              <text id="svgTextBPEL" x="233.8" y="88" fill="var(--pink)" font-size="12" font-weight="bold" text-anchor="middle">BPEL: 172.0 mm</text>
+
+              <!-- FLACCID SHAPE OVERLAY -->
+              <rect id="svgShaftFlaccid" x="70" y="125" width="216" height="40" rx="6" fill="url(#flaccidGrad)" stroke="var(--cyan)" stroke-width="1.5" stroke-dasharray="5 3"/>
+              <path id="svgGlansFlaccid" d="M 286 122 C 316 122 328 145 328 145 C 328 145 316 168 286 168 Z" fill="rgba(0,229,255,0.2)" stroke="var(--cyan)" stroke-width="1.5" stroke-dasharray="5 3"/>
+
+              <text id="svgTextFlaccid" x="199" y="149" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">Flaccid: 135.0 mm</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Card 2: Blood vs Flesh Diagnostics & Archetype Badge + Passport Share -->
+        <div class="glass-card">
+          <div class="card-title"><span class="icon">🩸</span> ผลวิเคราะห์ประเภทควย (Blood vs Flesh Diagnostics)</div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <div>
+              <span style="font-size:0.85rem; color:var(--muted);">BFPI Index:</span>
+              <span style="font-size:1.8rem; font-weight:800; color:var(--gold); margin-left:8px;" id="m_valBFPI">1.46</span>
+            </div>
+            <span class="badge badge-flesh" id="m_badgeType">🥩 ควยเนื้อ (Flesh / Shower)</span>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.06); height:10px; border-radius:5px; overflow:hidden; margin-bottom:16px;">
+            <div id="m_gaugeBFPI" style="width:28%; height:100%; background:linear-gradient(90deg,#2e7d32,#43a047); transition:width 0.4s;"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--muted); margin-bottom:14px;">
+            <span>Flesh Shower &lt;1.8</span>
+            <span>Hybrid 1.8-2.5</span>
+            <span>Blood Grower &gt;2.5</span>
+          </div>
+
+          <!-- Fun & Friendly Thai Archetype Badge & Share Passport Button -->
+          <div style="margin-top:14px; padding:12px 16px; background:rgba(255,42,133,0.08); border:1px solid rgba(255,42,133,0.3); border-radius:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="font-size:0.75rem; color:var(--muted);">👑 ฉายาตัวตนสรีระ (Thai Penis Archetype):</div>
+              <div id="m_valThaiArchetype" style="font-weight:800; font-size:1.15rem; color:var(--pink); margin-top:2px;">🥖 สายปังตอ อวบสะท้านตับ</div>
+              <div id="m_subThaiArchetype" style="font-size:0.75rem; color:var(--text); opacity:0.9;">รอบวงใหญ่พิเศษ แน่นเต็มมือ ตับไตไส้พุงมีสะเทือน</div>
+            </div>
+            <button class="btn-preset" onclick="openPassportModal()" style="font-size:0.8rem; padding:7px 16px; background:linear-gradient(135deg, var(--pink), var(--purple)); color:#fff; border:none; box-shadow:0 4px 15px rgba(255,42,133,0.4);">
+              📸 สร้างการ์ดพาสปอร์ตแชร์
+            </button>
+          </div>
+
+          <div class="metrics-grid" style="margin-top:16px;">
+            <div class="metric-card male-accent">
+              <div class="metric-title">อัตราการยืดความยาว (ΔL%)</div>
+              <div class="metric-val" id="m_valDeltaL" style="color:var(--pink);">+20.0%</div>
+              <div class="metric-sub" id="m_subDeltaL">อ่อน 135 → แข็ง 162 mm</div>
+            </div>
+            <div class="metric-card male-accent">
+              <div class="metric-title">อัตราขยายรอบวง (ΔG%)</div>
+              <div class="metric-val" id="m_valDeltaG" style="color:var(--cyan);">+21.3%</div>
+              <div class="metric-sub" id="m_subDeltaG">อ่อน 127 → แข็ง 154 mm</div>
+            </div>
+            <div class="metric-card cyan-accent">
+              <div class="metric-title">ปริมาตรเลือดสูบฉีด (ΔV)</div>
+              <div class="metric-val" id="m_valDeltaV" style="color:var(--gold);">+132.5 cc</div>
+              <div class="metric-sub" id="m_subDeltaV">ขยายตัว 1.76x</div>
+            </div>
+            <div class="metric-card cyan-accent">
+              <div class="metric-title">ความยาวชิดกระดูก (L<sub>BPEL</sub>)</div>
+              <div class="metric-val" id="m_valBPEL" style="color:var(--text);">172 mm</div>
+              <div class="metric-sub">ซ่อนใต้ชั้นไขมัน</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Urology Regional Percentiles & Compact Citation Tooltip -->
+        <div class="glass-card">
+          <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <span><span class="icon">🌐</span> เปรียบเทียบเปอร์เซ็นไทล์ประชากร (Urology Percentiles)</span>
+            <div style="display:flex; gap:4px;" class="urology-region-selector">
+              <button class="btn-preset active" data-region="global" onclick="setUrologyRegion('global', this)" style="font-size:0.72rem; padding:3px 8px;">🌐 ทั่วโลก</button>
+              <button class="btn-preset" data-region="asia" onclick="setUrologyRegion('asia', this)" style="font-size:0.72rem; padding:3px 8px;">🌏 เอเชีย</button>
+              <button class="btn-preset" data-region="thai" onclick="setUrologyRegion('thai', this)" style="font-size:0.72rem; padding:3px 8px;">🇹🇭 ชายไทย</button>
+            </div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-card male-accent">
+              <div class="metric-title">ความยาวชิดกระดูก (Length Rank)</div>
+              <div class="metric-val" id="m_valLenRank" style="color:var(--pink);">Top 1%</div>
+              <div class="metric-sub" id="m_subLenRank">ยาวกว่า 99% ของประชากรโลก (BPEL 172.0 mm)</div>
+            </div>
+
+            <div class="metric-card male-accent">
+              <div class="metric-title">ขนาดเส้นรอบวง (Girth Rank)</div>
+              <div class="metric-val" id="m_valGirthRank" style="color:var(--cyan);">Top 0.0%</div>
+              <div class="metric-sub" id="m_subGirthRank">ใหญ่กว่า 100% ของประชากรโลก (รอบวง 154.0 mm)</div>
+            </div>
+
+            <div class="metric-card cyan-accent">
+              <div class="metric-title">สัดส่วนไขมันซ่อนความยาว</div>
+              <div class="metric-val" id="m_valFatPercent" style="color:var(--gold);">5.8%</div>
+              <div class="metric-sub" id="m_subFatPercent">ซ่อนใต้ไขมัน 10.0 mm</div>
+            </div>
+          </div>
+
+          <!-- COMPACT CITATION LINK BUTTON -->
+          <div style="margin-top:12px; text-align:right;">
+            <button class="btn-preset" onclick="openCitationsModal()" style="font-size:0.75rem; padding:4px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--muted);">
+              📚 แหล่งอ้างอิงงานวิจัย Urology ⓘ
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><div class="mode-panel" id="panelFemale">
+    <div class="grid-2col">
+
+      <!-- LEFT: Female Inputs -->
+      <div>
+        <div class="glass-card card-female">
+          <div class="card-title"><span class="icon">🦋</span> ข้อมูลสรีระเพศหญิง</div>
+
+          <div class="section-head">📐 ช่องคลอด (Vaginal Anatomy)</div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความลึกสภาวะปกติ (D<sub>v</sub>)</span>
+              <span class="value-badge female" id="f_lblVagResting">108 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="female" id="f_rngVagResting" min="50" max="160" value="108" oninput="updateState('vaginalResting',this.value)">
+              <input type="number" class="num-input" id="f_numVagResting" value="108" onchange="updateState('vaginalResting',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความลึกสภาวะตื่นตัว (D<sub>v,exp</sub>)</span>
+              <span class="value-badge female" id="f_lblVagExpanded">115 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="female" id="f_rngVagExpanded" min="60" max="200" value="115" oninput="updateState('vaginalExpanded',this.value)">
+              <input type="number" class="num-input" id="f_numVagExpanded" value="115" onchange="updateState('vaginalExpanded',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความกว้างปากรูสภาวะพัก (W<sub>intro</sub>)</span>
+              <span class="value-badge female" id="f_lblIntroitus">5.5 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="female" id="f_rngIntroitus" min="2" max="35" step="0.5" value="5.5" oninput="updateState('introitusWidth',this.value)">
+              <input type="number" class="num-input" id="f_numIntroitus" step="0.5" value="5.5" onchange="updateState('introitusWidth',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความหนาชั้นไขมันเนินหัวหน่าว (T<sub>mons</sub>)</span>
+              <span class="value-badge female" id="f_lblMons">12.7 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="female" id="f_rngMons" min="3" max="35" step="0.1" value="12.7" oninput="updateState('monsFat',this.value)">
+              <input type="number" class="num-input" id="f_numMons" step="0.1" value="12.7" onchange="updateState('monsFat',this.value)">
+            </div>
+          </div>
+
+          <hr class="divider">
+          <div class="section-head">🌸 แคมใน (Labia Minora)</div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">กลีบแคมในซ้าย (ยาว / ยื่น)</span>
+              <span class="value-badge female" id="f_lblLabiaL">43.5 / 13.0 mm</span>
+            </div>
+            <div class="two-col-inputs">
+              <input type="number" class="num-input" style="width:100%;" id="f_numLabiaLL" value="43.54" placeholder="ยาว mm" onchange="calcFemale()">
+              <input type="number" class="num-input" style="width:100%;" id="f_numLabiaLP" value="13.03" placeholder="ยื่น mm" onchange="calcFemale()">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">กลีบแคมในขวา (ยาว / ยื่น)</span>
+              <span class="value-badge female" id="f_lblLabiaR">33.9 / 8.1 mm</span>
+            </div>
+            <div class="two-col-inputs">
+              <input type="number" class="num-input" style="width:100%;" id="f_numLabiaRL" value="33.91" placeholder="ยาว mm" onchange="calcFemale()">
+              <input type="number" class="num-input" style="width:100%;" id="f_numLabiaRP" value="8.08" placeholder="ยื่น mm" onchange="calcFemale()">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT: Female Results -->
+      <div>
+        <div class="glass-card">
+          <div class="card-title"><span class="icon">📈</span> ผลวิเคราะห์ช่องคลอด (Vaginal Analysis)</div>
+
+          <div class="metrics-grid">
+            <div class="metric-card female-accent">
+              <div class="metric-title">Vaginal Elasticity Index</div>
+              <div class="metric-val" id="f_valElasticity" style="color:var(--purple);">+6.5%</div>
+              <div class="metric-sub" id="f_subElasticity">พักผ่อน → ตื่นตัว</div>
+            </div>
+            <div class="metric-card female-accent">
+              <div class="metric-title">ความลึกช่องว่างปลอดภัย</div>
+              <div class="metric-val" id="f_valSafeDepth" style="color:var(--green);">115 mm</div>
+              <div class="metric-sub">ความลึกขณะตื่นตัว</div>
+            </div>
+            <div class="metric-card female-accent">
+              <div class="metric-title">ปากรูขยายตัวสูงสุด (Max Stretch)</div>
+              <div class="metric-val" id="f_valMaxStretch" style="color:var(--cyan);">~35 mm</div>
+              <div class="metric-sub" id="f_subMaxStretch">จาก 5.5 mm พัก</div>
+            </div>
+            <div class="metric-card female-accent">
+              <div class="metric-title">ชั้นไขมันกันชน (Mons Cushion)</div>
+              <div class="metric-val" id="f_valMonsRating" style="color:var(--gold);">⭐ ดี</div>
+              <div class="metric-sub" id="f_subMonsRating">T_mons = 12.7 mm</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-title"><span class="icon">🔮</span> แคมใน & Vacuum Seal Analysis</div>
+          <div class="metrics-grid">
+            <div class="metric-card female-accent">
+              <div class="metric-title">ดัชนีความสมมาตรแคมใน (SOI)</div>
+              <div class="metric-val" id="f_valSOI" style="color:var(--purple);">9.6 mm</div>
+              <div class="metric-sub" id="f_subSOI">ความต่างซ้าย-ขวา</div>
+            </div>
+            <div class="metric-card female-accent">
+              <div class="metric-title">ศักยภาพซีลสุญญากาศ</div>
+              <div class="metric-val" id="f_valVacuum" style="color:var(--cyan);">94 / 100</div>
+              <div class="metric-sub" id="f_subVacuum">แรงโอบรัดแคมใน</div>
+            </div>
+          </div>
+          <div id="f_adviceLabia" class="advice-box advice-ok">
+            <h4>✅ ผลการวิเคราะห์แคมใน</h4>
+            <p id="f_adviceLabiaText">กำลังคำนวณ...</p>
+          </div>
+        </div>
+
+                <!-- Photo Reference Card -->
+        <div class="glass-card">
+          <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div><span class="icon">📷</span> ภาพถ่ายสรีระจริงอ้างอิง (Actual Reference Photos)</div>
+            <button class="btn-preset" onclick="openPhotoModal('AYE-BIO-02Z.jpg')" style="font-size:0.78rem; padding:4px 12px; background:linear-gradient(135deg, var(--pink), var(--purple)); border:none;">🔍 ขยายดูรูปจริงอ้างอิง</button>
+          </div>
+          <p style="font-size:0.78rem; color:var(--muted); margin-bottom:10px;">รูปถ่ายสรีระจริงที่คุณอายบันทึกไว้สำหรับเทียบค่าพารามิเตอร์ $W_{intro}$, $T_{mons}$, และระยะยื่นแคมเล็ก:</p>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div style="position:relative; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.15); height:170px; background:#000; cursor:pointer;" onclick="openPhotoModal('AYE-BIO-02Z.jpg')">
+              <img src="AYE-BIO-02Z.jpg" alt="Eye Anatomy Reference" style="width:100%; height:100%; object-fit:cover; opacity:0.9; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(0deg, rgba(0,0,0,0.85), transparent); padding:8px 10px; font-size:0.75rem; color:#fff; font-weight:600; display:flex; justify-content:space-between; align-items:center;">
+                <span>🌸 AYE-BIO-02Z.jpg</span>
+                <span style="font-size:0.68rem; color:var(--pink); background:rgba(255,42,133,0.2); padding:1px 6px; border-radius:4px;">สรีระรวม</span>
+              </div>
+            </div>
+            <div style="position:relative; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.15); height:170px; background:#000; cursor:pointer;" onclick="openPhotoModal('AYE-INT-01.JPG')">
+              <img src="AYE-INT-01.JPG" alt="Eye Introitus Measurement" style="width:100%; height:100%; object-fit:cover; opacity:0.9; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(0deg, rgba(0,0,0,0.85), transparent); padding:8px 10px; font-size:0.75rem; color:#fff; font-weight:600; display:flex; justify-content:space-between; align-items:center;">
+                <span>📏 AYE-INT-01.JPG</span>
+                <span style="font-size:0.68rem; color:var(--cyan); background:rgba(0,229,255,0.2); padding:1px 6px; border-radius:4px;">ซูมวัดขนาด</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Female SVG: Vaginal Cross-section -->
+        <div class="glass-card">
+          <div class="card-title"><span class="icon">📐</span> ภาพตัดขวางช่องคลอด (Cross-section View)</div>
+          <div class="svg-wrap">
+            <svg id="svgFemale" viewBox="0 0 700 280">
+              <defs>
+                <pattern id="gridF" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--svg-grid)" stroke-width="1"/>
+                </pattern>
+                <linearGradient id="gradVag" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#b44dff" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#b44dff" stop-opacity="0.6"/>
+                </linearGradient>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#gridF)"/>
+
+              <!-- Vaginal canal resting -->
+              <path id="svgF_vaginaRest" d="M 120,120 L 270,120 Q 310,140 270,160 L 120,160" 
+                fill="rgba(180,77,255,0.08)" stroke="var(--purple)" stroke-dasharray="5 3" stroke-width="1.5"/>
+              <!-- Vaginal canal expanded -->
+              <path id="svgF_vaginaExp" d="M 120,105 L 290,105 Q 340,140 290,175 L 120,175" 
+                fill="url(#gradVag)" stroke="var(--purple)" stroke-width="2"/>
+              <!-- Cervix dome -->
+              <path id="svgF_cervix" d="M 290,115 C 320,128 320,152 290,165" 
+                fill="var(--red)" opacity="0.75" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+              <text x="325" y="144" fill="var(--red)" font-size="11" font-family="Outfit" font-weight="bold">Cervix</text>
+
+              <!-- Mons fat -->
+              <rect id="svgF_mons" x="80" y="88" width="40" height="104" rx="8"
+                fill="rgba(255,198,0,0.08)" stroke="var(--gold)" stroke-dasharray="4 3" stroke-width="1.2"/>
+              <text x="84" y="83" fill="var(--gold)" font-size="9" font-family="Outfit" font-weight="bold">T_mons</text>
+
+              <!-- Labia left -->
+              <ellipse id="svgF_labiaL" cx="118" cy="130" rx="10" ry="30" fill="rgba(180,77,255,0.3)" stroke="var(--purple)" stroke-width="1.5"/>
+              <!-- Labia right -->
+              <ellipse id="svgF_labiaR" cx="118" cy="150" rx="8" ry="22" fill="rgba(180,77,255,0.2)" stroke="var(--violet)" stroke-width="1.2"/>
+
+              <!-- Depth arrows -->
+              <line id="svgF_depthLine" x1="120" y1="220" x2="340" y2="220" stroke="var(--purple)" stroke-width="1.5"/>
+              <text id="svgF_depthText" x="230" y="238" fill="var(--purple)" font-size="12" font-weight="bold" text-anchor="middle" font-family="Outfit">D_exp = 115 mm</text>
+
+              <!-- Width arrow -->
+              <line x1="65" y1="105" x2="65" y2="175" stroke="var(--cyan)" stroke-width="1.5"/>
+              <text x="52" y="144" fill="var(--cyan)" font-size="10" font-weight="bold" text-anchor="middle" font-family="Outfit" transform="rotate(-90,52,144)">W_intro</text>
+            </svg>
+          </div>
+        </div>
+
+      </div></div></div><!-- /panelFemale -->
+
+
+  <!-- ======================================================
+       MODE 3: PAIR COMPATIBILITY
+  ====================================================== -->
+  <div class="mode-panel" id="panelPair">
+    <div class="grid-2col">
+
+      <!-- LEFT: Pair Inputs (auto-filled, editable) -->
+      <div>
+        <div class="pull-notice">
+          ⚡ ค่าด้านล่างดึงมาจาก Mode 1 & 2 อัตโนมัติ — แก้ไขได้โดยตรงในช่องนี้
+        </div>
+
+        <!-- Male sub-inputs -->
+        <div class="glass-card card-male">
+          <div class="card-title"><span class="icon">🍆</span> ข้อมูลฝ่ายชาย</div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความยาวแข็งตัว (L<sub>erect</sub>)</span>
+              <span class="value-badge male" id="p_lblErectLength">161 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="male" id="p_rngErectLength" min="80" max="260" value="161" oninput="updatePairMale('erectLength',this.value)">
+              <input type="number" class="num-input" id="p_numErectLength" value="161" onchange="updatePairMale('erectLength',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">เส้นรอบวงแข็งตัว (G<sub>erect</sub>)</span>
+              <span class="value-badge male" id="p_lblErectGirth">154 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="male" id="p_rngErectGirth" min="70" max="230" value="154" oninput="updatePairMale('erectGirth',this.value)">
+              <input type="number" class="num-input" id="p_numErectGirth" value="154" onchange="updatePairMale('erectGirth',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความหนาชั้นไขมันโคนควย (T<sub>fat</sub>)</span>
+              <span class="value-badge male" id="p_lblMaleFat">10 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="male" id="p_rngMaleFat" min="0" max="45" value="10" oninput="updatePairMale('maleFat',this.value)">
+              <input type="number" class="num-input" id="p_numMaleFat" value="10" onchange="updatePairMale('maleFat',this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Female sub-inputs -->
+        <div class="glass-card card-female">
+          <div class="card-title"><span class="icon">🦋</span> ข้อมูลฝ่ายหญิง</div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความลึกช่องคลอดสภาวะตื่นตัว (D<sub>v,exp</sub>)</span>
+              <span class="value-badge female" id="p_lblVagExpanded">115 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="female" id="p_rngVagExpanded" min="60" max="200" value="115" oninput="updatePairFemale('vaginalExpanded',this.value)">
+              <input type="number" class="num-input" id="p_numVagExpanded" value="115" onchange="updatePairFemale('vaginalExpanded',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความกว้างปากรูสภาวะพัก (W<sub>intro</sub>)</span>
+              <span class="value-badge female" id="p_lblIntroitus">5.5 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="female" id="p_rngIntroitus" min="2" max="35" step="0.5" value="5.5" oninput="updatePairFemale('introitusWidth',this.value)">
+              <input type="number" class="num-input" id="p_numIntroitus" step="0.5" value="5.5" onchange="updatePairFemale('introitusWidth',this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ความหนาชั้นไขมันเนินหัวหน่าว (T<sub>mons</sub>)</span>
+              <span class="value-badge female" id="p_lblMons">12.7 mm</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="female" id="p_rngMons" min="3" max="35" step="0.1" value="12.7" oninput="updatePairFemale('monsFat',this.value)">
+              <input type="number" class="num-input" id="p_numMons" step="0.1" value="12.7" onchange="updatePairFemale('monsFat',this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Modifiers -->
+        <div class="glass-card card-pair">
+          <div class="card-title"><span class="icon">⚙️</span> ตัวแปรสิ่งแวดล้อม (Modifiers)</div>
+
+          <div class="input-group">
+            <span class="input-label" style="display:block; margin-bottom:8px;">ระดับสารหล่อลื่น (Lubrication)</span>
+            <select id="p_selLub" class="select-input" onchange="calcPair()">
+              <option value="dry">🔴 น้อย/แห้ง (μ=0.15)</option>
+              <option value="normal" selected>🟡 ปกติธรรมชาติ (μ=0.08)</option>
+              <option value="high">🟢 ฉ่ำมาก/เจลหล่อลื่น (μ=0.03)</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <span class="input-label">ระยะเวลาสอดใส่ต่อรอบ</span>
+              <span class="value-badge pair" id="p_lblDuration">15 min</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" class="pair" id="p_rngDuration" min="2" max="60" value="15" oninput="updatePairState('duration',this.value)">
+              <input type="number" class="num-input" id="p_numDuration" value="15" onchange="updatePairState('duration',this.value)">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Pair Results -->
+      <div>
+
+        <!-- Overall Compatibility Score -->
+        <div class="glass-card">
+          <div class="card-title"><span class="icon">💑</span> คะแนนความเข้ากันได้โดยรวม (Overall Compatibility Score)</div>
+          <div class="compat-score-wrap">
+            <div class="compat-score-circle">
+              <div class="compat-score-num" id="p_scoreNum">78</div>
+              <div class="compat-score-label">/ 100</div>
+            </div>
+            <div class="compat-score-text">
+              <h3 id="p_scoreTitle">🟡 เข้ากันได้ดีระดับกลาง</h3>
+              <p id="p_scoreDesc">ควยยาวเกินช่องคลอดเล็กน้อย มีการชนปากมดลูกในจังหวะลึก แนะนำให้ควบคุมความลึกในการสอดใส่</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Impact Metrics -->
+        <div class="glass-card">
+          <div class="card-title"><span class="icon">💥</span> ผลวิเคราะห์การปะทะเชิงกลศาสตร์ (Biomechanical Impact)</div>
+          <div class="metrics-grid">
+            <div class="metric-card pair-accent">
+              <div class="metric-title">ระยะส่วนเกินปะทะ (ΔL<sub>impact</sub>)</div>
+              <div class="metric-val" id="p_valImpact" style="color:var(--red);">+46 mm</div>
+              <div class="metric-sub" id="p_subImpact">ชนถึงปากมดลูก</div>
+            </div>
+            <div class="metric-card pair-accent">
+              <div class="metric-title">ความตึงขยายปากทาง (Hoop Stress)</div>
+              <div class="metric-val" id="p_valHoop" style="color:var(--gold);">891%</div>
+              <div class="metric-sub" id="p_subHoop">ขยายตัวจากปากพัก</div>
+            </div>
+            <div class="metric-card pair-accent">
+              <div class="metric-title">ซีลสุญญากาศ (Vacuum Seal)</div>
+              <div class="metric-val" id="p_valVacuum" style="color:var(--cyan);">94/100</div>
+              <div class="metric-sub" id="p_subVacuum">แรงโอบรัดแคมใน</div>
+            </div>
+            <div class="metric-card pair-accent">
+              <div class="metric-title">ชั้นกันชนเนินหัวหน่าว</div>
+              <div class="metric-val" id="p_valMons" style="color:var(--purple);">12.7 mm</div>
+              <div class="metric-sub">ซับแรงกระแทกได้ดี</div>
+            </div>
+          </div>
+
+          <div id="p_adviceBox" class="advice-box advice-warn">
+            <h4 id="p_adviceTitle">⚠️ คำแนะนำการปะทะชนลึก</h4>
+            <p id="p_adviceText">กำลังคำนวณ...</p>
+          </div>
+        </div>
+
+        <!-- Pair SVG Full Visualizer -->
+        <div class="glass-card">
+          <div class="card-title"><span class="icon">📐</span> แผนภาพจำลองการสอดใส่ (2D Impact Visualizer)</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+            <!-- LEFT: Frontal Vulva View -->
+            <div style="background:rgba(0,0,0,0.3); border-radius:12px; padding:12px;">
+              <div style="font-size:0.75rem; color:rgba(180,77,255,0.8); font-weight:700; font-family:Outfit; margin-bottom:8px; letter-spacing:0.5px;">🔭 FRONTAL VIEW — Vulva</div>
+              <svg id="svgVulva" viewBox="0 0 340 420" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
+                <defs>
+                  <!-- Skin background gradient -->
+                  <radialGradient id="monsSkinGrad" cx="50%" cy="30%" r="70%">
+                    <stop offset="0%"   stop-color="#e2a17e" stop-opacity="0.9"/>
+                    <stop offset="50%"  stop-color="#c98462" stop-opacity="0.85"/>
+                    <stop offset="100%" stop-color="#995738" stop-opacity="0.8"/>
+                  </radialGradient>
+
+                  <!-- Labia majora outer skin (warm tan) -->
+                  <linearGradient id="vulvaMajGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stop-color="#b87250"/>
+                    <stop offset="25%"  stop-color="#d69270"/>
+                    <stop offset="50%"  stop-color="#c47e5c"/>
+                    <stop offset="75%"  stop-color="#d69270"/>
+                    <stop offset="100%" stop-color="#b87250"/>
+                  </linearGradient>
+
+                  <!-- Labia minora tissue (dark chocolate brown with pinkish undertone) -->
+                  <linearGradient id="vulvaMinGradLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%"   stop-color="#8a4d3b"/>
+                    <stop offset="40%"  stop-color="#693728"/>
+                    <stop offset="80%"  stop-color="#4d251a"/>
+                    <stop offset="100%" stop-color="#3d1c13"/>
+                  </linearGradient>
+                  
+                  <linearGradient id="vulvaMinGradRight" x1="100%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%"   stop-color="#945340"/>
+                    <stop offset="40%"  stop-color="#733d2c"/>
+                    <stop offset="80%"  stop-color="#54291d"/>
+                    <stop offset="100%" stop-color="#401e15"/>
+                  </linearGradient>
+
+                  <!-- Vaginal introitus inner pink mucosa -->
+                  <radialGradient id="vulvaOsGrad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%"   stop-color="#ff9eb0"/>
+                    <stop offset="40%"  stop-color="#e0657b"/>
+                    <stop offset="80%"  stop-color="#ad374c"/>
+                    <stop offset="100%" stop-color="#6b1725"/>
+                  </radialGradient>
+
+                  <!-- Clitoral prepuce / hood skin -->
+                  <radialGradient id="hoodGrad" cx="50%" cy="40%" r="60%">
+                    <stop offset="0%"   stop-color="#d99373"/>
+                    <stop offset="60%"  stop-color="#b56e4e"/>
+                    <stop offset="100%" stop-color="#82462a"/>
+                  </radialGradient>
+
+                  <!-- Drop shadow filters for realistic depth layering -->
+                  <filter id="naturalShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="rgba(20,5,0,0.65)"/>
+                  </filter>
+                  <filter id="softCrease">
+                    <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="rgba(30,10,0,0.5)"/>
+                  </filter>
+                </defs>
+
+                <!-- Base Canvas Background -->
+                <rect width="100%" height="100%" fill="#0a050f" rx="10"/>
+
+                <!-- Overall Outer Skin Region (Pelvis / Inner Thighs base) -->
+                <path d="M 30,0 L 310,0 C 330,80 330,340 310,420 L 30,420 C 10,340 10,80 30,0 Z"
+                  fill="url(#monsSkinGrad)"/>
+
+                <!-- Mons Pubis Mound (Upper Fat Cushion) -->
+                <path id="vv_mons" d="M 40,0 C 100,20 240,20 300,0 C 320,100 310,180 280,220 C 240,160 100,160 60,220 C 30,180 20,100 40,0 Z"
+                  fill="url(#monsSkinGrad)" opacity="0.9"/>
+
+                <!-- Pubic Hair (Natural soft hair density at top) -->
+                <g opacity="0.45" stroke="#361c0e" stroke-width="1.2" fill="none" stroke-linecap="round">
+                  <path d="M 120,15 Q 125,25 122,35"/> <path d="M 135,10 Q 140,22 136,32"/>
+                  <path d="M 150,8 Q 152,20 148,30"/>   <path d="M 165,5 Q 170,18 166,28"/>
+                  <path d="M 180,8 Q 185,20 182,32"/>   <path d="M 195,12 Q 200,24 196,35"/>
+                  <path d="M 210,18 Q 215,28 212,38"/>  <path d="M 130,30 Q 138,42 132,50"/>
+                  <path d="M 145,25 Q 150,38 147,48"/>  <path d="M 160,22 Q 165,35 161,45"/>
+                  <path d="M 175,24 Q 180,36 177,46"/>  <path d="M 190,28 Q 195,40 191,50"/>
+                  <path d="M 140,45 Q 146,58 142,65"/>  <path d="M 155,42 Q 160,54 156,64"/>
+                  <path d="M 170,40 Q 175,52 171,62"/>  <path d="M 185,44 Q 190,56 186,66"/>
+                </g>
+
+                <!-- LABIA MAJORA (Outer Lips - Soft Rounded Skin Folds) -->
+                <!-- Left Labia Majora -->
+                <path id="vv_majLeft"
+                  d="M 170,105 C 130,110 90,135 78,185 C 68,235 72,295 95,340 C 115,378 145,395 170,398 C 158,380 142,340 138,295 C 132,245 138,185 170,105 Z"
+                  fill="url(#vulvaMajGrad)" filter="url(#naturalShadow)"/>
+                <!-- Highlight curve on Left Majora -->
+                <path d="M 160,115 C 128,122 98,148 88,195 C 80,240 84,290 102,330"
+                  fill="none" stroke="rgba(255,215,190,0.3)" stroke-width="3" stroke-linecap="round"/>
+
+                <!-- Right Labia Majora -->
+                <path id="vv_majRight"
+                  d="M 170,105 C 210,110 250,135 262,185 C 272,235 268,295 245,340 C 225,378 195,395 170,398 C 182,380 198,340 202,295 C 208,245 202,185 170,105 Z"
+                  fill="url(#vulvaMajGrad)" filter="url(#naturalShadow)"/>
+                <!-- Highlight curve on Right Majora -->
+                <path d="M 180,115 C 212,122 242,148 252,195 C 260,240 256,290 238,330"
+                  fill="none" stroke="rgba(255,215,190,0.25)" stroke-width="3" stroke-linecap="round"/>
+
+                <!-- VULVAL VESTIBULE / INTROITUS BACKGROUND (Moist Inner Mucosa) -->
+                <ellipse id="vv_introitus" cx="170" cy="275" rx="22" ry="65"
+                  fill="url(#vulvaOsGrad)"/>
+                <!-- Deep Inner Canal Opening -->
+                <ellipse cx="170" cy="285" rx="10" ry="32"
+                  fill="rgba(50,8,16,0.95)"/>
+                <!-- Mucosal gleam highlight inside introitus -->
+                <ellipse cx="166" cy="270" rx="4" ry="16"
+                  fill="rgba(255,200,215,0.4)" opacity="0.85"/>
+
+                <!-- CLITORAL HOOD & PREPUCE (Anterior Superior Apex) -->
+                <!-- Hood Apex Fold -->
+                <path id="vv_hood"
+                  d="M 170,105 C 150,112 138,128 140,148 C 142,165 152,175 170,178 C 188,175 198,165 200,148 C 202,128 190,112 170,105 Z"
+                  fill="url(#hoodGrad)" filter="url(#softCrease)"/>
+                <!-- Clitoral Glans (Small pinkish-red glans beneath hood) -->
+                <ellipse cx="170" cy="142" rx="7" ry="6"
+                  fill="#e86b82" stroke="rgba(140,40,60,0.5)" stroke-width="0.8"/>
+                <!-- Specular gleam on clitoris -->
+                <circle cx="168" cy="140" r="2" fill="rgba(255,230,235,0.85)"/>
+                <!-- Prepuce fold lines -->
+                <path d="M 152,130 C 160,140 170,148 170,156" fill="none" stroke="rgba(100,45,25,0.5)" stroke-width="1"/>
+                <path d="M 188,130 C 180,140 170,148 170,156" fill="none" stroke="rgba(100,45,25,0.5)" stroke-width="1"/>
+
+                <!-- LABIA MINORA (Inner Lips - Realistic Organic Asymmetrical Folds matching reference) -->
+                
+                <!-- Left Minora (Larger, wavy ruffled fold overlapping center) -->
+                <path id="vv_minLeft"
+                  d="M 170,148
+                     C 152,158 135,178 132,205
+                     C 128,235 130,270 144,305
+                     C 152,325 162,348 168,360
+                     C 170,362 173,360 172,352
+                     C 166,335 152,305 148,275
+                     C 144,240 148,208 156,182
+                     C 162,166 167,156 170,148 Z"
+                  fill="url(#vulvaMinGradLeft)" filter="url(#naturalShadow)"/>
+                <!-- Left Minora Edge Wavy Highlight / Texture Lines -->
+                <path d="M 170,148 C 152,158 135,178 132,205 C 128,235 130,270 144,305 C 152,325 162,348 168,360"
+                  fill="none" stroke="rgba(160,95,75,0.5)" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M 158,190 C 145,215 140,250 148,285"
+                  fill="none" stroke="rgba(80,35,22,0.6)" stroke-width="1" stroke-linecap="round"/>
+
+                <!-- Right Minora (Slightly smaller, hugging right inner wall asymmetrically) -->
+                <path id="vv_minRight"
+                  d="M 170,148
+                     C 186,160 200,182 202,210
+                     C 205,240 202,275 190,308
+                     C 182,328 174,348 171,358
+                     C 170,360 168,358 169,350
+                     C 175,335 186,305 188,275
+                     C 192,240 188,208 180,182
+                     C 176,166 172,156 170,148 Z"
+                  fill="url(#vulvaMinGradRight)" filter="url(#naturalShadow)"/>
+                <!-- Right Minora Edge Highlight / Texture -->
+                <path d="M 170,148 C 186,160 200,182 202,210 C 205,240 202,275 190,308 C 182,328 174,348 171,358"
+                  fill="none" stroke="rgba(165,100,80,0.45)" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M 180,190 Q 192,230 186,280"
+                  fill="none" stroke="rgba(85,38,24,0.5)" stroke-width="1" stroke-linecap="round"/>
+
+                <!-- Central Sagittal Crease (Slit line between minora folds) -->
+                <path d="M 170,148 Q 169,250 170,360"
+                  fill="none" stroke="rgba(35,10,5,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+
+                <!-- Posterior Commissure & Perineum (Bottom Junction) -->
+                <path d="M 158,355 C 164,368 170,375 170,378 C 170,375 176,368 182,355"
+                  fill="none" stroke="rgba(120,60,35,0.6)" stroke-width="2" stroke-linecap="round"/>
+
+                <!-- ANNOTATIONS & MEASUREMENT OVERLAYS (Clean, Elegant Badges) -->
+                
+                <!-- W_intro Badge (Bottom Right) -->
+                <g transform="translate(240, 260)">
+                  <rect x="0" y="0" width="90" height="34" rx="6" fill="rgba(15,8,25,0.85)" stroke="rgba(180,77,255,0.4)" stroke-width="1"/>
+                  <text x="45" y="14" fill="rgba(210,140,255,0.9)" font-size="9" font-family="Outfit" font-weight="700" text-anchor="middle">INTROITUS</text>
+                  <text id="vv_introText" x="45" y="26" fill="var(--purple)" font-size="9" font-family="Outfit" font-weight="800" text-anchor="middle">W_intro</text>
+                  <line x1="0" y1="17" x2="-45" y2="17" stroke="rgba(180,77,255,0.5)" stroke-width="1" stroke-dasharray="3 2"/>
+                </g>
+
+                <!-- T_mons Badge (Top Left) -->
+                <g transform="translate(10, 15)">
+                  <rect x="0" y="0" width="95" height="32" rx="6" fill="rgba(15,8,25,0.85)" stroke="rgba(255,198,0,0.4)" stroke-width="1"/>
+                  <text id="vv_monsText" x="47.5" y="20" fill="var(--gold)" font-size="10" font-family="Outfit" font-weight="800" text-anchor="middle">T_mons</text>
+                </g>
+
+              </svg>
+            </div>
+
+            <!-- RIGHT: Cross-section Depth View -->
+            <div style="background:rgba(0,0,0,0.3); border-radius:12px; padding:12px;">
+              <div style="font-size:0.75rem; color:var(--cyan); font-weight:700; font-family:Outfit; margin-bottom:8px; letter-spacing:0.5px;">📐 SAGITTAL — Penetration Depth</div>
+              <svg id="svgPair" viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
+                <defs>
+                  <!-- Background subtle grid -->
+                  <pattern id="gridP" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.7"/>
+                  </pattern>
+
+                  <!-- Realistic Human Male Penile Shaft (Flesh Skin Tone) -->
+                  <linearGradient id="penisShaftGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%"   stop-color="#e09475"/>
+                    <stop offset="25%"  stop-color="#d68462"/>
+                    <stop offset="65%"  stop-color="#b36142"/>
+                    <stop offset="100%" stop-color="#803b22"/>
+                  </linearGradient>
+
+                  <!-- Glans Penis Tissue (Warm Natural Rose Flesh) -->
+                  <radialGradient id="glansGrad" cx="35%" cy="35%" r="65%">
+                    <stop offset="0%"   stop-color="#e8788e"/>
+                    <stop offset="55%"  stop-color="#c94b63"/>
+                    <stop offset="100%" stop-color="#8a2035"/>
+                  </radialGradient>
+
+                  <!-- Vaginal Canal Mucosa (Deep Moist Rose-Pink Mucosa) -->
+                  <linearGradient id="vagCanalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%"   stop-color="#cc5a70" stop-opacity="0.9"/>
+                    <stop offset="40%"  stop-color="#aa3d52" stop-opacity="0.85"/>
+                    <stop offset="80%"  stop-color="#7a1e30" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#4d0e1c" stop-opacity="0.95"/>
+                  </linearGradient>
+
+                  <!-- Pelvic Adipose / Muscle Tissue Background -->
+                  <radialGradient id="pelvicTissueGrad" cx="50%" cy="50%" r="60%">
+                    <stop offset="0%"   stop-color="#d99171" stop-opacity="0.45"/>
+                    <stop offset="70%"  stop-color="#b56c4c" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#7a3d24" stop-opacity="0.15"/>
+                  </radialGradient>
+
+                  <!-- Cervix Mucosal Tissue -->
+                  <radialGradient id="cervixGrad" cx="35%" cy="40%" r="65%">
+                    <stop offset="0%"   stop-color="#df6b7f"/>
+                    <stop offset="60%"  stop-color="#a3273a"/>
+                    <stop offset="100%" stop-color="#5c0b18"/>
+                  </radialGradient>
+
+                  <!-- Mons Pubis Fat Cushion Gradient -->
+                  <linearGradient id="monsGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stop-color="#d69270" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#b87250" stop-opacity="0.25"/>
+                  </linearGradient>
+
+                  <!-- Penile Specular Top Gleam -->
+                  <linearGradient id="penisHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%"   stop-color="rgba(255,230,220,0.4)"/>
+                    <stop offset="50%"  stop-color="rgba(255,230,220,0)"/>
+                  </linearGradient>
+
+                  <!-- Realistic Drop Shadows -->
+                  <filter id="anatomicalShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="2" dy="3" stdDeviation="3.5" flood-color="rgba(25,5,0,0.6)"/>
+                  </filter>
+
+                  <marker id="arrowC" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                    <path d="M0,0 L0,7 L7,3.5 Z" fill="var(--cyan)" opacity="0.9"/>
+                  </marker>
+                  <marker id="arrowP" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                    <path d="M0,0 L0,7 L7,3.5 Z" fill="var(--purple)" opacity="0.9"/>
+                  </marker>
+                  <marker id="arrowCL" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto-start-reverse">
+                    <path d="M0,0 L0,7 L7,3.5 Z" fill="var(--cyan)" opacity="0.9"/>
+                  </marker>
+                </defs>
+
+                <rect width="100%" height="100%" fill="url(#gridP)" rx="8"/>
+
+                <!-- ===== FEMALE PELVIC CROSS-SECTION BODY CONTOUR ===== -->
+                <!-- Female Pelvis Skin / Fat Tissue Outline -->
+                <path d="M 170,30 C 230,30 330,40 380,80 C 410,120 410,220 380,260 C 330,300 230,310 170,310 C 150,260 150,80 170,30 Z"
+                  fill="url(#pelvicTissueGrad)"/>
+
+                <!-- Vaginal Canal Outer Muscle Wall (Myometrium / Fibromuscular Wall) -->
+                <path id="svgP_vagWallTop"
+                  d="M 175,138 C 220,132 265,130 300,132 C 325,133 345,142 358,154"
+                  fill="none" stroke="#ba5467" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+                <path id="svgP_vagWallBot"
+                  d="M 175,202 C 220,208 265,210 300,208 C 325,207 345,198 358,186"
+                  fill="none" stroke="#ba5467" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+
+                <!-- Vaginal Canal Main Mucosal Lumen Fill -->
+                <path id="svgP_vagina"
+                  d="M 175,140 C 220,135 265,133 300,135 C 328,137 350,148 360,170 C 350,192 328,203 300,205 C 265,207 220,205 175,200 Z"
+                  fill="url(#vagCanalGrad)"/>
+
+                <!-- Mucosal Fold Lines (Rugae Vaginae in Side View) -->
+                <g opacity="0.32" stroke="#e08092" stroke-width="0.8" fill="none">
+                  <path d="M 200,145 C 205,158 205,162 200,175"/>
+                  <path d="M 230,143 C 235,157 235,163 230,177"/>
+                  <path d="M 260,142 C 265,156 265,164 260,178"/>
+                  <path d="M 290,143 C 295,156 295,163 290,177"/>
+                </g>
+
+                <!-- Cervix Dome & Vaginal Fornices (Anterior & Posterior Vaults) -->
+                <ellipse id="svgP_cervix" cx="358" cy="170" rx="18" ry="24"
+                  fill="url(#cervixGrad)" stroke="rgba(230,120,140,0.6)" stroke-width="1.2" filter="url(#anatomicalShadow)"/>
+                <!-- Cervical Os Slit -->
+                <ellipse cx="356" cy="170" rx="3.5" ry="5"
+                  fill="rgba(35,5,10,0.95)" stroke="rgba(220,90,110,0.5)" stroke-width="0.8"/>
+                <text id="svgP_cervixLabel" x="382" y="167" fill="#e08092" font-size="9" font-family="Outfit" font-weight="700">Cervix</text>
+
+                <!-- Mons Pubis Cushion ($T_{mons}$) -->
+                <rect id="svgP_mons" x="140" y="105" width="35" height="130" rx="17"
+                  fill="url(#monsGrad)" stroke="#ffc107" stroke-dasharray="4 3" stroke-width="1.3" opacity="0.75"/>
+                <text x="120" y="170" fill="#ffd54f" font-size="8" font-family="Outfit" font-weight="700"
+                  transform="rotate(-90,120,170)">T_mons</text>
+
+                <!-- Labia Entry Folds in Side View (Labia Majora & Minora hugging shaft) -->
+                <path id="svgP_labiaExtTop"
+                  d="M 175,140 C 162,128 148,122 138,126 C 134,136 142,148 155,148 Z"
+                  fill="#bd7352" stroke="rgba(120,50,25,0.4)" stroke-width="0.8" opacity="0.95"/>
+                <path id="svgP_labiaExtBot"
+                  d="M 175,200 C 162,212 148,218 138,214 C 134,204 142,192 155,192 Z"
+                  fill="#bd7352" stroke="rgba(120,50,25,0.4)" stroke-width="0.8" opacity="0.95"/>
+
+                <!-- ===== MALE SAGITTAL ANATOMY ===== -->
+
+                <!-- Penile Corpus Cavernosum Underlayer Shadow -->
+                <rect id="svgP_corpusShadow" x="35" y="162" width="145" height="18" rx="9"
+                  fill="rgba(50,15,10,0.6)"/>
+
+                <!-- Main Penile Shaft (Realistic Male Skin Tone) -->
+                <rect id="svgP_erect" x="35" y="140" width="145" height="60" rx="30"
+                  fill="url(#penisShaftGrad)" stroke="rgba(180,90,60,0.4)" stroke-width="1.2"
+                  filter="url(#anatomicalShadow)"/>
+
+                <!-- Penile Shaft Top Gleam / Highlight -->
+                <rect id="svgP_shaftHighlight" x="44" y="142" width="125" height="18" rx="9"
+                  fill="url(#penisHighlight)" opacity="0.65"/>
+
+                <!-- Dorsal Vein & Corpus Spongiosum Texture Lines -->
+                <path id="svgP_spongiosum"
+                  d="M 44,185 L 165,185"
+                  fill="none" stroke="rgba(180,65,45,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Dorsal vein line on top -->
+                <path d="M 44,147 L 165,147"
+                  fill="none" stroke="rgba(160,50,70,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+
+                <!-- Glans Penis with Corona Glandis Ridge (Realistic Flesh Shape) -->
+                <path id="svgP_glans"
+                  d="M 180,138
+                     C 186,134 195,134 200,140
+                     C 212,148 222,158 222,170
+                     C 222,182 212,192 200,200
+                     C 195,206 186,206 180,202
+                     C 187,192 192,182 192,170
+                     C 192,158 187,148 180,138 Z"
+                  fill="url(#glansGrad)" stroke="rgba(200,80,95,0.5)" stroke-width="1.2" filter="url(#anatomicalShadow)"/>
+
+                <!-- Corona Rim Highlight -->
+                <path d="M 180,138 C 187,148 192,158 192,170 C 192,182 187,192 180,202"
+                  fill="none" stroke="rgba(255,210,220,0.4)" stroke-width="1.5"/>
+
+                <!-- Urethral Meatus Slit at Tip -->
+                <ellipse cx="221" cy="170" rx="1.5" ry="3.5"
+                  fill="rgba(50,10,15,0.85)"/>
+                <!-- Specular Gleam on Glans -->
+                <ellipse cx="204" cy="155" rx="5" ry="4"
+                  fill="rgba(255,230,235,0.35)" transform="rotate(-20,204,155)"/>
+
+                <!-- Fat Pad at Male Base ($T_{fat}$) -->
+                <rect id="svgP_fatPad" x="14" y="140" width="21" height="60" rx="5"
+                  fill="rgba(255,198,0,0.12)" stroke="#ffc600" stroke-dasharray="3 3" stroke-width="1"/>
+                <text x="18" y="178" fill="#ffc600" font-size="7" font-family="Outfit" font-weight="700"
+                  transform="rotate(-90,18,178)">T_fat</text>
+
+                <!-- Impact Zone Highlight -->
+                <rect id="svgP_impactZone" x="222" y="140" width="0" height="60" rx="3"
+                  fill="rgba(255,71,87,0.2)"/>
+                <line id="svgP_impactLine" x1="222" y1="120" x2="342" y2="120"
+                  stroke="#ff4757" stroke-width="1.6" stroke-dasharray="6 4" opacity="0.9"/>
+                <polygon id="svgP_impactArrow" points="342,114 354,120 342,126"
+                  fill="#ff4757" opacity="0.9"/>
+                <text id="svgP_impactText" x="282" y="111"
+                  fill="#ff6b7a" font-size="10" font-weight="700" text-anchor="middle" font-family="Outfit">Impact Zone</text>
+
+                <!-- L_erect Dimension Line -->
+                <line id="svgP_lenLine" x1="35" y1="218" x2="222" y2="218"
+                  stroke="var(--cyan)" stroke-width="1.4"
+                  marker-start="url(#arrowCL)" marker-end="url(#arrowC)"/>
+                <text id="svgP_lenText" x="128" y="232"
+                  fill="var(--cyan)" font-size="10" font-weight="700" text-anchor="middle" font-family="Outfit">L_erect</text>
+
+                <!-- D_exp Dimension Line -->
+                <line id="svgP_depthLine" x1="175" y1="242" x2="378" y2="242"
+                  stroke="var(--purple)" stroke-width="1.4"
+                  marker-start="url(#arrowCL)" marker-end="url(#arrowP)"/>
+                <text id="svgP_depthText" x="276" y="258"
+                  fill="var(--purple)" font-size="10" font-weight="700" text-anchor="middle" font-family="Outfit">D_exp</text>
+
+              </svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /panelPair -->
+
+  <footer>
+    <p>🔬 Anatomical & Biomechanical Compatibility Calculator · Hybrid 3-in-1 Mode · Port 3100</p>
+  </footer>
+
+</div><!-- /container -->
+
+
+<!-- ============================================================
+     JAVASCRIPT ENGINE
+============================================================ -->
+<script>
+  // Global Urology Region Switcher & Handler
+  window.currentUrologyRegion = localStorage.getItem('vagina_penis_calc_region') || 'global';
+
+  window.setUrologyRegion = function(r, btn) {
+    if (!['thai', 'asia', 'global'].includes(r)) r = 'global';
+    window.currentUrologyRegion = r;
+    document.querySelectorAll('.urology-region-selector .btn-preset').forEach(b => {
+      if (b.getAttribute('data-region') === r || b === btn) {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+      }
+    });
+    try { localStorage.setItem('vagina_penis_calc_region', r); } catch(e){}
+    if (typeof calcMale === 'function') calcMale();
+  };
+  window.switchUrologyRegion = window.setUrologyRegion;
+  // ============================================================
+  // THEME (Persistent)
+  // ============================================================
+  let isDark = true;
+
+  function setTheme(theme) {
+    isDark = (theme === 'dark');
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    const iconEl = document.getElementById('themeIcon');
+    const textEl = document.getElementById('themeText');
+    if (iconEl) iconEl.innerText = isDark ? '🌙' : '☀️';
+    if (textEl) textEl.innerText = isDark ? 'Light' : 'Dark';
+    try {
+      localStorage.setItem('vagina_penis_calc_theme', isDark ? 'dark' : 'light');
+    } catch(e) {}
+  }
+
+  function toggleTheme() {
+    setTheme(isDark ? 'light' : 'dark');
+  }
+
+  // Early theme initialization to prevent flash
+  try {
+    const savedTheme = localStorage.getItem('vagina_penis_calc_theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      setTheme(savedTheme);
+    }
+  } catch(e) {}
+
+  // ============================================================
+  // UNIT
+  // ============================================================
+  let currentUnit = 'mm';
+
+  function switchUnit(u) {
+    if (!['mm', 'cm', 'in'].includes(u)) u = 'mm';
+    currentUnit = u;
+    document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('unit' + u.charAt(0).toUpperCase() + u.slice(1));
+    if (btn) btn.classList.add('active');
+    try {
+      localStorage.setItem('vagina_penis_calc_unit', u);
+    } catch(e) {}
+    calcMale(); calcFemale(); calcPair();
+  }
+
+  function fmt(mm, dec = 1) {
+    if (currentUnit === 'cm') return (mm / 10).toFixed(dec) + ' cm';
+    if (currentUnit === 'in') return (mm / 25.4).toFixed(dec) + ' in';
+    return parseFloat(mm).toFixed(dec) + ' mm';
+  }
+
+  // ============================================================
+  // STATE — ALL VALUES STORED IN mm
+  // ============================================================
+  let state = {
+    // Male (User's Actual Specs)
+    flaccidLength: 135,
+    flaccidGirth:  127,
+    erectLength:   162,
+    erectGirth:    154,
+    maleFat:       10,
+    // Female
+    vaginalResting:  108,
+    vaginalExpanded: 115,
+    introitusWidth:  5.5,
+    monsFat:         12.7,
+    labiaLeftLen:    43.54,
+    labiaLeftProt:   13.03,
+    labiaRightLen:   33.91,
+    labiaRightProt:  8.08,
+    // Pair-specific (mirrors state by default)
+    pErectLength:   161,
+    pErectGirth:    154,
+    pMaleFat:       10,
+    pVagExpanded:   115,
+    pIntroitus:     5.5,
+    pMons:          12.7,
+    duration:       15,
+    lubrication:    'normal'
+  };
+
+  // ============================================================
+  // PRESETS
+  // ============================================================
+  const presets = {
+    'p1': {
+      flaccidLength:135, flaccidGirth:127, erectLength:161, erectGirth:154, maleFat:15,
+      vaginalResting:108, vaginalExpanded:115, introitusWidth:5.5, monsFat:12.7,
+      labiaLeftLen:43.54, labiaLeftProt:13.03, labiaRightLen:33.91, labiaRightProt:8.08,
+      duration:15, lubrication:'normal'
+    },
+    'p2': {
+      flaccidLength:85, flaccidGirth:85, erectLength:135, erectGirth:115, maleFat:10,
+      vaginalResting:80, vaginalExpanded:100, introitusWidth:10, monsFat:8,
+      labiaLeftLen:25, labiaLeftProt:8, labiaRightLen:22, labiaRightProt:7,
+      duration:10, lubrication:'normal'
+    },
+    'p3': {
+      flaccidLength:60, flaccidGirth:70, erectLength:150, erectGirth:130, maleFat:10,
+      vaginalResting:90, vaginalExpanded:110, introitusWidth:8, monsFat:10,
+      labiaLeftLen:30, labiaLeftProt:10, labiaRightLen:30, labiaRightProt:10,
+      duration:15, lubrication:'normal'
+    },
+    'p4': {
+      flaccidLength:135, flaccidGirth:127, erectLength:162, erectGirth:154, maleFat:10,
+      vaginalResting:90, vaginalExpanded:110, introitusWidth:8, monsFat:10,
+      labiaLeftLen:30, labiaLeftProt:10, labiaRightLen:30, labiaRightProt:10,
+      duration:15, lubrication:'normal'
+    },
+    'eye-do': { flaccidLength:135, flaccidGirth:127, erectLength:161, erectGirth:154, maleFat:15 },
+    'average': { flaccidLength:85, flaccidGirth:85, erectLength:135, erectGirth:115, maleFat:10 },
+    'custom': { flaccidLength:60, flaccidGirth:70, erectLength:150, erectGirth:130, maleFat:10 }
+  };
+
+  function loadPreset(key) {
+    document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+    const idx = {'p1':1, 'p2':2, 'p3':3, 'p4':4, 'eye-do':1, 'average':2, 'custom':3};
+    const btnElem = document.getElementById('btnPreset' + (idx[key]||1));
+    if (btnElem) btnElem.classList.add('active');
+
+    const p = presets[key];
+    Object.assign(state, p);
+    state.pErectLength  = p.erectLength;
+    state.pErectGirth   = p.erectGirth;
+    state.pMaleFat      = p.maleFat;
+    state.pVagExpanded  = p.vaginalExpanded;
+    state.pIntroitus    = p.introitusWidth;
+    state.pMons         = p.monsFat;
+
+    syncAllInputs();
+    calcMale(); calcFemale(); calcPair();
+  }
+
+  function syncAllInputs() {
+    // Male inputs
+    setEl('m_rngFlaccidLength', state.flaccidLength);
+    setEl('m_numFlaccidLength', state.flaccidLength);
+    setEl('m_rngFlaccidGirth',  state.flaccidGirth);
+    setEl('m_numFlaccidGirth',  state.flaccidGirth);
+    setEl('m_rngErectLength',   state.erectLength);
+    setEl('m_numErectLength',   state.erectLength);
+    setEl('m_rngErectGirth',    state.erectGirth);
+    setEl('m_numErectGirth',    state.erectGirth);
+    setEl('m_rngMaleFat',       state.maleFat);
+    setEl('m_numMaleFat',       state.maleFat);
+    const bpelVal = state.erectLength + state.maleFat;
+    setEl('m_rngBPEL', bpelVal);
+    setEl('m_numBPEL', bpelVal);
+
+    // Female inputs
+    setEl('f_rngVagResting',  state.vaginalResting);
+    setEl('f_numVagResting',  state.vaginalResting);
+    setEl('f_rngVagExpanded', state.vaginalExpanded);
+    setEl('f_numVagExpanded', state.vaginalExpanded);
+    setEl('f_rngIntroitus',   state.introitusWidth);
+    setEl('f_numIntroitus',   state.introitusWidth);
+    setEl('f_rngMons',        state.monsFat);
+    setEl('f_numMons',        state.monsFat);
+    setEl('f_numLabiaLL',     state.labiaLeftLen);
+    setEl('f_numLabiaLP',     state.labiaLeftProt);
+    setEl('f_numLabiaRL',     state.labiaRightLen);
+    setEl('f_numLabiaRP',     state.labiaRightProt);
+
+    // Pair inputs (mirrored)
+    setEl('p_rngErectLength',  state.pErectLength);
+    setEl('p_numErectLength',  state.pErectLength);
+    setEl('p_rngErectGirth',   state.pErectGirth);
+    setEl('p_numErectGirth',   state.pErectGirth);
+    setEl('p_rngMaleFat',      state.pMaleFat);
+    setEl('p_numMaleFat',      state.pMaleFat);
+    setEl('p_rngVagExpanded',  state.pVagExpanded);
+    setEl('p_numVagExpanded',  state.pVagExpanded);
+    setEl('p_rngIntroitus',    state.pIntroitus);
+    setEl('p_numIntroitus',    state.pIntroitus);
+    setEl('p_rngMons',         state.pMons);
+    setEl('p_numMons',         state.pMons);
+    setEl('p_rngDuration',     state.duration);
+    setEl('p_numDuration',     state.duration);
+  }
+
+  function setEl(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  }
+
+  // ============================================================
+  // MODE SWITCHER
+  // ============================================================
+  let currentMode = 'male';
+
+    function switchMode(mode) {
+    if (!['male', 'female', 'pair'].includes(mode)) mode = 'male';
+    currentMode = mode;
+    try {
+      localStorage.setItem('vagina_penis_calc_mode', mode);
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, null, '#' + mode);
+      }
+    } catch(e) {}
+
+    const pM = document.getElementById('panelMale');
+    const pF = document.getElementById('panelFemale');
+    const pP = document.getElementById('panelPair');
+
+    if (pM) pM.classList.toggle('active', mode === 'male');
+    if (pF) pF.classList.toggle('active', mode === 'female');
+    if (pP) pP.classList.toggle('active', mode === 'pair');
+
+    const bM = document.getElementById('modeBtnMale');
+    const bF = document.getElementById('modeBtnFemale');
+    const bP = document.getElementById('modeBtnPair');
+
+    if (bM) bM.className = 'mode-btn' + (mode === 'male'   ? ' active-male'   : '');
+    if (bF) bF.className = 'mode-btn' + (mode === 'female' ? ' active-female' : '');
+    if (bP) bP.className = 'mode-btn' + (mode === 'pair'   ? ' active-pair'   : '');
+
+    try {
+      if (mode === 'male')   calcMale();
+      if (mode === 'female') calcFemale();
+      if (mode === 'pair')   { syncPairFromState(); calcPair(); }
+    } catch(err) {
+      console.error('Error during mode calc:', err);
+    }
+  }
+
+  function syncPairFromState() {
+    setEl('p_rngErectLength', state.erectLength);  setEl('p_numErectLength', state.erectLength);
+    setEl('p_rngErectGirth',  state.erectGirth);   setEl('p_numErectGirth',  state.erectGirth);
+    setEl('p_rngMaleFat',     state.maleFat);      setEl('p_numMaleFat',     state.maleFat);
+    setEl('p_rngVagExpanded', state.vaginalExpanded); setEl('p_numVagExpanded', state.vaginalExpanded);
+    setEl('p_rngIntroitus',   state.introitusWidth);  setEl('p_numIntroitus',   state.introitusWidth);
+    setEl('p_rngMons',        state.monsFat);      setEl('p_numMons',        state.monsFat);
+    state.pErectLength = state.erectLength;
+    state.pErectGirth  = state.erectGirth;
+    state.pMaleFat     = state.maleFat;
+    state.pVagExpanded = state.vaginalExpanded;
+    state.pIntroitus   = state.introitusWidth;
+    state.pMons        = state.monsFat;
+    calcPair();
+  }
+
+  // ============================================================
+  // INPUT UPDATE HANDLERS
+  // ============================================================
+  function updateState(param, val) {
+    val = parseFloat(val);
+    if (isNaN(val)) return;
+    state[param] = val;
+
+    // Sync both slider & number for male/female panels
+    const map = {
+      flaccidLength: ['m_rngFlaccidLength','m_numFlaccidLength'],
+      flaccidGirth:  ['m_rngFlaccidGirth', 'm_numFlaccidGirth'],
+      erectLength:   ['m_rngErectLength',  'm_numErectLength'],
+      erectGirth:    ['m_rngErectGirth',   'm_numErectGirth'],
+      maleFat:       ['m_rngMaleFat',      'm_numMaleFat'],
+      vaginalResting: ['f_rngVagResting',  'f_numVagResting'],
+      vaginalExpanded:['f_rngVagExpanded', 'f_numVagExpanded'],
+      introitusWidth: ['f_rngIntroitus',   'f_numIntroitus'],
+      monsFat:        ['f_rngMons',        'f_numMons'],
+    };
+    if (map[param]) {
+      map[param].forEach(id => setEl(id, val));
+    }
+
+    if (param === 'erectLength' || param === 'maleFat') {
+      const bpelVal = state.erectLength + state.maleFat;
+      setEl('m_rngBPEL', bpelVal);
+      setEl('m_numBPEL', bpelVal);
+    }
+
+    calcMale();
+    calcFemale();
+  }
+
+  function updateMaleBPEL(val) {
+    val = parseFloat(val);
+    if (isNaN(val)) return;
+    const erectLen = Math.max(30, val - state.maleFat);
+    state.erectLength = erectLen;
+    setEl('m_rngErectLength', erectLen);
+    setEl('m_numErectLength', erectLen);
+    setEl('m_rngBPEL', val);
+    setEl('m_numBPEL', val);
+    calcMale();
+    calcFemale();
+  }
+
+  function updatePairMale(param, val) {
+    val = parseFloat(val);
+    if (isNaN(val)) return;
+    const pMap = { erectLength:'pErectLength', erectGirth:'pErectGirth', maleFat:'pMaleFat' };
+    state[pMap[param]] = val;
+    const uiMap = {
+      erectLength:['p_rngErectLength','p_numErectLength'],
+      erectGirth: ['p_rngErectGirth', 'p_numErectGirth'],
+      maleFat:    ['p_rngMaleFat',    'p_numMaleFat'],
+    };
+    if (uiMap[param]) uiMap[param].forEach(id => setEl(id, val));
+    calcPair();
+  }
+
+  function updatePairFemale(param, val) {
+    val = parseFloat(val);
+    if (isNaN(val)) return;
+    const pMap = { vaginalExpanded:'pVagExpanded', introitusWidth:'pIntroitus', monsFat:'pMons' };
+    state[pMap[param]] = val;
+    const uiMap = {
+      vaginalExpanded:['p_rngVagExpanded','p_numVagExpanded'],
+      introitusWidth: ['p_rngIntroitus',  'p_numIntroitus'],
+      monsFat:        ['p_rngMons',       'p_numMons'],
+    };
+    if (uiMap[param]) uiMap[param].forEach(id => setEl(id, val));
+    calcPair();
+  }
+
+  function updatePairState(param, val) {
+    val = parseFloat(val);
+    if (isNaN(val)) return;
+    state[param] = val;
+    setEl('p_rngDuration', val); setEl('p_numDuration', val);
+    document.getElementById('p_lblDuration').innerText = val + ' min';
+    calcPair();
+  }
+
+  // ============================================================
+  // CALC MALE
+  // ============================================================
+  function getThaiArchetype(s, bpel, bfi, vE) {
+    if (s.erectGirth >= 150) {
+      return { badge: '🥖 สายปังตอ อวบสะท้านตับ', sub: 'รอบวงใหญ่พิเศษ แน่นเต็มมือ ตับไตไส้พุงมีสะเทือน', color: '#ff2a85' };
+    } else if (s.erectLength >= 170) {
+      return { badge: '🗡️ สายมิดด้าม ทะลุถึงทรวง', sub: 'ความยาวโดดเด่น เข้าลึกมิดด้ามทุกท่วงท่า', color: '#00e5ff' };
+    } else if (s.erectLength >= 160 && s.erectGirth >= 145) {
+      return { badge: '👑 สายสเปกเทพ พิมพ์นิยม', sub: 'ยาวและอวบสัดส่วนทองคำ ขวัญใจมหาชน Top 5%', color: '#ffd700' };
+    } else if (bfi < 1.8) {
+      return { badge: '🥩 สายเนื้อแน่น โชว์ตัวเต็มตา', sub: 'ควยเนื้ออ่อนตัวก็อวบเต่ง แข็งตัวยิ่งอวบอิ่มแน่นเปรี๊ยะ', color: '#ff758c' };
+    } else if (bfi > 2.5) {
+      return { badge: '🎈 สายซ่อนแอบ เซอร์ไพรส์ตาตั้ง', sub: 'ควยเลือดอ่อนตัวดูชิลๆ พอสั่งขยายพองโตขึ้น 3 เท่า', color: '#a855f7' };
+    } else if (s.erectLength < 135) {
+      return { badge: '☕ สายมินิมอล พกพาสะดวก', sub: 'กะทัดรัดพกพาง่าย เข้าถึงจุดฟินรวดเร็วสบายใจ', color: '#4ade80' };
+    } else {
+      return { badge: '⚖️ สายพอดีคำ ละมุนใจคู่รัก', sub: 'สเปกมาตรฐานกำลังดี ผ่อนคลายสบายคู่รัก รักยาวนานไม่เจ็บ', color: '#38bdf8' };
+    }
+  }
+
+  
+  function openCitationsModal() {
+    let el = document.getElementById('citationsModalOverlay');
+    if (el) el.style.display = 'flex';
+  }
+  function closeCitationsModal() {
+    let el = document.getElementById('citationsModalOverlay');
+    if (el) el.style.display = 'none';
+  }
+  
+  function openPassportModal() {
+    let el = document.getElementById('passportModalOverlay');
+    if (el) {
+      el.style.display = 'flex';
+      updatePassportData();
+    }
+  }
+  function closePassportModal() {
+    let el = document.getElementById('passportModalOverlay');
+    if (el) {
+      el.style.display = 'none';
+    }
+  }
+  function updatePassportData() {
+    const s = state;
+    const bpel = s.erectLength + s.maleFat;
+    const bfpi = (s.erectLength * s.erectGirth) / (s.flaccidLength * s.flaccidGirth);
+    const vE = (Math.PI * Math.pow(s.erectGirth / (2 * Math.PI), 2) * s.erectLength) / 1000;
+    const arch = getThaiArchetype(s, bpel, bfpi, vE);
+    
+    const rawCW = s.erectGirth / 2.3;
+    const sizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
+    let best = sizes[0];
+    sizes.forEach(sz => { if (Math.abs(sz - rawCW) < Math.abs(best - rawCW)) best = sz; });
+
+    // Update Modal Elements matching exact HTML IDs
+    if (document.getElementById('passArchetypeBadge')) {
+      document.getElementById('passArchetypeBadge').innerText = arch.badge;
+      document.getElementById('passArchetypeBadge').style.color = arch.color;
+    }
+    if (document.getElementById('passArchetypeSub')) {
+      document.getElementById('passArchetypeSub').innerText = arch.sub;
+    }
+    if (document.getElementById('passCondom')) {
+      document.getElementById('passCondom').innerText = '🛡️ ' + best + ' มม.';
+    }
+    if (document.getElementById('passBfi')) {
+      document.getElementById('passBfi').innerText = bfpi < 1.8 ? '🥩 ควยเนื้อ' : (bfpi > 2.5 ? '🩸 ควยเลือด' : '🟣 กึ่งเลือดกึ่งเนื้อ (Hybrid)');
+    }
+    if (document.getElementById('passGirth')) {
+      document.getElementById('passGirth').innerText = (s.erectGirth / 10).toFixed(1) + ' cm';
+    }
+    if (document.getElementById('passLen')) {
+      document.getElementById('passLen').innerText = (s.erectLength / 10).toFixed(1) + ' cm';
+    }
+  }
+
+  function downloadPassportCard() {
+    const card = document.getElementById('passportCard');
+    if (!card) return;
+    
+    // Create HTML Canvas snapshot
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+    
+    // Background gradient
+    const grad = ctx.createLinearGradient(0, 0, 600, 400);
+    grad.addColorStop(0, '#180e2b');
+    grad.addColorStop(1, '#0d1b2a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 600, 400);
+    
+    // Border
+    ctx.strokeStyle = '#ff2a85';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(10, 10, 580, 380);
+    
+    // Header
+    ctx.fillStyle = '#ff2a85';
+    ctx.fillRect(30, 30, 200, 26);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('OFFICIAL SPEC PASSPORT', 40, 48);
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('พี่โด Master Specs', 30, 85);
+    
+    ctx.fillStyle = '#ffd700';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('★ TOP SPEC VERIFIED ★', 380, 50);
+    
+    // Photo or Placeholder
+    const photoImg = document.getElementById('passportPhotoImg');
+    if (photoImg && photoImg.style.display !== 'none' && photoImg.src) {
+      try {
+        ctx.drawImage(photoImg, 30, 110, 120, 150);
+      } catch(e) {
+        ctx.fillStyle = '#222';
+        ctx.fillRect(30, 110, 120, 150);
+      }
+    } else {
+      ctx.fillStyle = '#222';
+      ctx.fillRect(30, 110, 120, 150);
+      ctx.fillStyle = '#ff2a85';
+      ctx.font = '30px sans-serif';
+      ctx.fillText('📷', 75, 195);
+    }
+    
+    // Details
+    const s = state;
+    const rawCW = s.erectGirth / 2.3;
+    const sizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
+    let best = sizes[0];
+    sizes.forEach(sz => { if (Math.abs(sz - rawCW) < Math.abs(best - rawCW)) best = sz; });
+    const bpel = s.erectLength + s.maleFat;
+    const bfpi = (s.erectLength * s.erectGirth) / (s.flaccidLength * s.flaccidGirth);
+    const arch = getThaiArchetype(s, bpel, bfpi, 0);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('👑 ฉายาตัวตนสรีระ:', 170, 130);
+    
+    ctx.fillStyle = '#ffd700';
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillText(arch.badge, 170, 158);
+    
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '16px sans-serif';
+    ctx.fillText('📏 ขนาดสรีระ: ' + (s.erectLength/10).toFixed(1) + ' x ' + (s.erectGirth/10).toFixed(1) + ' ซม.', 170, 195);
+    ctx.fillText('🥩 ประเภท: ' + (bfpi < 1.8 ? 'ควยเนื้อ (Flesh Shower)' : 'ควยเลือด (Blood Grower)'), 170, 225);
+    ctx.fillText('🛡️ ไซส์ถุงยางที่แนะนำ: ' + best + ' มม.', 170, 255);
+    
+    // Footer
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.beginPath(); ctx.moveTo(30, 290); ctx.lineTo(570, 290); ctx.stroke();
+    
+    ctx.fillStyle = '#00e5ff';
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillText('คำนวณและสแกนวัดสเปกของคุณได้ที่: http://localhost:3100/vagina_penis_calculator.html', 30, 330);
+    
+    // Trigger download
+    const link = document.createElement('a');
+    link.download = 'penis_spec_passport.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  
+  function toggleCitationTooltip(event) {
+    if (event) event.stopPropagation();
+    openCitationsModal();
+  }
+  function openCitationsModal() {
+    let el = document.getElementById('citationsModalOverlay');
+    if (el) el.style.display = 'flex';
+  }
+  function closeCitationsModal() {
+    let el = document.getElementById('citationsModalOverlay');
+    if (el) el.style.display = 'none';
+  }
+
+  
+  function setT(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.innerText = val;
+  }
+  function setH(id, html) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  }
+  function setVal(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  }
+
+  
+  // Photo Lightbox Modal Functions
+  function openPhotoModal(imgSrc) {
+    let overlay = document.getElementById('photoModalOverlay');
+    if (overlay) {
+      overlay.style.display = 'flex';
+      if (imgSrc) switchPhotoTab(imgSrc);
+    }
+  }
+  function closePhotoModal() {
+    let overlay = document.getElementById('photoModalOverlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+  function switchPhotoTab(imgSrc) {
+    let modalImg = document.getElementById('photoModalImg');
+    if (modalImg) modalImg.src = imgSrc;
+    let btnBio = document.getElementById('btnPhotoTabBio');
+    let btnInt = document.getElementById('btnPhotoTabInt');
+    if (btnBio && btnInt) {
+      btnBio.className = 'btn-preset' + (imgSrc.includes('BIO') ? ' active' : '');
+      btnInt.className = 'btn-preset' + (imgSrc.includes('INT') ? ' active' : '');
+    }
+  }
+
+  // Citations Modal Functions
+  function toggleCitationTooltip(event) {
+    if (event) event.stopPropagation();
+    openCitationsModal();
+  }
+  function openCitationsModal() {
+    let overlay = document.getElementById('citationsModalOverlay');
+    if (overlay) overlay.style.display = 'flex';
+  }
+  function closeCitationsModal() {
+    let overlay = document.getElementById('citationsModalOverlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+
+  function calcMale() {
+    const s = state;
+    document.getElementById('m_lblFlaccidLength').innerText = fmt(s.flaccidLength);
+    document.getElementById('m_lblFlaccidGirth').innerText  = fmt(s.flaccidGirth);
+    document.getElementById('m_lblErectLength').innerText   = fmt(s.erectLength);
+    document.getElementById('m_lblErectGirth').innerText    = fmt(s.erectGirth);
+    document.getElementById('m_lblMaleFat').innerText       = fmt(s.maleFat);
+
+    // BFPI
+    const bfpi = (s.erectLength * s.erectGirth) / (s.flaccidLength * s.flaccidGirth);
+    document.getElementById('m_valBFPI').innerText = bfpi.toFixed(2);
+
+    const badge = document.getElementById('m_badgeType');
+    const gauge = document.getElementById('m_gaugeBFPI');
+    if (bfpi >= 2.5) {
+      badge.className = 'badge badge-blood';
+      badge.innerText = '🩸 ควยเลือด (Blood / Grower)';
+      gauge.style.cssText = 'width:90%; background:linear-gradient(90deg,#d32f2f,#ff4757)';
+    } else if (bfpi >= 1.8) {
+      badge.className = 'badge badge-hybrid';
+      badge.innerText = '🟣 กึ่งเลือดกึ่งเนื้อ (Hybrid)';
+      gauge.style.cssText = 'width:60%; background:linear-gradient(90deg,#7b1fa2,#b44dff)';
+    } else {
+      badge.className = 'badge badge-flesh';
+      badge.innerText = '🥩 ควยเนื้อ (Flesh / Shower)';
+      gauge.style.cssText = 'width:28%; background:linear-gradient(90deg,#2e7d32,#43a047)';
+    }
+
+    // Ratios
+    const dL = ((s.erectLength - s.flaccidLength) / s.flaccidLength) * 100;
+    const dG = ((s.erectGirth  - s.flaccidGirth)  / s.flaccidGirth ) * 100;
+    document.getElementById('m_valDeltaL').innerText = '+' + dL.toFixed(1) + '%';
+    document.getElementById('m_subDeltaL').innerText = `อ่อน ${fmt(s.flaccidLength)} → แข็ง ${fmt(s.erectLength)}`;
+    document.getElementById('m_valDeltaG').innerText = '+' + dG.toFixed(1) + '%';
+    document.getElementById('m_subDeltaG').innerText = `อ่อน ${fmt(s.flaccidGirth)} → แข็ง ${fmt(s.erectGirth)}`;
+
+    // Volume
+    const rF = s.flaccidGirth / (2 * Math.PI), rE = s.erectGirth / (2 * Math.PI);
+    const vF = Math.PI * rF * rF * s.flaccidLength / 1000;
+    const vE = Math.PI * rE * rE * s.erectLength   / 1000;
+    const dV = vE - vF;
+    document.getElementById('m_valDeltaV').innerText = '+' + dV.toFixed(1) + ' cc';
+    document.getElementById('m_subDeltaV').innerText  = 'ขยายตัว ' + (vE/vF).toFixed(2) + 'x';
+
+    const bpel = s.erectLength + s.maleFat;
+    document.getElementById('m_valBPEL').innerText = fmt(bpel);
+    if (document.getElementById('m_lblBPELInput')) {
+      document.getElementById('m_lblBPELInput').innerText = fmt(bpel);
+    }
+
+        // Regional Urology Norms (Mean & SD in mm)
+    // Sources: Thai Urology Association, Asian Urological Association, Veale et al. 2015
+    const urologyNorms = {
+      thai:   { name: 'ประชากรไทย',   lenMean: 124.5, lenSD: 13.2, girthMean: 111.0, girthSD: 9.8 },
+      asia:   { name: 'ประชากรเอเชีย', lenMean: 126.8, lenSD: 14.5, girthMean: 113.2, girthSD: 10.2 },
+      global: { name: 'ประชากรโลก',   lenMean: 131.2, lenSD: 16.6, girthMean: 116.6, girthSD: 11.0 }
+    };
+
+    function getPercentile(x, mean, sd) {
+      const z = (x - mean) / sd;
+      const t = 1 / (1 + 0.2316419 * Math.abs(z));
+      const d = 0.3989423 * Math.exp(-z * z / 2);
+      let p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+      if (z > 0) p = 1 - p;
+      return Math.min(99.99, Math.max(0.01, p * 100));
+    }
+
+    const regKey = window.currentUrologyRegion || 'global';
+    const norm = urologyNorms[regKey] || urologyNorms.global;
+    const pLen = getPercentile(s.erectLength, norm.lenMean, norm.lenSD);
+    const pGirth = getPercentile(s.erectGirth, norm.girthMean, norm.girthSD);
+
+    if (document.getElementById('m_valLenRank')) {
+      const topLen = 100 - pLen;
+      const topText = topLen < 0.1 ? '0.01' : topLen.toFixed(1);
+      const pText = pLen.toFixed(1);
+      document.getElementById('m_valLenRank').innerText = `Top ${topText}%`;
+      document.getElementById('m_subLenRank').innerText = `ยาวกว่า ${pText}% ของ${norm.name} (BPEL ${fmt(bpel)})`;
+    }
+    if (document.getElementById('m_valGirthRank')) {
+      const topGirth = 100 - pGirth;
+      const topText = topGirth <= 10 ? topGirth.toFixed(1) : topGirth.toFixed(0);
+      const pText = pGirth.toFixed(0);
+      document.getElementById('m_valGirthRank').innerText = `Top ${topText}%`;
+      const diffGirth = s.erectGirth - norm.girthMean;
+      const diffText = diffGirth >= 0 ? `+${diffGirth.toFixed(1)} มม.` : `${diffGirth.toFixed(1)} มม.`;
+      document.getElementById('m_subGirthRank').innerText = `ใหญ่กว่า ${pText}% ของ${norm.name} (${diffText})`;
+    }
+    if (document.getElementById('m_valFatPercent')) {
+      const fatPct = (s.maleFat / bpel) * 100;
+      document.getElementById('m_valFatPercent').innerText = fatPct.toFixed(1) + '%';
+      document.getElementById('m_subFatPercent').innerText = `ซ่อนใต้ไขมัน ${fmt(s.maleFat)}`;
+    }
+
+    // Condom Fit Dynamic Calculation & Tooltip / Breakdown Updates
+    const rawCW = s.erectGirth / 2.3;
+    const sizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
+    let best = sizes[0];
+    sizes.forEach(sz => { if (Math.abs(sz - rawCW) < Math.abs(best - rawCW)) best = sz; });
+    document.getElementById('m_valCondom').innerText = best + ' มม.';
+    document.getElementById('m_subCondom').innerText = 'สูตร: ' + rawCW.toFixed(1) + ' มม.';
+
+    if (document.getElementById('m_tooltipStep1')) {
+      document.getElementById('m_tooltipStep1').innerText = `${fmt(s.erectGirth)} ÷ 2.3 = ${rawCW.toFixed(1)} มม.`;
+    }
+    if (document.getElementById('m_tooltipStep2')) {
+      document.getElementById('m_tooltipStep2').innerText = `เลือกไซส์: ${best} มม. (ใกล้เคียงที่สุด)`;
+    }
+    if (document.getElementById('m_detailCalcStep1')) {
+      document.getElementById('m_detailCalcStep1').innerHTML = `🔹 <strong>ขั้นที่ 1:</strong> รอบวง ${fmt(s.erectGirth)} ÷ 2.3 = <strong style="color:var(--gold);">${rawCW.toFixed(1)} มม.</strong>`;
+    }
+    if (document.getElementById('m_detailCalcStep2')) {
+      document.getElementById('m_detailCalcStep2').innerHTML = `🔹 <strong>ขั้นที่ 2:</strong> เปรียบเทียบกับไซส์มาตรฐาน [49, 52, 54, 56, 58, 60, 64, 69, 72 มม.] ➔ แนะนำ <strong style="color:var(--cyan);">${best} มม.</strong> (ฟิตกำลังดี ไม่หลุดง่าย)`;
+    }
+
+    const dE = s.erectGirth / Math.PI;
+    document.getElementById('m_valDiameter').innerText = fmt(dE);
+    document.getElementById('m_valVolume').innerText   = vE.toFixed(1) + ' cc';
+
+    // Thai Fun Archetype Badge Update
+    const arch = getThaiArchetype(s, bpel, bfpi, vE);
+    if (document.getElementById('m_valThaiArchetype')) {
+      document.getElementById('m_valThaiArchetype').innerText = arch.badge;
+      document.getElementById('m_valThaiArchetype').style.color = arch.color;
+    }
+    if (document.getElementById('m_subThaiArchetype')) {
+      document.getElementById('m_subThaiArchetype').innerText = arch.sub;
+    }
+
+    // SVG Male
+    updateSVGMale(s, dE);
+  }
+
+  function updateSVGMale(s, dE) {
+    const scale = 1.6;
+    const baseX = 70, centerY = 145;
+    const eW = Math.min(s.erectLength * scale, 450);
+    const eH = Math.max(32, dE * scale * 0.7);
+    const fW = Math.min(s.flaccidLength * scale, 450);
+    const fH = Math.max(22, (s.flaccidGirth / Math.PI) * scale * 0.7);
+
+    const neckX    = baseX + eW - 6;                  // Coronal sulcus neck indentation
+    const glansX   = baseX + eW;                      // Corona ridge base
+    const coronaFlare = eH * 0.16;                    // Bold Corona Rim Overhang (User Preferred Shape)
+    const glansLen = Math.max(40, eH * 1.15);         // Full acorn dome length
+    const glansTip = glansX + glansLen;
+
+    const shaftTopY  = centerY - eH/2;
+    const shaftBotY  = centerY + eH/2;
+    const coronaTopY = shaftTopY - coronaFlare;
+    const coronaBotY = shaftBotY + coronaFlare;
+
+    // Organic Erect Shaft Path
+    if (document.getElementById('svgM_erect')) {
+      document.getElementById('svgM_erect').setAttribute('d',
+        `M ${baseX},${shaftTopY}
+         C ${baseX + eW*0.4},${shaftTopY - 1} ${neckX - 10},${shaftTopY + 1} ${neckX},${shaftTopY + 3}
+         C ${neckX + 4},${shaftTopY + 6} ${neckX + 4},${shaftBotY - 6} ${neckX},${shaftBotY - 3}
+         C ${neckX - 10},${shaftBotY - 1} ${baseX + eW*0.4},${shaftBotY + 1} ${baseX},${shaftBotY}
+         C ${baseX - 8},${shaftBotY - 10} ${baseX - 8},${shaftTopY + 10} ${baseX},${shaftTopY} Z`);
+    }
+    if (document.getElementById('svgM_shadow')) {
+      document.getElementById('svgM_shadow').setAttribute('d',
+        `M ${baseX},${shaftBotY} L ${glansX},${shaftBotY + 4} C ${glansX + 20},${shaftBotY + 10} ${glansTip - 10},${centerY + 10} ${glansTip},${centerY} C ${glansTip - 10},${shaftBotY + 12} ${baseX + 50},${shaftBotY + 10} ${baseX},${shaftBotY} Z`);
+    }
+    if (document.getElementById('svgM_highlight')) {
+      document.getElementById('svgM_highlight').setAttribute('d',
+        `M ${baseX + 10},${shaftTopY + 2} L ${neckX - 10},${shaftTopY + 3} C ${neckX - 5},${shaftTopY + 9} ${baseX + 50},${shaftTopY + 9} ${baseX + 10},${shaftTopY + 2} Z`);
+    }
+    if (document.getElementById('svgM_vein')) {
+      document.getElementById('svgM_vein').setAttribute('d', `M ${baseX+12},${shaftTopY + 6} L ${neckX - 8},${shaftTopY + 7}`);
+    }
+    if (document.getElementById('svgM_spongiosum')) {
+      document.getElementById('svgM_spongiosum').setAttribute('d', `M ${baseX+12},${shaftBotY - 6} L ${neckX - 8},${shaftBotY - 7}`);
+    }
+
+    // RESTORED USER-PREFERRED GLANS SHAPE (Bold Corona Ridge Collar + Rounded Tip)
+    if (document.getElementById('svgM_glans')) {
+      document.getElementById('svgM_glans').setAttribute('d',
+        `M ${neckX},${shaftTopY + 3}
+         C ${neckX - 3},${coronaTopY + 2} ${glansX - 2},${coronaTopY} ${glansX},${coronaTopY}
+         C ${glansX + glansLen*0.42},${coronaTopY - 2} ${glansX + glansLen*0.8},${centerY - eH*0.48} ${glansTip},${centerY}
+         C ${glansX + glansLen*0.8},${centerY + eH*0.48} ${glansX + glansLen*0.42},${coronaBotY + 2} ${glansX},${coronaBotY}
+         C ${glansX - 2},${coronaBotY} ${neckX - 3},${coronaBotY - 2} ${neckX},${shaftBotY - 3}
+         C ${neckX + 8},${centerY + eH*0.35} ${neckX + 8},${centerY - eH*0.35} ${neckX},${shaftTopY + 3} Z`);
+    }
+
+    // Corona Ridge Ring Collar
+    if (document.getElementById('svgM_coronaRim')) {
+      document.getElementById('svgM_coronaRim').setAttribute('d',
+        `M ${glansX - 3},${coronaTopY + 1}
+         C ${glansX + 12},${coronaTopY + 1} ${glansX + 18},${centerY - eH*0.3} ${glansX + 18},${centerY}
+         C ${glansX + 18},${centerY + eH*0.3} ${glansX + 12},${coronaBotY - 1} ${glansX - 3},${coronaBotY - 1}
+         C ${glansX + 6},${coronaBotY - 4} ${glansX + 8},${centerY} ${glansX + 6},${coronaTopY + 4} Z`);
+      document.getElementById('svgM_coronaRim').setAttribute('fill', 'url(#coronaRimGrad)');
+    }
+
+    if (document.getElementById('svgM_meatus')) {
+      document.getElementById('svgM_meatus').setAttribute('cx', glansTip - 3);
+      document.getElementById('svgM_meatus').setAttribute('cy', centerY);
+      document.getElementById('svgM_meatus').setAttribute('rx', 1.5);
+      document.getElementById('svgM_meatus').setAttribute('ry', 4.5);
+    }
+    if (document.getElementById('svgM_glansGleam')) {
+      document.getElementById('svgM_glansGleam').setAttribute('cx', glansX + glansLen * 0.4);
+      document.getElementById('svgM_glansGleam').setAttribute('cy', centerY - eH * 0.25);
+    }
+
+    // Fat Pad Cushion
+    const fatW = Math.max(16, s.maleFat * 0.95);
+    const fp = document.getElementById('svgM_fatpad');
+    if (fp) {
+      fp.setAttribute('d',
+        `M ${baseX - fatW - 6},${centerY - eH/2 - 20} C ${baseX - 4},${centerY - eH/2 - 12} ${baseX - 2},${centerY - eH/2 - 2} ${baseX - 2},${centerY} C ${baseX - 2},${centerY + eH/2 + 2} ${baseX - 4},${centerY + eH/2 + 12} ${baseX - fatW - 6},${centerY + eH/2 + 20} C ${baseX - fatW - 16},${centerY + eH/2} ${baseX - fatW - 16},${centerY - eH/2} ${baseX - fatW - 6},${centerY - eH/2 - 20} Z`);
+    }
+
+    // Flaccid Ghost Penis
+    const fgShaftLen = fW * 0.78;
+    const fgGlansLen = fW * 0.22 + 12;
+    const fgX = baseX + fgShaftLen;
+    const fgTip = fgX + fgGlansLen;
+    if (document.getElementById('svgM_flaccid')) {
+      document.getElementById('svgM_flaccid').setAttribute('d',
+        `M ${baseX},${centerY - fH/2}
+         L ${fgX},${centerY - fH/2}
+         C ${fgX + fgGlansLen*0.5},${centerY - fH/2} ${fgTip},${centerY - fH*0.25} ${fgTip},${centerY}
+         C ${fgTip},${centerY + fH*0.25} ${fgX + fgGlansLen*0.5},${centerY + fH/2} ${fgX},${centerY + fH/2}
+         L ${baseX},${centerY + fH/2} Z`);
+    }
+    if (document.getElementById('svgM_flaccidGlans')) {
+      document.getElementById('svgM_flaccidGlans').setAttribute('d',
+        `M ${fgX},${centerY - fH/2 + 1}
+         C ${fgX + 4},${centerY - fH/2 + 1} ${fgTip},${centerY - fH*0.25} ${fgTip},${centerY}
+         C ${fgTip},${centerY + fH*0.25} ${fgX + 4},${centerY + fH/2 - 1} ${fgX},${centerY + fH/2 - 1} Z`);
+    }
+
+    // Annotations
+    if (document.getElementById('svgM_lenLine')) {
+      document.getElementById('svgM_lenLine').setAttribute('x1', baseX);
+      document.getElementById('svgM_lenLine').setAttribute('x2', glansTip);
+      document.getElementById('svgM_lenLine').setAttribute('y1', centerY + eH/2 + 25);
+      document.getElementById('svgM_lenLine').setAttribute('y2', centerY + eH/2 + 25);
+    }
+    if (document.getElementById('svgM_lenText')) {
+      document.getElementById('svgM_lenText').setAttribute('x', baseX + (glansTip - baseX)/2);
+      document.getElementById('svgM_lenText').setAttribute('y', centerY + eH/2 + 41);
+      document.getElementById('svgM_lenText').textContent = `L_erect = ${fmt(s.erectLength)}`;
+    }
+    if (document.getElementById('svgM_girthLine')) {
+      document.getElementById('svgM_girthLine').setAttribute('y1', centerY - eH/2);
+      document.getElementById('svgM_girthLine').setAttribute('y2', centerY + eH/2);
+    }
+    if (document.getElementById('svgM_girthText')) {
+      document.getElementById('svgM_girthText').setAttribute('transform', `rotate(-90,10,${centerY})`);
+      document.getElementById('svgM_girthText').setAttribute('y', centerY + 3);
+      document.getElementById('svgM_girthText').textContent = `Dm = ${fmt(dE, 1)}`;
+    }
+  }
+function calcFemale() {
+    const s = state;
+    s.labiaLeftLen   = parseFloat(document.getElementById('f_numLabiaLL').value) || s.labiaLeftLen;
+    s.labiaLeftProt  = parseFloat(document.getElementById('f_numLabiaLP').value) || s.labiaLeftProt;
+    s.labiaRightLen  = parseFloat(document.getElementById('f_numLabiaRL').value) || s.labiaRightLen;
+    s.labiaRightProt = parseFloat(document.getElementById('f_numLabiaRP').value) || s.labiaRightProt;
+
+    document.getElementById('f_lblVagResting').innerText  = fmt(s.vaginalResting);
+    document.getElementById('f_lblVagExpanded').innerText = fmt(s.vaginalExpanded);
+    document.getElementById('f_lblIntroitus').innerText   = fmt(s.introitusWidth);
+    document.getElementById('f_lblMons').innerText        = fmt(s.monsFat);
+    document.getElementById('f_lblLabiaL').innerText = s.labiaLeftLen.toFixed(1) + ' / ' + s.labiaLeftProt.toFixed(1) + ' mm';
+    document.getElementById('f_lblLabiaR').innerText = s.labiaRightLen.toFixed(1) + ' / ' + s.labiaRightProt.toFixed(1) + ' mm';
+
+    // Vaginal Elasticity
+    const elasticity = ((s.vaginalExpanded - s.vaginalResting) / s.vaginalResting) * 100;
+    document.getElementById('f_valElasticity').innerText = '+' + elasticity.toFixed(1) + '%';
+    document.getElementById('f_subElasticity').innerText = fmt(s.vaginalResting) + ' → ' + fmt(s.vaginalExpanded);
+
+    document.getElementById('f_valSafeDepth').innerText = fmt(s.vaginalExpanded);
+
+    const maxStretch = s.introitusWidth * 6.5;
+    document.getElementById('f_valMaxStretch').innerText = '~' + maxStretch.toFixed(0) + ' mm';
+    document.getElementById('f_subMaxStretch').innerText = 'จากปากพัก ' + fmt(s.introitusWidth);
+
+    // Mons rating
+    const monsRating = s.monsFat >= 15 ? '⭐⭐ ยอดเยี่ยม' : s.monsFat >= 10 ? '⭐ ดี' : '🔸 พอใช้';
+    document.getElementById('f_valMonsRating').innerText = monsRating;
+    document.getElementById('f_subMonsRating').innerText = 'T_mons = ' + fmt(s.monsFat);
+
+    // Labia SOI & Vacuum
+    const labiaAsym = Math.abs(s.labiaLeftLen - s.labiaRightLen);
+    document.getElementById('f_valSOI').innerText = labiaAsym.toFixed(1) + ' mm';
+    document.getElementById('f_subSOI').innerText = labiaAsym > 10 ? 'ความต่างสูง (Asymmetric)' : 'สมมาตรดี (Symmetric)';
+
+    const vacScore = Math.min(100, Math.round(70 + (s.labiaLeftProt + s.labiaRightProt)/2 - labiaAsym * 0.5));
+    document.getElementById('f_valVacuum').innerText = vacScore + ' / 100';
+
+    const advEl = document.getElementById('f_adviceLabia');
+    const advTxt = document.getElementById('f_adviceLabiaText');
+    if (labiaAsym < 8) {
+      advEl.className = 'advice-box advice-ok';
+      document.querySelector('#f_adviceLabia h4').innerText = '✅ แคมในสมมาตรดี';
+      advTxt.innerText = `แคมในซ้าย-ขวาต่างกัน ${labiaAsym.toFixed(1)} มม. — มีความสมมาตรดี สามารถสร้างซีลสุญญากาศได้แน่นหนา คะแนน ${vacScore}/100`;
+    } else {
+      advEl.className = 'advice-box advice-warn';
+      document.querySelector('#f_adviceLabia h4').innerText = '⚠️ แคมในมีความต่างสูง';
+      advTxt.innerText = `แคมในซ้าย-ขวาต่างกัน ${labiaAsym.toFixed(1)} มม. — ความสมมาตรลดลง ซีลสุญญากาศอาจไม่แน่นเท่าที่ควร คะแนน ${vacScore}/100`;
+    }
+
+    // SVG Female
+    updateSVGFemale(s);
+  }
+
+  function updateSVGFemale(s) {
+    const scale = 1.5;
+    const baseX = 120;
+    const restW = Math.min(s.vaginalResting * scale, 380);
+    const expW  = Math.min(s.vaginalExpanded * scale, 420);
+    const restH = 40, expH = 70;
+
+    const mons = document.getElementById('svgF_mons');
+    const monsW = Math.max(25, s.monsFat * 2);
+    mons.setAttribute('x', baseX - monsW - 2);
+    mons.setAttribute('width', monsW);
+
+    document.getElementById('svgF_depthLine').setAttribute('x2', baseX + expW);
+    document.getElementById('svgF_depthText').setAttribute('x', baseX + expW/2);
+    document.getElementById('svgF_depthText').textContent = 'D_exp = ' + fmt(s.vaginalExpanded);
+  }
+
+  // ============================================================
+  // CALC PAIR
+  // ============================================================
+  function calcPair() {
+    const s = state;
+    const pEL = s.pErectLength, pEG = s.pErectGirth;
+    const pMF = s.pMaleFat,     pVE = s.pVagExpanded;
+    const pIN = s.pIntroitus,   pMO = s.pMons;
+
+    // Update labels
+    document.getElementById('p_lblErectLength').innerText = fmt(pEL);
+    document.getElementById('p_lblErectGirth').innerText  = fmt(pEG);
+    document.getElementById('p_lblMaleFat').innerText     = fmt(pMF);
+    document.getElementById('p_lblVagExpanded').innerText = fmt(pVE);
+    document.getElementById('p_lblIntroitus').innerText   = fmt(pIN);
+    document.getElementById('p_lblMons').innerText        = fmt(pMO);
+
+    // Impact
+    const impact = pEL - pVE;
+    const dE = pEG / Math.PI;
+    const hoop = (dE / pIN) * 100;
+
+    // Vacuum (use main state labia)
+    const labiaAsym = Math.abs(s.labiaLeftLen - s.labiaRightLen);
+    const vacScore  = Math.min(100, Math.round(70 + (s.labiaLeftProt + s.labiaRightProt)/2 - labiaAsym*0.5));
+
+    document.getElementById('p_valImpact').innerText = (impact > 0 ? '+' : '') + fmt(impact);
+    document.getElementById('p_valImpact').style.color = impact > 0 ? 'var(--red)' : 'var(--green)';
+    document.getElementById('p_subImpact').innerText = impact > 0 ? 'ชนถึงปากมดลูก' : 'ปลอดภัย ไม่ถึงปากมดลูก';
+
+    document.getElementById('p_valHoop').innerText = hoop.toFixed(0) + '%';
+    document.getElementById('p_subHoop').innerText = 'ขยายตัวจากปากพัก ' + fmt(pIN);
+
+    document.getElementById('p_valVacuum').innerText = vacScore + '/100';
+    document.getElementById('p_subVacuum').innerText = vacScore >= 85 ? 'ซีลแน่นหนา ดูดแรง' : vacScore >= 65 ? 'ซีลพอใช้' : 'ซีลอ่อน';
+
+    document.getElementById('p_valMons').innerText = fmt(pMO);
+
+    // Advice
+    const advBox   = document.getElementById('p_adviceBox');
+    const advTitle = document.getElementById('p_adviceTitle');
+    const advText  = document.getElementById('p_adviceText');
+
+    if (impact > 0) {
+      advBox.className  = 'advice-box advice-warn';
+      advTitle.innerText = '⚠️ คำแนะนำการปะทะชนลึก (Cervical Impact Warning)';
+      advText.innerText  = `ควยยาวกว่าความลึกช่องคลอดตอนตื่นตัว ${fmt(Math.abs(impact))} ทุกจังหวะสุดโคนจะกระแทกปากมดลูกโดยตรง ชั้นไขมันกันชนเนินหัวหน่าวหนา ${fmt(pMO)} ช่วยซับแรงกระแทกได้บางส่วน ควรควบคุมความลึกในการสอดใส่`;
+    } else {
+      advBox.className  = 'advice-box advice-ok';
+      advTitle.innerText = '✅ สภาพการปะทะอยู่ในเกณฑ์ดี (Harmonious Fit)';
+      advText.innerText  = `ควยสอดใส่ได้โดยมีระยะปลอดภัยจากปากมดลูก ${fmt(Math.abs(impact))} ไม่มีการชนปากมดลูกในจังหวะปกติ เหมาะกับการสอดใส่เต็มโคน`;
+    }
+
+    // Overall Compatibility Score
+    let score = 100;
+    if (impact > 30) score -= 25;
+    else if (impact > 10) score -= 12;
+    else if (impact > 0) score -= 5;
+    if (hoop > 1000) score -= 15;
+    else if (hoop > 800) score -= 8;
+    score = Math.max(0, Math.min(100, score + Math.round(vacScore * 0.1)));
+
+    document.getElementById('p_scoreNum').innerText = score;
+    const scoreEl = document.getElementById('p_scoreTitle');
+    const descEl  = document.getElementById('p_scoreDesc');
+    if (score >= 85) {
+      scoreEl.innerText = '🟢 เข้ากันได้ดีมาก (Excellent Fit)';
+      descEl.innerText  = 'ขนาดสรีระเข้ากันได้อย่างลงตัว ความเสี่ยงการบาดเจ็บต่ำ ควรเพิ่มเจลหล่อลื่นเพื่อเพิ่มความนุ่มนวล';
+    } else if (score >= 65) {
+      scoreEl.innerText = '🟡 เข้ากันได้ดีระดับกลาง (Good Fit)';
+      descEl.innerText  = 'มีบางจุดที่ต้องระวัง เช่น ความลึกหรือการขยายปากทาง ควรเพิ่มการเตรียมตัวและหล่อลื่นอย่างเพียงพอ';
+    } else if (score >= 45) {
+      scoreEl.innerText = '🟠 เข้ากันได้ปานกลาง (Moderate — Use Caution)';
+      descEl.innerText  = 'มีความเสี่ยงปานกลาง แนะนำให้ใช้ท่าที่ควบคุมความลึกได้ดี ใช้เจลหล่อลื่นปริมาณมาก และสื่อสารกันระหว่างกัน';
+    } else {
+      scoreEl.innerText = '🔴 ควรระมัดระวังเป็นพิเศษ (High Caution)';
+      descEl.innerText  = 'ขนาดสรีระมีความต่างสูงมาก มีความเสี่ยงการบาดเจ็บสูง ควรปรึกษาผู้เชี่ยวชาญและเริ่มต้นอย่างช้าๆ';
+    }
+
+    // Update SVG Pair
+    updateSVGPair(pEL, pEG, pVE, pMO, impact);
+  }
+
+  function updateSVGPair(eL, eG, vE, mons, impact) {
+    if (!document.getElementById('svgPair')) return;
+    const CY = 170;
+    const SHAFT_X0 = 35;
+    const VAG_X0   = 175;
+    const mmPx = 145 / 161;
+
+    const eW = Math.min(eL * mmPx, 175);
+    const eH = Math.max(28, (eG / Math.PI) * mmPx * 0.65);
+    const vW = Math.min(vE * mmPx, 192);
+    const vHalf = Math.max(24, eH * 0.52);
+    const glansR = eH * 0.52;
+    const glansX = SHAFT_X0 + eW;
+    const glansTip = glansX + glansR + 12;
+    const vEndX  = VAG_X0 + vW;
+    const cervCX = vEndX + 10;
+    const cervRX = Math.max(12, vHalf * 0.48);
+    const cervRY = Math.max(16, vHalf * 0.60);
+
+    const setAttr = (id, k, v) => { const el = document.getElementById(id); if (el) el.setAttribute(k, v); };
+
+    setAttr('svgP_erect', 'x', SHAFT_X0); setAttr('svgP_erect', 'y', CY - eH/2);
+    setAttr('svgP_erect', 'width', eW);  setAttr('svgP_erect', 'height', eH); setAttr('svgP_erect', 'rx', eH/2);
+
+    setAttr('svgP_corpusShadow', 'x', SHAFT_X0+4); setAttr('svgP_corpusShadow', 'y', CY + eH/2 - 14);
+    setAttr('svgP_corpusShadow', 'width', Math.max(10, eW-8)); setAttr('svgP_corpusShadow', 'height', 14);
+
+    setAttr('svgP_shaftHighlight', 'x', SHAFT_X0+8); setAttr('svgP_shaftHighlight', 'y', CY - eH/2 + 2);
+    setAttr('svgP_shaftHighlight', 'width', Math.max(10, eW-24)); setAttr('svgP_shaftHighlight', 'height', Math.max(8, eH*0.28));
+    setAttr('svgP_shaftHighlight', 'rx', eH*0.14);
+
+    setAttr('svgP_spongiosum', 'd', `M ${SHAFT_X0+8},${CY + eH/2 - 7} L ${glansX-8},${CY + eH/2 - 7}`);
+
+    const fatW = Math.max(14, mons * 0.65);
+    setAttr('svgP_fatPad', 'x', SHAFT_X0 - fatW - 3); setAttr('svgP_fatPad', 'y', CY - eH/2);
+    setAttr('svgP_fatPad', 'width', fatW); setAttr('svgP_fatPad', 'height', eH);
+
+    const neckX = SHAFT_X0 + eW - 4;
+    const glansR_P = eH * 0.52;
+    const glansLen_P = Math.max(25, eH * 0.95);
+    const glansTip_P = glansX + glansLen_P;
+    const coronaTopY_P = CY - eH/2 - eH * 0.08;
+    const coronaBotY_P = CY + eH/2 + eH * 0.08;
+
+    if (document.getElementById('svgP_glans')) {
+      document.getElementById('svgP_glans').setAttribute('d',
+        `M ${neckX},${CY - eH/2 + 2}
+         C ${glansX - 2},${coronaTopY_P} ${glansX + 2},${coronaTopY_P} ${glansX + 5},${coronaTopY_P}
+         C ${glansX + glansLen_P*0.4},${coronaTopY_P} ${glansX + glansLen_P*0.75},${CY - eH*0.45} ${glansTip_P - 2},${CY - 2}
+         C ${glansTip_P + 2},${CY - 1} ${glansTip_P + 2},${CY + 1} ${glansTip_P - 2},${CY + 2}
+         C ${glansX + glansLen_P*0.75},${CY + eH*0.45} ${glansX + glansLen_P*0.4},${coronaBotY_P} ${glansX + 5},${coronaBotY_P}
+         C ${glansX + 2},${coronaBotY_P} ${glansX - 2},${coronaBotY_P} ${neckX},${CY + eH/2 - 2}
+         C ${neckX + 5},${CY + eH*0.3} ${neckX + 5},${CY - eH*0.3} ${neckX},${CY - eH/2 + 2} Z`);
+    }
+
+    if (document.getElementById('svgP_labiaExtTop')) {
+      document.getElementById('svgP_labiaExtTop').setAttribute('d',
+        `M ${VAG_X0},${CY - vHalf} C ${VAG_X0 - 10},${CY - vHalf - 10} ${VAG_X0 - 24},${CY - vHalf - 5} ${VAG_X0 - 32},${CY - vHalf + 8} C ${VAG_X0 - 22},${CY - vHalf + 18} ${VAG_X0 - 10},${CY - vHalf + 8} ${VAG_X0},${CY - vHalf} Z`);
+      setAttr('svgP_labiaExtBot', 'd',
+        `M ${VAG_X0},${CY + vHalf} C ${VAG_X0 - 10},${CY + vHalf + 10} ${VAG_X0 - 24},${CY + vHalf + 5} ${VAG_X0 - 32},${CY + vHalf - 8} C ${VAG_X0 - 22},${CY + vHalf - 18} ${VAG_X0 - 10},${CY + vHalf - 8} ${VAG_X0},${CY + vHalf} Z`);
+    }
+
+    setAttr('svgP_vagWallTop', 'd', `M ${VAG_X0},${CY - vHalf} C ${VAG_X0+vW*0.35},${CY-vHalf*1.08} ${VAG_X0+vW*0.7},${CY-vHalf*1.05} ${vEndX},${CY-vHalf*0.4}`);
+    setAttr('svgP_vagWallBot', 'd', `M ${VAG_X0},${CY + vHalf} C ${VAG_X0+vW*0.35},${CY+vHalf*1.08} ${VAG_X0+vW*0.7},${CY+vHalf*1.05} ${vEndX},${CY+vHalf*0.4}`);
+    setAttr('svgP_vagina', 'd', `M ${VAG_X0},${CY-vHalf+2} C ${VAG_X0+vW*0.35},${CY-vHalf*1.05} ${VAG_X0+vW*0.7},${CY-vHalf} ${vEndX},${CY-vHalf*0.35} C ${vEndX+14},${CY} ${vEndX},${CY+vHalf*0.35} ${vEndX},${CY+vHalf*0.35} C ${VAG_X0+vW*0.7},${CY+vHalf} ${VAG_X0+vW*0.35},${CY+vHalf*1.05} ${VAG_X0},${CY+vHalf-2} Z`);
+
+    const monsW = Math.max(22, mons*1.3);
+    setAttr('svgP_mons', 'x', VAG_X0 - monsW - 4); setAttr('svgP_mons', 'y', CY - eH/2 - 18);
+    setAttr('svgP_mons', 'width', monsW); setAttr('svgP_mons', 'height', eH + 36);
+
+    setAttr('svgP_cervix', 'cx', cervCX); setAttr('svgP_cervix', 'cy', CY);
+    setAttr('svgP_cervix', 'rx', cervRX); setAttr('svgP_cervix', 'ry', cervRY);
+    setAttr('svgP_cervixLabel', 'x', cervCX + cervRX + 6); setAttr('svgP_cervixLabel', 'y', CY - 3);
+
+    if (impact > 0) {
+      const impPx = Math.min(impact * mmPx, Math.max(0, cervCX - cervRX - glansTip));
+      setAttr('svgP_impactZone', 'x', glansTip); setAttr('svgP_impactZone', 'y', CY - eH/2);
+      setAttr('svgP_impactZone', 'width', Math.max(0, impPx)); setAttr('svgP_impactZone', 'height', eH);
+      const impX2 = Math.min(cervCX - cervRX - 2, glansTip + Math.max(4, impPx));
+      setAttr('svgP_impactLine', 'x1', glansTip+3); setAttr('svgP_impactLine', 'x2', impX2);
+      setAttr('svgP_impactLine', 'y1', CY - eH/2 - 14); setAttr('svgP_impactLine', 'y2', CY - eH/2 - 14);
+      setAttr('svgP_impactLine', 'opacity', '0.9');
+    } else {
+      setAttr('svgP_impactZone', 'width', 0);
+      setAttr('svgP_impactLine', 'opacity', '0');
+    }
+  }// ============================================================
+  // INIT
+  // ============================================================
+  window.addEventListener('DOMContentLoaded', () => {
+    try {
+      const savedTheme = localStorage.getItem('vagina_penis_calc_theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        setTheme(savedTheme);
+      }
+    } catch(e) {}
+    loadPreset('eye-do');
+    try {
+      const savedUnit = localStorage.getItem('vagina_penis_calc_unit');
+      if (['mm', 'cm', 'in'].includes(savedUnit)) {
+        switchUnit(savedUnit);
+      }
+    } catch(e) {}
+    let initMode = 'male';
+    try {
+      const hashMode = (window.location.hash || '').replace('#', '').toLowerCase();
+      const savedMode = localStorage.getItem('vagina_penis_calc_mode');
+      if (['male', 'female', 'pair'].includes(hashMode)) {
+        initMode = hashMode;
+      } else if (['male', 'female', 'pair'].includes(savedMode)) {
+        initMode = savedMode;
+      }
+    } catch(e) {}
+    switchMode(initMode);
+  });
+
+  <!-- Screen Caliper Calibration & Measurement Wizard Modal -->
+
+  
+    let cardOrientation = 'horiz'; // 'horiz' or 'vert'
+    let calibScalePxPerMm = 310 / 85.60;
+
+    function setCardOrientation(mode) {
+      cardOrientation = mode;
+      document.getElementById('btnOrientHoriz').classList.toggle('active', mode === 'horiz');
+      document.getElementById('btnOrientVert').classList.toggle('active', mode === 'vert');
+      const isoText = document.getElementById('lblCalibIsoText');
+      const rng = document.getElementById('rngCalibPx');
+      if (mode === 'vert') {
+        if (isoText) isoText.innerText = 'มาตรฐาน ISO 53.98 mm (แนวตั้ง)';
+        if (rng && rng.value > 280) rng.value = 210; // Default vertical width
+      } else {
+        if (isoText) isoText.innerText = 'มาตรฐาน ISO 85.60 mm (แนวนอน)';
+        if (rng && rng.value < 220) rng.value = 310;
+      }
+      updateCalibCard(rng.value);
+    }
+
+    function openScreenCaliperModal() {
+      document.getElementById('screenCaliperModal').classList.add('active');
+      goToCalibStep(1);
+    }
+    function closeScreenCaliperModal() {
+      document.getElementById('screenCaliperModal').classList.remove('active');
+    }
+    function goToCalibStep(step) {
+      document.getElementById('calibStep1').style.display = step === 1 ? 'block' : 'none';
+      document.getElementById('calibStep2').style.display = step === 2 ? 'block' : 'none';
+    }
+    function updateCalibCard(pxVal) {
+      pxVal = parseFloat(pxVal);
+      const isVert = cardOrientation === 'vert';
+      const targetWidthMm = isVert ? 53.98 : 85.60;
+      const targetHeightMm = isVert ? 85.60 : 53.98;
+
+      calibScalePxPerMm = pxVal / targetWidthMm;
+      document.getElementById('lblCalibPx').innerText = pxVal.toFixed(0) + ' px';
+      const frame = document.getElementById('calibCardOutline');
+      if (frame) {
+        frame.style.width = pxVal + 'px';
+        frame.style.height = (pxVal * (targetHeightMm / targetWidthMm)) + 'px';
+      }
+    }
+    function updateMeasLen(val) {
+      val = parseFloat(val);
+      document.getElementById('lblMeasLenResult').innerText = fmt(val);
+    }
+    function updateMeasGirth(val) {
+      val = parseFloat(val);
+      document.getElementById('lblMeasGirthResult').innerText = fmt(val);
+    }
+    function applyScreenMeasurements() {
+      const lenVal = parseFloat(document.getElementById('rngMeasLen').value);
+      const girthVal = parseFloat(document.getElementById('rngMeasGirth').value);
+      state.erectLength = lenVal;
+      state.erectGirth = girthVal;
+      syncAllInputs();
+      calcMale();
+      closeScreenCaliperModal();
+    }
+    function toggleCondomTooltip(e) {
+      if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      }
+      const tt = document.querySelector('.condom-tooltip');
+      if (tt) {
+        const isCurrentlyOpen = tt.getAttribute('data-open') === 'true';
+        tt.setAttribute('data-open', isCurrentlyOpen ? 'false' : 'true');
+      }
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.tooltip-wrap')) {
+        const tt = document.querySelector('.condom-tooltip');
+        if (tt) {
+          tt.setAttribute('data-open', 'false');
+        }
+      }
+    });
+  </script>
+
+    <!-- Penis Spec Passport Modal -->
+    <!-- Penis Spec Passport Modal -->
+  <div class="photo-modal-overlay" id="passportModalOverlay" onclick="if(event.target===this) closePassportModal()">
+    <div class="photo-modal-card" style="max-width:580px;">
+      
+      <div class="photo-modal-header">
+        <div style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:1.05rem; color:var(--pink);">
+          <span>🛡️</span> <span>PENIS SPEC PASSPORT (การ์ดสเปกควย)</span>
+        </div>
+        <button onclick="closePassportModal()" style="background:transparent; border:none; color:var(--muted); font-size:1.4rem; cursor:pointer;">✖️</button>
+      </div>
+
+      <div style="padding:20px; overflow-y:auto;">
+        
+        <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+          <button class="btn-preset" onclick="document.getElementById('passportFileUploader').click()" style="font-size:0.78rem; padding:5px 14px; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); color:var(--cyan);">📷 เปลี่ยนรูปการ์ดประจำตัว</button>
+          <input type="file" id="passportFileUploader" accept="image/*" style="display:none;" onchange="loadPassportPhoto(this)">
+        </div>
+
+        <!-- Passport Card Layout -->
+        <div id="passportCardFrame" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); border-radius:18px; padding:18px; position:relative; overflow:hidden; box-shadow:inset 0 0 25px rgba(0,0,0,0.5);">
+          
+          <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+            
+            <div style="position:relative; width:130px; height:150px; border-radius:14px; overflow:hidden; border:2px solid var(--pink); background:#0a0514; flex-shrink:0; box-shadow:0 8px 20px rgba(0,0,0,0.7);">
+              <img id="passportImgView" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 150' width='130' height='150' fill='none'><rect width='130' height='150' fill='rgba(255,42,133,0.08)'/><path d='M 65,30 C 50,30 45,55 45,95 C 45,115 55,125 65,125 C 75,125 85,115 85,95 C 85,55 80,30 65,30 Z' fill='rgba(255,42,133,0.3)' stroke='rgba(255,42,133,0.8)' stroke-width='2'/><path d='M 52,48 C 58,40 72,40 78,48 C 82,54 82,62 78,66 C 72,70 58,70 52,66 C 48,62 48,54 52,48 Z' fill='rgba(255,100,150,0.5)'/></svg>" alt="Penis Passport Photo" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+
+            <div style="flex:1; min-width:200px;">
+              <div id="passArchetypeBadge" style="font-weight:800; font-size:1.15rem; color:var(--pink); margin-bottom:4px;">🥖 สายปังตอ อวบสะท้านตับ</div>
+              <div id="passArchetypeSub" style="font-size:0.75rem; color:var(--text); opacity:0.85; margin-bottom:12px;">รอบวงใหญ่พิเศษ แน่นเต็มมือ ตับไตไส้พุงมีสะเทือน</div>
+
+              <!-- Reordered 4 Metrics Grid: 1.Condom Size 2.Body Type 3.Girth 4.Length -->
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.8rem;">
+                <div class="pass-stat-box" style="background:rgba(255,255,255,0.05); padding:6px 10px; border-radius:8px;">
+                  <span style="color:var(--muted); font-size:0.7rem;">1. ไซส์ถุงยางที่แนะนำ:</span><br>
+                  <strong id="passCondom" style="color:var(--cyan); font-size:1.05rem;">🛡️ 69 มม.</strong>
+                </div>
+                <div class="pass-stat-box" style="background:rgba(255,255,255,0.05); padding:6px 10px; border-radius:8px;">
+                  <span style="color:var(--muted); font-size:0.7rem;">2. ประเภทสรีระ:</span><br>
+                  <strong id="passBfi" style="color:var(--gold); font-size:0.9rem;">🥩 ควยเนื้อ</strong>
+                </div>
+                <div class="pass-stat-box" style="background:rgba(255,255,255,0.05); padding:6px 10px; border-radius:8px;">
+                  <span style="color:var(--muted); font-size:0.7rem;">3. เส้นรอบวง (G<sub>erect</sub>):</span><br>
+                  <strong id="passGirth" style="color:var(--pink); font-size:1.05rem;">15.4 cm</strong>
+                </div>
+                <div class="pass-stat-box" style="background:rgba(255,255,255,0.05); padding:6px 10px; border-radius:8px;">
+                  <span style="color:var(--muted); font-size:0.7rem;">4. ความยาว (L<sub>erect</sub>):</span><br>
+                  <strong id="passLen" style="color:var(--cyan); font-size:1.05rem;">16.2 cm</strong>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div style="margin-top:14px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.15); display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:var(--muted);">
+            <div>
+              <span>🔬 เช็กขนาดสรีระและไซส์ถุงยางของคุณได้ที่:</span><br>
+              <strong style="color:var(--cyan); font-size:0.78rem;">http://localhost:3100/vagina_penis_calculator.html</strong>
+            </div>
+            <div style="background:#fff; padding:4px; border-radius:6px; flex-shrink:0;">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM10 3h4v4h-4zM10 10h4v4h-4zM15 15h3v3h-3zM18 18h3v3h-3z"/></svg>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <label style="font-size:0.8rem; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:6px;">
+            <input type="checkbox" id="passPrivacyBlur" onchange="togglePassportBlur(this.checked)">
+            <span>🔒 โหมดเป็นส่วนตัว (เบลอรูปภาพ)</span>
+          </label>
+          <button class="btn-preset" onclick="downloadPassportCard()" style="font-size:0.85rem; padding:8px 18px; background:linear-gradient(135deg, var(--pink), var(--purple)); color:#fff; border:none; font-weight:700; box-shadow:0 4px 15px rgba(255,42,133,0.4);">
+            📸 บันทึกรูปการ์ดพาสปอร์ต (.png)
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+<div class="screen-caliper-overlay" id="screenCaliperModal" onclick="if(event.target===this) closeScreenCaliperModal()">
+    <div class="screen-caliper-card">
+      
+      <!-- Wizard Header -->
+      <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03);">
+        <div style="font-weight:700; font-size:1.05rem; display:flex; align-items:center; gap:8px; color:var(--cyan);">
+          <span>💳📱</span> <span>เครื่องมือวัดขนาดสรีระบนหน้าจอมือถือ</span>
+        </div>
+        <button onclick="closeScreenCaliperModal()" style="background:transparent; border:none; color:var(--muted); font-size:1.4rem; cursor:pointer; padding:0 8px;">✖️</button>
+      </div>
+
+      <!-- Wizard Body -->
+      <div style="padding:16px; overflow-y:auto; display:flex; flex-direction:column; gap:16px;">
+        
+        <!-- STEP 1: CREDIT CARD SCREEN CALIBRATION -->
+        <div id="calibStep1" style="display:block;">
+          <div style="background:rgba(0,229,255,0.06); border:1px solid rgba(0,229,255,0.2); border-radius:12px; padding:12px 16px; margin-bottom:12px; font-size:0.82rem; line-height:1.5;">
+            📌 <strong>ขั้นตอนที่ 1: คาลิเบรตหน้าจอมือถือกับบัตรจริง</strong><br>
+            นำบัตรเครดิต บัตรเดบิต หรือบัตรประชาชนจริง <strong>วางทับลงบนหน้าจอมือถือ</strong> (เลือกวางแนวนอนหรือแนวตั้ง) แล้วเลื่อนสไลเดอร์ขยาย/ย่อกรอบสี่เหลี่ยมด้านล่าง ให้มีขนาดเท่ากับบัตรจริงพอดี
+          </div>
+
+          <!-- Card Orientation Switcher -->
+          <div style="display:flex; justify-content:center; gap:8px; margin-bottom:12px;">
+            <button class="photo-tab-btn active" id="btnOrientHoriz" onclick="setCardOrientation('horiz')">💳 บัตรแนวนอน (85.6 mm)</button>
+            <button class="photo-tab-btn" id="btnOrientVert" onclick="setCardOrientation('vert')">📱 บัตรแนวตั้ง (54.0 mm)</button>
+          </div>
+
+          <!-- Resizable Card Outline -->
+          <div style="text-align:center; padding:12px 0; background:rgba(0,0,0,0.3); border-radius:14px; position:relative; overflow:hidden;">
+            <div id="calibCardOutline" class="calib-card-frame" style="width:310px; height:195px;">
+              <span style="font-size:1.8rem; opacity:0.8;">💳</span>
+              <span style="font-weight:700; font-size:0.85rem; color:var(--cyan); margin-top:4px;">วางบัตรจริงทับตรงนี้</span>
+              <span id="lblCalibIsoText" style="font-size:0.7rem; color:var(--muted);">มาตรฐาน ISO 85.60 mm (แนวนอน)</span>
+            </div>
+
+            <!-- Calibration Slider -->
+            <div style="max-width:380px; margin:14px auto 6px; padding:0 12px;">
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <span>ย่อ/ขยายกรอบบัตรบนจอ:</span>
+                <strong id="lblCalibPx" style="color:var(--cyan);">310 px</strong>
+              </div>
+              <input type="range" id="rngCalibPx" min="140" max="480" value="310" style="width:100%; accent-color:var(--cyan);" oninput="updateCalibCard(this.value)">
+            </div>
+          </div>
+
+          <button onclick="goToCalibStep(2)" style="width:100%; margin-top:14px; padding:12px; border-radius:50px; background:linear-gradient(135deg, var(--cyan), var(--pink)); color:#fff; border:none; font-weight:700; font-size:0.95rem; cursor:pointer; box-shadow:0 6px 20px rgba(0,229,255,0.4);">
+            ถัดไป ➔ ขั้นตอนที่ 2: ทาบวัดขนาดบนหน้าจอ
+          </button>
+        </div>
+
+        <!-- STEP 2: ON-SCREEN MEASUREMENT RULER -->
+        <div id="calibStep2" style="display:none;">
+          <div style="background:rgba(255,42,133,0.08); border:1px solid rgba(255,42,133,0.25); border-radius:12px; padding:12px 16px; margin-bottom:12px; font-size:0.82rem; line-height:1.5;">
+            📐 <strong>ขั้นตอนที่ 2: ทาบวัดขนาดสรีระบนหน้าจอ</strong><br>
+            นำอวัยวะทาบขนานกับไม้บรรทัดเรืองแสงบนจอ แล้วเลื่อนสไลเดอร์ปรับตำแหน่ง <strong>จุดวัดความยาว (Base to Tip)</strong> และ <strong>ความกว้างลำควย (Shaft Width)</strong>
+          </div>
+
+          <!-- Interactive Measurement Box -->
+          <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:16px; position:relative;">
+            
+            <!-- Virtual Ruler Box -->
+            <div style="margin-bottom:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-size:0.85rem; font-weight:600; color:var(--pink);">1. ความยาววัดจากโคนถึงปลาย (L):</span>
+                <span id="lblMeasLenResult" style="font-family:'Outfit'; font-size:1.4rem; font-weight:800; color:var(--pink);">162.0 mm</span>
+              </div>
+              <input type="range" id="rngMeasLen" min="50" max="260" value="162" style="width:100%; accent-color:var(--pink);" oninput="updateMeasLen(this.value)">
+            </div>
+
+            <div style="margin-bottom:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-size:0.85rem; font-weight:600; color:var(--cyan);">2. หน้ากว้างลำควย (Dm) ➔ คำนวณรอบวง (G):</span>
+                <span id="lblMeasGirthResult" style="font-family:'Outfit'; font-size:1.4rem; font-weight:800; color:var(--cyan);">154.0 mm</span>
+              </div>
+              <input type="range" id="rngMeasGirth" min="70" max="230" value="154" style="width:100%; accent-color:var(--cyan);" oninput="updateMeasGirth(this.value)">
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:14px;">
+            <button onclick="goToCalibStep(1)" style="flex:1; padding:12px; border-radius:50px; background:rgba(255,255,255,0.08); color:var(--text); border:1px solid var(--border); font-weight:600; cursor:pointer;">
+              ⬅️ ย้อนกลับคาลิเบรต
+            </button>
+            <button onclick="applyScreenMeasurements()" style="flex:2; padding:12px; border-radius:50px; background:linear-gradient(135deg, var(--pink), var(--purple)); color:#fff; border:none; font-weight:700; font-size:0.95rem; cursor:pointer; box-shadow:0 6px 20px rgba(255,42,133,0.4);">
+              ✨ โอนย้ายค่าเข้าเครื่องคำนวณ
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div
+
+  <!-- PHOTO LIGHTBOX MODAL -->
+  <div id="photoModalOverlay" class="photo-modal-overlay" style="display:none;" onclick="closePhotoModal()">
+    <div class="photo-modal-content" onclick="event.stopPropagation()" style="max-width:700px; padding:20px; background:rgba(15,10,30,0.98); border:1.5px solid var(--pink); border-radius:20px; box-shadow:0 0 50px rgba(255,42,133,0.3);">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:14px;">
+        <h3 style="margin:0; font-size:1.1rem; color:var(--pink); display:flex; align-items:center; gap:8px;">
+          <span>📷</span> ภาพถ่ายสรีระจริงอ้างอิง (Actual Anatomical Photo Reference)
+        </h3>
+        <button onclick="closePhotoModal()" style="background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <button id="btnPhotoTabBio" class="btn-preset active" onclick="switchPhotoTab('AYE-BIO-02Z.jpg')">🌸 AYE-BIO-02Z.jpg (ภาพรวมสรีระ)</button>
+        <button id="btnPhotoTabInt" class="btn-preset" onclick="switchPhotoTab('AYE-INT-01.JPG')">📏 AYE-INT-01.JPG (ซูมวัดขนาดปากรู)</button>
+      </div>
+
+      <div style="width:100%; max-height:420px; border-radius:12px; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
+        <img id="photoModalImg" src="AYE-BIO-02Z.jpg" style="max-width:100%; max-height:420px; object-fit:contain;">
+      </div>
+
+      <div style="margin-top:12px; font-size:0.78rem; color:var(--muted); line-height:1.5;">
+        📌 <strong>คำอธิบายพารามิเตอร์อ้างอิง:</strong><br>
+        • ความกว้างปากรูสภาวะพัก (W<sub>intro</sub>) = 5.5 mm | ความหนาชั้นไขมันเนินหัวหน่าว (T<sub>mons</sub>) = 12.7 mm<br>
+        • ความยาวแคมในซ้าย = 43.5 mm / ยื่น 13.0 mm | ความยาวแคมในขวา = 33.9 mm / ยื่น 8.1 mm
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

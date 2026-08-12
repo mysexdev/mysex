@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Male Anatomical & Diagnostics Calculator | เครื่องมือคำนวณสรีระเพศชาย (Light Theme)</title>
+  <meta name="description" content="เครื่องมือคำนวณสรีระเพศชายแบบเจาะลึก ควยเลือด vs ควยเนื้อ สเปกถุงยางอนามัย ปริมาตรการสูบฉีดเลือด สถิติประชากร และการ์ดรายงานสำหรับแพทย์">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- html2canvas for passport PNG export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* ============================================================
+       CSS VARIABLES — LIGHT THEME (DEFAULT) & DARK THEME TOGGLE
+    ============================================================ */
+    :root, [data-theme="light"] {
+      --bg: #f4f6fb;
+      --bg2: #e8ecf5;
+      --card: rgba(255, 255, 255, 0.92);
+      --card-hover: rgba(255, 255, 255, 0.98);
+      --border: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.16);
+
+      --pink:   #d81b60;
+      --cyan:   #00838f;
+      --purple: #7b1fa2;
+      --gold:   #d97706;
+      --green:  #16a34a;
+      --red:    #dc2626;
+
+      --text:   #0f172a;
+      --muted:  #475569;
+      --dim:    #64748b;
+
+      --input-bg: rgba(241, 245, 249, 0.95);
+      --input-border: rgba(0, 0, 0, 0.12);
+      --metric-bg: rgba(248, 250, 252, 0.8);
+
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --font: 'Prompt', 'Outfit', sans-serif;
+      --shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    [data-theme="dark"] {
+      --bg: #07070f;
+      --bg2: #0d0d1a;
+      --card: rgba(15, 15, 28, 0.75);
+      --card-hover: rgba(22, 22, 42, 0.88);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.2);
+
+      --pink:   #ff2a85;
+      --cyan:   #00e5ff;
+      --purple: #b44dff;
+      --gold:   #ffc600;
+      --green:  #2ed573;
+      --red:    #ff4757;
+
+      --text:   #f1f2f6;
+      --muted:  #8a8fa8;
+      --dim:    #555872;
+
+      --input-bg: rgba(0, 0, 0, 0.4);
+      --input-border: rgba(255,255,255,0.09);
+      --metric-bg: rgba(0, 0, 0, 0.25);
+      --shadow: 0 10px 30px rgba(0,0,0,0.45);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 15% 10%, rgba(216,27,96,0.08) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 85%, rgba(0,131,143,0.06) 0%, transparent 45%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.5;
+      padding: 16px 12px 60px;
+      min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container { max-width: 1140px; margin: 0 auto; }
+
+    /* HEADER */
+    header {
+      position: relative;
+      text-align: center;
+      padding: 16px 20px 12px;
+      margin-bottom: 14px;
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    header h1 {
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 50%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.4px;
+      margin-bottom: 2px;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .header-top-right {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+
+    .theme-toggle-btn:hover { border-color: var(--pink); }
+
+    .badge-phase {
+      display: inline-block;
+      background: rgba(216,27,96,0.1);
+      border: 1px solid rgba(216,27,96,0.25);
+      color: var(--pink);
+      padding: 2px 10px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    /* PRESETS */
+    .preset-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .btn-preset {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-preset:hover { transform: translateY(-1px); border-color: var(--pink); }
+    .btn-preset.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(216,27,96,0.3);
+    }
+
+    /* GRID LAYOUT */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2col { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .card-top-stack {
+      z-index: 100 !important;
+    }
+
+    .card-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title-text {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* FORM STYLES & LABELS */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .field-sublabel {
+      font-size: 0.73rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .unit-toggle {
+      display: flex;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-md);
+      padding: 2px;
+      gap: 2px;
+      margin-bottom: 12px;
+    }
+
+    .unit-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 5px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .unit-btn.active {
+      background: var(--pink);
+      color: #fff;
+    }
+
+    /* REGION TOGGLE BUTTONS */
+    .region-toggle-group {
+      display: flex;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 50px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .region-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .region-btn.active {
+      background: var(--pink);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(216,27,96,0.3);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      padding: 8px 32px 8px 10px;
+      font-family: var(--font);
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--pink);
+    }
+
+    .input-unit {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.72rem;
+      color: var(--dim);
+      font-weight: 700;
+    }
+
+    /* METRICS CARDS & GAUGE BAR */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .metric-card {
+      background: var(--metric-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .metric-card.updated {
+      animation: pulseHighlight 0.4s ease-out;
+    }
+
+    @keyframes pulseHighlight {
+      0% { transform: scale(0.97); border-color: var(--pink); box-shadow: 0 0 12px rgba(216,27,96,0.3); }
+      100% { transform: scale(1); border-color: var(--border); box-shadow: none; }
+    }
+
+    .metric-title {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+
+    .metric-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      font-family: 'Outfit', var(--font);
+      line-height: 1.2;
+      transition: color 0.3s;
+    }
+
+    .metric-sub {
+      font-size: 0.68rem;
+      color: var(--dim);
+      margin-top: 2px;
+      transition: color 0.3s;
+    }
+
+    .gauge-container {
+      position: relative;
+      margin: 10px 0 6px;
+    }
+
+    .gauge-bar {
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(90deg, #d97706 0%, #d97706 33.3%, #7b1fa2 33.3%, #7b1fa2 66.6%, #d81b60 66.6%, #d81b60 100%);
+      border-radius: 10px;
+      position: relative;
+      overflow: visible;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .gauge-pointer {
+      position: absolute;
+      top: -4px;
+      width: 16px;
+      height: 18px;
+      background: #ffffff;
+      border: 2.5px solid var(--text);
+      border-radius: 4px;
+      transform: translateX(-50%);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 5;
+    }
+
+    .gauge-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: var(--dim);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .badge-flesh { background: rgba(217,119,6,0.12); border: 1px solid var(--gold); color: var(--gold); }
+    .badge-hybrid { background: rgba(123,31,162,0.12); border: 1px solid var(--purple); color: var(--purple); }
+    .badge-blood  { background: rgba(216,27,96,0.12); border: 1px solid var(--pink); color: var(--pink); }
+
+    /* TOOLTIP POPUP */
+    .condom-tooltip {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 280px;
+      background: var(--card);
+      border: 1.5px solid var(--cyan);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
+      z-index: 999999 !important;
+      margin-top: 6px;
+    }
+
+    .condom-tooltip.show { display: block; }
+
+    /* ACTION BUTTONS */
+    .btn-action {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border: none;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(216,27,96,0.3);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(216,27,96,0.45);
+    }
+
+    .btn-action-med {
+      background: linear-gradient(135deg, #0284c7, #0f766e);
+      border: none;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(2,132,199,0.3);
+    }
+
+    .btn-action-med:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(2,132,199,0.45);
+    }
+
+    /* MODAL OVERLAYS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999999;
+      padding: 16px;
+    }
+
+    /* ============================
+       PASSPORT CARD — PORTRAIT REDESIGN
+    ============================ */
+    .passport-card-box {
+      border-radius: var(--radius-xl);
+      padding: 0;
+      max-width: 380px;  /* Portrait width */
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      color: var(--text);
+      transition: all 0.3s;
+    }
+
+    /* --- LIGHT THEME PASSPORT --- */
+    [data-theme="light"] .passport-card-box {
+      background: linear-gradient(180deg, #ffffff 0%, #fdf4ff 70%, #fff0f6 100%);
+      border: 1.5px solid rgba(216,27,96,0.25);
+      box-shadow: 0 24px 64px rgba(216,27,96,0.12), 0 4px 16px rgba(0,0,0,0.07);
+    }
+
+    /* --- DARK THEME PASSPORT --- */
+    [data-theme="dark"] .passport-card-box {
+      background: linear-gradient(180deg, rgba(10,5,22,0.98) 0%, rgba(22,8,40,0.98) 70%, rgba(18,6,32,0.98) 100%);
+      border: 1px solid rgba(255,42,133,0.35);
+      box-shadow: 0 0 0 1px rgba(180,77,255,0.15), 0 24px 70px rgba(180,77,255,0.3), 0 0 50px rgba(255,42,133,0.12);
+      backdrop-filter: blur(24px);
+    }
+
+    /* PASSPORT TOP STRIPE */
+    .passport-stripe {
+      height: 5px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--pink) 0%, var(--purple) 50%, var(--cyan) 100%);
+    }
+
+    /* PASSPORT HEADER (compact) */
+    .passport-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px 8px;
+      gap: 6px;
+    }
+
+    .passport-badge-title {
+      font-family: 'Outfit', monospace;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    [data-theme="light"] .passport-badge-title {
+      background: linear-gradient(135deg, #d81b60, #7b1fa2);
+      color: #fff;
+    }
+
+    [data-theme="dark"] .passport-badge-title {
+      background: linear-gradient(135deg, rgba(255,42,133,0.2), rgba(180,77,255,0.2));
+      border: 1px solid rgba(255,42,133,0.5);
+      color: var(--pink);
+      text-shadow: 0 0 8px rgba(255,42,133,0.6);
+    }
+
+    /* PHOTO AREA — portrait-friendly 420px */
+    .passport-photo-hero {
+      width: 100%;
+      height: 420px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      background: #1a1025;
+    }
+
+    [data-theme="light"] .passport-photo-hero {
+      background: #f0e6f6;
+    }
+
+    .passport-photo-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    /* PHOTO HOVER OVERLAY */
+    .photo-hover-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .passport-photo-hero:hover .photo-hover-overlay {
+      opacity: 1;
+    }
+
+    .photo-hover-overlay span {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .photo-hover-overlay small {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* SPECS GRID inside card */
+    .passport-specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 12px 14px 0;
+    }
+
+    .passport-spec-cell {
+      padding: 7px 6px;
+      border-bottom: 1px solid;
+    }
+
+    .passport-spec-cell:nth-child(odd) {
+      border-right: 1px solid;
+    }
+
+    [data-theme="light"] .passport-spec-cell {
+      border-color: rgba(0,0,0,0.07);
+    }
+
+    [data-theme="dark"] .passport-spec-cell {
+      border-color: rgba(255,255,255,0.07);
+    }
+
+    .passport-spec-label {
+      font-size: 0.6rem;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .passport-spec-value {
+      font-family: 'Outfit', monospace;
+      font-size: 1.05rem;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    /* CTA TAGLINE — static, not interactive */
+    .passport-cta {
+      text-align: center;
+      padding: 8px 14px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    [data-theme="light"] .passport-cta {
+      color: var(--pink);
+    }
+
+    [data-theme="dark"] .passport-cta {
+      color: rgba(255,42,133,0.8);
+    }
+
+    /* PASSPORT SHAREABLE WATERMARK */
+    .passport-watermark {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.6rem;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    [data-theme="light"] .passport-watermark {
+      color: rgba(120,100,140,0.65);
+    }
+
+    [data-theme="dark"] .passport-watermark {
+      color: rgba(200,170,230,0.4);
+    }
+
+    .passport-watermark-url {
+      font-family: 'Outfit', monospace;
+      font-weight: 700;
+      font-size: 0.65rem;
+    }
+
+    [data-theme="light"] .passport-watermark-url {
+      color: var(--pink);
+    }
+
+    [data-theme="dark"] .passport-watermark-url {
+      color: rgba(255,42,133,0.65);
+    }
+
+    /* PASSPORT FOOTER */
+    .passport-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px 14px;
+      border-top: 1px solid;
+    }
+
+    [data-theme="light"] .passport-footer {
+      border-color: rgba(0,0,0,0.07);
+    }
+
+    [data-theme="dark"] .passport-footer {
+      border-color: rgba(255,255,255,0.07);
+    }
+
+    /* DARK SCANLINE DECORATION */
+    [data-theme="dark"] .passport-card-box::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(255,42,133,0.05) 0px, rgba(255,42,133,0.05) 2px,
+        transparent 2px, transparent 8px
+      );
+      pointer-events: none;
+      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    }
+
+    /* ============================================================
+       EXPORT CARD — Hidden div, designed purely for PNG export
+       No buttons, no UI chrome. Captured by html2canvas.
+    ============================================================ */
+    #passportExportCard {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      width: 400px;
+      font-family: 'Prompt', 'Outfit', sans-serif;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    [data-theme="light"] #passportExportCard {
+      background: #ffffff;
+    }
+
+    [data-theme="dark"] #passportExportCard {
+      background: linear-gradient(180deg, #090518 0%, #13082e 100%);
+    }
+
+    /* Top stripe */
+    .ec-stripe {
+      height: 6px;
+      background: linear-gradient(90deg, #d81b60 0%, #7b1fa2 50%, #00838f 100%);
+    }
+
+    /* Header */
+    .ec-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 8px;
+    }
+
+    .ec-badge {
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    [data-theme="light"] .ec-badge {
+      background: linear-gradient(135deg, #d81b60, #7b1fa2);
+      color: #fff;
+    }
+
+    [data-theme="dark"] .ec-badge {
+      background: linear-gradient(135deg, rgba(255,42,133,0.2), rgba(180,77,255,0.2));
+      border: 1px solid rgba(255,42,133,0.5);
+      color: #ff2a85;
+    }
+
+    .ec-certified {
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    [data-theme="light"] .ec-certified { color: #d97706; }
+    [data-theme="dark"]  .ec-certified { color: #ffc600; }
+
+    /* Photo — portrait-friendly 420px */
+    .ec-photo {
+      width: 100%;
+      height: 420px;
+      overflow: hidden;
+      background: #1a1025;
+      position: relative;
+    }
+
+    [data-theme="light"] .ec-photo {
+      background: #f0e6f6;
+    }
+
+    .ec-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+
+
+    /* === CONDOM SIZE HERO — บนสุด เด่นที่สุด === */
+    .ec-condom-hero {
+      text-align: center;
+      padding: 12px 16px 8px;
+      border-bottom: 1px solid;
+    }
+
+    [data-theme="light"] .ec-condom-hero { border-color: rgba(0,0,0,0.08); }
+    [data-theme="dark"]  .ec-condom-hero { border-color: rgba(255,255,255,0.08); }
+
+    .ec-condom-num {
+      font-family: 'Outfit', monospace;
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    [data-theme="light"] .ec-condom-num { color: #d97706; }
+    [data-theme="dark"]  .ec-condom-num { color: #ffc600; }
+
+    .ec-condom-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 2px;
+    }
+
+    [data-theme="light"] .ec-condom-label { color: rgba(0,0,0,0.5); }
+    [data-theme="dark"]  .ec-condom-label { color: rgba(255,255,255,0.45); }
+
+    /* === DIMENSIONS: ยาว | รอบวง === */
+    .ec-dims {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid;
+    }
+
+    [data-theme="light"] .ec-dims { border-color: rgba(0,0,0,0.08); }
+    [data-theme="dark"]  .ec-dims { border-color: rgba(255,255,255,0.08); }
+
+    .ec-dim-cell {
+      padding: 10px 16px;
+      text-align: center;
+    }
+
+    .ec-dim-cell:first-child {
+      border-right: 1px solid;
+    }
+
+    [data-theme="light"] .ec-dim-cell { border-color: rgba(0,0,0,0.08); }
+    [data-theme="dark"]  .ec-dim-cell { border-color: rgba(255,255,255,0.08); }
+
+    .ec-dim-num {
+      font-family: 'Outfit', monospace;
+      font-size: 1.9rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .ec-dim-unit {
+      font-family: 'Outfit', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      opacity: 0.55;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    /* === INFO ROW: ชื่อสาย | Rank === */
+    .ec-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 16px;
+      border-bottom: 1px solid;
+    }
+
+    [data-theme="light"] .ec-info-row { border-color: rgba(0,0,0,0.06); }
+    [data-theme="dark"]  .ec-info-row { border-color: rgba(255,255,255,0.06); }
+
+    .ec-arch-text {
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    [data-theme="light"] .ec-arch-text { color: #d81b60; }
+    [data-theme="dark"]  .ec-arch-text { color: #ff2a85; }
+
+    .ec-rank-text {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    [data-theme="light"] .ec-rank-text { color: #7b1fa2; }
+    [data-theme="dark"]  .ec-rank-text { color: rgba(180,77,255,0.9); }
+
+    /* CTA + URL footer */
+    .ec-footer {
+      padding: 7px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .ec-cta {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    [data-theme="light"] .ec-cta { color: #d81b60; }
+    [data-theme="dark"]  .ec-cta { color: rgba(255,42,133,0.8); }
+
+    .ec-url {
+      font-family: 'Outfit', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    [data-theme="light"] .ec-url { color: rgba(0,0,0,0.35); }
+    [data-theme="dark"]  .ec-url { color: rgba(255,255,255,0.3); }
+
+    /* ============================================================ */
+
+    /* --- LIGHT THEME PASSPORT --- */
+    [data-theme="light"] .passport-card-box {
+      background: linear-gradient(145deg, #ffffff 0%, #fdf4ff 60%, #fff0f6 100%);
+      border: 1.5px solid rgba(216,27,96,0.25);
+      box-shadow: 0 24px 64px rgba(216,27,96,0.10), 0 4px 16px rgba(0,0,0,0.07);
+    }
+
+    /* --- DARK THEME PASSPORT --- */
+    [data-theme="dark"] .passport-card-box {
+      background: linear-gradient(145deg, rgba(10,5,22,0.97) 0%, rgba(22,8,40,0.97) 60%, rgba(18,6,32,0.97) 100%);
+      border: 1px solid rgba(255,42,133,0.35);
+      box-shadow: 0 0 0 1px rgba(180,77,255,0.15), 0 24px 70px rgba(180,77,255,0.3), 0 0 50px rgba(255,42,133,0.12);
+      backdrop-filter: blur(24px);
+    }
+
+    /* PASSPORT TOP STRIPE */
+    .passport-stripe {
+      height: 6px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--pink) 0%, var(--purple) 50%, var(--cyan) 100%);
+    }
+
+    /* PASSPORT INNER PADDING */
+    .passport-inner {
+      padding: 20px;
+    }
+
+    /* PASSPORT HEADER */
+    .passport-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .passport-badge-title {
+      font-family: 'Outfit', monospace;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    [data-theme="light"] .passport-badge-title {
+      background: linear-gradient(135deg, #d81b60, #7b1fa2);
+      color: #fff;
+    }
+
+    [data-theme="dark"] .passport-badge-title {
+      background: linear-gradient(135deg, rgba(255,42,133,0.2), rgba(180,77,255,0.2));
+      border: 1px solid rgba(255,42,133,0.5);
+      color: var(--pink);
+      text-shadow: 0 0 8px rgba(255,42,133,0.6);
+    }
+
+    /* PASSPORT BODY GRID */
+    .passport-body-grid {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* PHOTO FRAME */
+    .photo-upload-frame {
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 120px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    [data-theme="light"] .photo-upload-frame {
+      border: 2px dashed rgba(216,27,96,0.35);
+      background: rgba(216,27,96,0.04);
+    }
+
+    [data-theme="dark"] .photo-upload-frame {
+      border: 2px dashed rgba(255,42,133,0.4);
+      background: rgba(255,42,133,0.05);
+      box-shadow: 0 0 20px rgba(255,42,133,0.1) inset;
+    }
+
+    .photo-upload-frame:hover {
+      border-color: var(--pink);
+      transform: scale(1.01);
+    }
+
+    .photo-upload-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* PHOTO HOVER OVERLAY — hidden by default, show on hover */
+    .photo-hover-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: rgba(0,0,0,0.52);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      border-radius: 10px;
+      pointer-events: none;
+    }
+
+    .photo-upload-frame:hover .photo-hover-overlay {
+      opacity: 1;
+    }
+
+    .photo-hover-overlay span {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .photo-hover-overlay small {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* PASSPORT SHAREABLE WATERMARK (always visible, styled for screenshots) */
+    .passport-watermark {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.65rem;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    [data-theme="light"] .passport-watermark {
+      color: rgba(120,100,140,0.7);
+    }
+
+    [data-theme="dark"] .passport-watermark {
+      color: rgba(200,170,230,0.45);
+    }
+
+    .passport-watermark-url {
+      font-family: 'Outfit', monospace;
+      font-weight: 700;
+      font-size: 0.7rem;
+    }
+
+    [data-theme="light"] .passport-watermark-url {
+      color: var(--pink);
+    }
+
+    [data-theme="dark"] .passport-watermark-url {
+      color: rgba(255,42,133,0.7);
+    }
+
+    /* NAME INPUT */
+    .pass-name-input {
+      width: 100%;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      border: none;
+      border-bottom: 2px solid;
+      background: transparent;
+      outline: none;
+      margin-bottom: 12px;
+      padding: 2px 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    [data-theme="light"] .pass-name-input {
+      color: #0f172a;
+      border-color: rgba(216,27,96,0.3);
+    }
+
+    [data-theme="dark"] .pass-name-input {
+      color: #f0f0ff;
+      border-color: rgba(255,42,133,0.4);
+      text-shadow: 0 0 10px rgba(255,42,133,0.3);
+    }
+
+    .pass-name-input:focus {
+      border-color: var(--pink);
+    }
+
+    /* NAME DISPLAY (view mode) — styled per theme */
+    #passNameDisplay {
+      border-bottom: 2px solid;
+    }
+
+    [data-theme="light"] #passNameDisplay {
+      color: #0f172a;
+      border-color: rgba(216,27,96,0.25);
+    }
+
+    [data-theme="dark"] #passNameDisplay {
+      color: #f0f0ff;
+      border-color: rgba(255,42,133,0.35);
+      text-shadow: 0 0 10px rgba(255,42,133,0.25);
+    }
+
+    #passNameDisplay:hover {
+      border-color: var(--pink);
+    }
+
+    /* FIELD ROWS */
+    .pass-field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid;
+      gap: 8px;
+    }
+
+    [data-theme="light"] .pass-field-row {
+      border-color: rgba(0,0,0,0.06);
+    }
+
+    [data-theme="dark"] .pass-field-row {
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    .pass-field-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .pass-field-val {
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: 'Outfit', monospace;
+      text-align: right;
+    }
+
+    [data-theme="dark"] .pass-field-val {
+      letter-spacing: 0.3px;
+    }
+
+    /* PASSPORT FOOTER */
+    .passport-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid;
+    }
+
+    [data-theme="light"] .passport-footer {
+      border-color: rgba(0,0,0,0.08);
+    }
+
+    [data-theme="dark"] .passport-footer {
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    /* DARK SCANLINE DECORATION */
+    [data-theme="dark"] .passport-card-box::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(255,42,133,0.06) 0px, rgba(255,42,133,0.06) 2px,
+        transparent 2px, transparent 8px
+      );
+      pointer-events: none;
+      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    }
+
+    /* MEDICAL REPORT STYLING */
+    .med-report-box {
+      background: #ffffff;
+      border: 2px solid #0284c7;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      max-width: 650px;
+      width: 100%;
+      box-shadow: 0 25px 70px rgba(2,132,199,0.25);
+      position: relative;
+      color: #0f172a;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .med-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .med-title-main {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #0369a1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .med-subtitle {
+      font-size: 0.76rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .med-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+      font-size: 0.82rem;
+    }
+
+    .med-table th, .med-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    .med-table th {
+      background: #f1f5f9;
+      color: #0369a1;
+      font-weight: 800;
+    }
+
+    .med-sec-header {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin: 12px 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-left: 3px solid #0284c7;
+      padding-left: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--green);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      box-shadow: 0 6px 20px rgba(22,163,74,0.3);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 9999999;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- HEADER -->
+    <header>
+      <div class="header-top-right">
+        <button class="theme-toggle-btn" onclick="toggleTheme()">
+          <span id="themeIcon">☀️</span> <span id="themeText">ธีมสว่าง</span>
+        </button>
+      </div>
+
+      <div class="badge-phase">⚡ MALE ANATOMICAL & DIAGNOSTICS CALCULATOR</div>
+      <h1>เครื่องมือคำนวณสรีระเพศชาย (Solo Male Calculator)</h1>
+      <p>คำนวณประเภทควยเลือด vs ควยเนื้อ สเปกถุงยางอนามัย ปริมาตรเลือด สถิติสเกลประชากร และออกการ์ดแชร์</p>
+    </header>
+
+    <!-- PRESETS -->
+    <div class="preset-toolbar">
+      <button class="btn-preset" onclick="loadPreset('p2', this)">🔷 Preset 2: ค่าเฉลี่ยมาตรฐาน</button>
+      <button class="btn-preset" onclick="loadPreset('p3', this)">🩸 Preset 3: ควยเลือด (Grower)</button>
+      <button class="btn-preset active" onclick="loadPreset('p4', this)">🥩 Preset 4: ควยเนื้อ (Shower)</button>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="grid-2col">
+      
+      <!-- LEFT COLUMN: INPUT FORM & SETUP -->
+      <div>
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-text">🍆 กรอกข้อมูลสรีระเพศชาย</div>
+          </div>
+
+          <!-- UNIT TOGGLE -->
+          <div class="unit-toggle">
+            <button class="unit-btn active" id="u_mm" onclick="setUnit('mm')">มิลลิเมตร (mm)</button>
+            <button class="unit-btn" id="u_cm" onclick="setUnit('cm')">เซนติเมตร (cm)</button>
+            <button class="unit-btn" id="u_in" onclick="setUnit('in')">นิ้ว (inch)</button>
+          </div>
+
+          <!-- FLACCID STATE -->
+          <div class="form-group">
+            <div class="form-label">🔹 สภาวะอ่อนตัว (Flaccid State)</div>
+            <div class="input-row">
+              <div>
+                <div class="field-sublabel">📐 ความยาว (Length)</div>
+                <div class="input-wrapper">
+                  <input type="number" id="l_flaccid" class="form-input" value="135" step="0.1" oninput="calculate()">
+                  <span class="input-unit" id="unit_l1">mm</span>
+                </div>
+              </div>
+              <div>
+                <div class="field-sublabel">⭕ รอบวง (Girth)</div>
+                <div class="input-wrapper">
+                  <input type="number" id="g_flaccid" class="form-input" value="127" step="0.1" oninput="calculate()">
+                  <span class="input-unit" id="unit_g1">mm</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ERECT STATE -->
+          <div class="form-group">
+            <div class="form-label">🔹 สภาวะแข็งตัวเต็มที่ (Erect State)</div>
+            <div class="input-row">
+              <div>
+                <div class="field-sublabel">📐 ความยาว (Length)</div>
+                <div class="input-wrapper">
+                  <input type="number" id="l_erect" class="form-input" value="162" step="0.1" oninput="calculate()">
+                  <span class="input-unit" id="unit_l2">mm</span>
+                </div>
+              </div>
+              <div>
+                <div class="field-sublabel">⭕ รอบวง (Girth)</div>
+                <div class="input-wrapper">
+                  <input type="number" id="g_erect" class="form-input" value="154" step="0.1" oninput="calculate()">
+                  <span class="input-unit" id="unit_g2">mm</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAT LAYER -->
+          <div class="form-group">
+            <div class="form-label"><span>🔹 ชั้นไขมันโคนควย/เนินหัวหน่าว (T<sub>fat</sub>)</span></div>
+            <div class="input-wrapper">
+              <input type="number" id="t_fat" class="form-input" value="15" step="0.1" oninput="calculate()">
+              <span class="input-unit" id="unit_tfat">mm</span>
+            </div>
+          </div>
+
+          <!-- PASSPORT & MEDICAL BUTTON TRIGGERS -->
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
+            <button class="btn-action" style="width:100%; justify-content:center;" onclick="openPassportModal()">
+              🪪 เปิดการ์ดประจำตัว (Penis Spec Passport)
+            </button>
+            <button class="btn-action-med" style="width:100%; justify-content:center;" onclick="openMedicalModal()">
+              🩺 ออกรายงานสำหรับส่งแพทย์ (Medical Report)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: SLEEK STATISTICAL CARDS -->
+      <div>
+
+        <!-- CARD 1: CONDOM SPEC & VOLUME CARD -->
+        <div class="card card-top-stack">
+          <div class="card-title">
+            <div class="card-title-text">🛡️ สเปกถุงยางอนามัย & ปริมาตร</div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-card" id="cardCondom" style="border-color:rgba(0,131,143,0.3); cursor:pointer; position:relative;" onclick="toggleCondomTooltip(event)">
+              <div class="metric-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>ไซส์ถุงยางที่แนะนำ</span>
+                <span style="background:rgba(0,131,143,0.2); color:var(--cyan); border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:bold;">ⓘ</span>
+              </div>
+              <div class="metric-val" id="resCondom" style="color:var(--cyan); font-size:1.4rem;">69 มม.</div>
+              <div class="metric-sub" id="resCondomSub">สูตร: 66.9 มม. (Fit พอดี)</div>
+
+              <div class="condom-tooltip" id="condomTooltip">
+                <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">🧮 วิธีคำนวณและสูตรหาไซส์ถุงยางอนามัย:</div>
+                <div style="font-size:0.74rem; line-height:1.4;">
+                  <strong>1. สูตรคำนวณหน้ากว้างแบบราบ (Nominal Width):</strong><br>
+                  <code style="color:var(--pink);">หน้ากว้าง = รอบวง (G<sub>erect</sub>) ÷ 2.3</code><br>
+                  <span id="condomCalcStep" style="color:var(--gold);">154.0 มม. ÷ 2.3 = 66.9 มม.</span><br><br>
+                  <strong>2. แมตช์ไซส์มาตรฐานสากล:</strong><br>
+                  <span>[49, 52, 54, 56, 58, 60, 64, 69, 72 มม.]</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-card" id="cardDiameter">
+              <div class="metric-title">เส้นผ่านศูนย์กลาง (D<sub>m</sub>)</div>
+              <div class="metric-val" id="resDiameter" style="color:var(--text);">49.0 mm</div>
+              <div class="metric-sub">หน้ากว้างลำควยแข็ง</div>
+            </div>
+
+            <div class="metric-card" id="cardVolume">
+              <div class="metric-title">ปริมาตรรวม (V<sub>erect</sub>)</div>
+              <div class="metric-val" id="resVolume" style="color:var(--purple);">305.7 cc</div>
+              <div class="metric-sub">ทรงกระบอกเรขาคณิต</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: BLOOD VS FLESH DIAGNOSTICS CARD -->
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-text">🩸 ผลวิเคราะห์ประเภทควย (Blood vs Flesh)</div>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+            <div>
+              <span style="font-size:0.8rem; color:var(--muted);">BFPI Index: </span>
+              <strong id="resBfpi" style="font-family:'Outfit'; font-size:1.3rem; color:var(--gold);">1.45</strong>
+            </div>
+            <span id="resBadgeType" class="badge badge-flesh">🥩 ควยเนื้อ (Flesh Shower)</span>
+          </div>
+
+          <!-- ACCURATE DYNAMIC GAUGE BAR WITH POINTER PIN -->
+          <div class="gauge-container">
+            <div class="gauge-bar">
+              <div class="gauge-pointer" id="resGaugePointer" style="left:18.7%;"></div>
+            </div>
+            <div class="gauge-labels">
+              <span style="color:var(--gold);">🥩 Flesh Shower &lt;1.8</span>
+              <span style="color:var(--purple);">🟣 Hybrid 1.8-2.5</span>
+              <span style="color:var(--pink);">🩸 Blood Grower &gt;2.5</span>
+            </div>
+          </div>
+
+          <!-- THAI ARCHEtype BADGE -->
+          <div style="margin-top:10px; padding:12px 14px; background:rgba(216,27,96,0.06); border:1px solid rgba(216,27,96,0.25); border-radius:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+            <div>
+              <div style="font-size:0.75rem; color:var(--muted); font-weight:700;">👑 ฉายาตัวตนสรีระ (Thai Penis Archetype):</div>
+              <div id="resArchetypeTitle" style="font-weight:900; font-size:1.25rem; color:var(--pink); margin-top:2px; letter-spacing:-0.2px;">🥖 สายปังตอ อวบสะท้านตับ</div>
+              <div id="resArchetypeSub" style="font-size:0.78rem; color:var(--text); opacity:0.9; margin-top:1px;">รอบวงใหญ่พิเศษ แน่นเต็มมือ ตับไตไส้พุงมีสะเทือน</div>
+            </div>
+          </div>
+
+          <!-- 3 DIAGNOSTIC METRIC CARDS (BOX 1, 2, 3) -->
+          <div class="metrics-grid" style="margin-top:10px;">
+            <div class="metric-card" id="cardDeltaL">
+              <div class="metric-title">อัตรายืดความยาว (ΔL%)</div>
+              <div class="metric-val" id="resDeltaL" style="color:var(--pink);">+19.3%</div>
+              <div class="metric-sub" id="resSubDeltaL">อ่อน 135 → แข็ง 161 mm</div>
+            </div>
+            <div class="metric-card" id="cardDeltaG">
+              <div class="metric-title">อัตราขยายรอบวง (ΔG%)</div>
+              <div class="metric-val" id="resDeltaG" style="color:var(--cyan);">+21.3%</div>
+              <div class="metric-sub" id="resSubDeltaG">อ่อน 127 → แข็ง 154 mm</div>
+            </div>
+            <div class="metric-card" id="cardBloodVol">
+              <div class="metric-title">เลือดสูบฉีด (ΔV)</div>
+              <div class="metric-val" id="resBloodVol" style="color:var(--gold);">+134.8 cc</div>
+              <div class="metric-sub" id="resSubBloodVol">ขยายตัว 1.79x</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: REGIONAL & GLOBAL PERCENTILE CARD (BOX 4, 5, 6 — FULLY DYNAMIC) -->
+        <div class="card">
+          <div class="card-title" style="flex-wrap:wrap; gap:8px;">
+            <div>
+              <div class="card-title-text">🌐 สถิติเปรียบเทียบสเกลประชากร</div>
+              <div style="font-size:0.72rem; color:var(--muted); font-weight:600;" id="regionSubText">🇹🇭 เปรียบเทียบกับเกณฑ์ประชากรชายไทย</div>
+            </div>
+            <div class="region-toggle-group">
+              <button class="region-btn active" id="regThai" onclick="switchRegion('thai')">🇹🇭 ไทย</button>
+              <button class="region-btn" id="regAsia" onclick="switchRegion('asia')">🌏 เอเชีย</button>
+              <button class="region-btn" id="regGlobal" onclick="switchRegion('global')">🌐 ทั่วโลก</button>
+            </div>
+          </div>
+
+          <!-- 3 PERCENTILE METRIC CARDS (BOX 4, 5, 6) -->
+          <div class="metrics-grid">
+            <div class="metric-card" id="cardLenRank">
+              <div class="metric-title">ความยาว (Length Rank)</div>
+              <div class="metric-val" id="resLenRank" style="color:var(--pink);">Top 0.5%</div>
+              <div class="metric-sub" id="resSubLenRank">ยาวกว่า 99.5% (เทียบชายไทย)</div>
+            </div>
+            <div class="metric-card" id="cardGirthRank">
+              <div class="metric-title">รอบวง (Girth Rank)</div>
+              <div class="metric-val" id="resGirthRank" style="color:var(--cyan);">Top 0.01%</div>
+              <div class="metric-sub" id="resSubGirthRank">ใหญ่กว่า 99.99% (+42.0 มม.)</div>
+            </div>
+            <div class="metric-card" id="cardFatPercent">
+              <div class="metric-title">ไขมันบดบังความยาว</div>
+              <div class="metric-val" id="resFatPercent" style="color:var(--gold);">8.5%</div>
+              <div class="metric-sub" id="resSubBPEL">ชิดกระดูก: 176 mm</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: ANATOMICAL POSITION MATCHER CARD -->
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-text">📐 ท่าร่วมรักที่เหมาะสมตามสรีระ (Anatomical Position Matcher)</div>
+          </div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-bottom:10px;">
+            วิเคราะห์มุมสอดใส่ ความแน่น และระยะความลึกที่เหมาะสมสำหรับสเปกสรีระของคุณ:
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div style="background:rgba(22,163,74,0.06); border:1px solid rgba(22,163,74,0.25); border-radius:var(--radius-md); padding:10px 12px;">
+              <div style="font-weight:800; font-size:0.82rem; color:var(--green); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+                <span>⭐ ท่าแนะนำติดดาว (Best Match)</span>
+              </div>
+              <ul style="font-size:0.75rem; list-style:none; padding-left:0; line-height:1.6;" id="posBestList">
+                <li>🛋️ <strong>Spooning (ตะแคงซ้อน):</strong> กระชับแนบแน่น คุมลึกดีเยี่ยม</li>
+                <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> แน่นเต็มสัมผัส ปุ่มคลิตอริสฟินสุด</li>
+                <li>📐 <strong>CAT Technique:</strong> เสียดสีเต็มพื้นที่ โดยไม่ต้องแทงลึก</li>
+              </ul>
+            </div>
+
+            <div style="background:rgba(220,38,38,0.06); border:1px solid rgba(220,38,38,0.25); border-radius:var(--radius-md); padding:10px 12px;">
+              <div style="font-weight:800; font-size:0.82rem; color:var(--red); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+                <span>⚠️ ท่าที่ควรระวัง (Caution Positions)</span>
+              </div>
+              <ul style="font-size:0.75rem; list-style:none; padding-left:0; line-height:1.6;" id="posCautionList">
+                <li>🐕 <strong>Deep Doggy:</strong> สอดใส่ลึกสุดตัว เสี่ยงชนปากมดลูก</li>
+                <li>🤠 <strong>Cowboy (ผู้หญิงคุม):</strong> คุมมุมยาก อาจพับโคนหากอวบใหญ่</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4: FLACCID VS ERECT SVG VISUALIZER CARD -->
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-text">📊 แผนภาพเปรียบเทียบสภาวะยืดพองตัว</div>
+          </div>
+          <div style="background:var(--metric-bg); border:1px solid var(--border); border-radius:var(--radius-md); padding:8px; text-align:center;">
+            <svg id="anatomySvg" width="100%" height="150" viewBox="0 0 360 150"></svg>
+      </div>
+
+    </div>
+
+    <!-- FOOTER SECTION -->
+    <footer style="margin-top:24px; padding:20px; background:var(--card); backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow); text-align:center;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:14px;">
+        <div style="text-align:left;">
+          <div style="font-weight:900; font-size:1.05rem; background:linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">⚡ MALE ANATOMICAL & DIAGNOSTICS ENGINE</div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">เครื่องมือคำนวณและวิเคราะห์สรีระเพศชายเชิงกลศาสตร์การแพทย์</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-preset" style="font-size:0.75rem; padding:4px 12px;" onclick="openPassportModal()">🪪 Spec Passport</button>
+          <button class="btn-preset" style="font-size:0.75rem; padding:4px 12px; color:var(--cyan); border-color:rgba(0,131,143,0.3);" onclick="openMedicalModal()">🩺 Medical Report</button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:14px; text-align:left; font-size:0.76rem; color:var(--dim); margin-bottom:14px;">
+        <div style="background:var(--metric-bg); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
+          <strong style="color:var(--text); display:block; margin-bottom:3px;">🔬 อ้างอิงมาตรฐานการแพทย์ (Clinical Sources):</strong>
+          <span>ข้อมูลเปอร์เซ็นต์ไทล์สากลอ้างอิงจาก Veale et al. (2015) BJU International, Herbenick et al. (2014) Journal of Sexual Medicine และเกณฑ์มาตรฐานสมาคมยูโรวิทยาไทย</span>
+        </div>
+        <div style="background:var(--metric-bg); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
+          <strong style="color:var(--text); display:block; margin-bottom:3px;">🔒 นโยบายความเป็นส่วนตัว (100% Privacy First):</strong>
+          <span>ข้อมูลทั้งหมดถูกประมวลผลภายในเครื่องส่วนบุคคล (Local Machine Client-Side) ไม่มีเทรซการบันทึกหรือส่งออกข้อมูลไปยังเซิร์ฟเวอร์ภายนอกใดๆ ทั้งสิ้น</span>
+        </div>
+      </div>
+
+      <div style="font-size:0.72rem; color:var(--dim); opacity:0.85;">
+        © 2026 Male Anatomical Diagnostics Engine • Designed with Precision & Clinical Excellence
+      </div>
+    </footer>
+  </div>
+
+  <!-- PASSPORT MODAL OVERLAY -->
+  <div class="modal-overlay" id="passportModalOverlay" onclick="if(event.target===this) closePassportModal()">
+    <div class="passport-card-box" id="passportCard">
+
+      <!-- TOP GRADIENT STRIPE -->
+      <div class="passport-stripe"></div>
+
+      <!-- HEADER: Badge + Certified + Close -->
+      <div class="passport-header-row">
+        <div class="passport-badge-title">⚕ SPEC PASSPORT</div>
+        <div style="font-size:0.68rem; font-weight:800; color:var(--gold); letter-spacing:1px;">★ CERTIFIED ★</div>
+        <button onclick="closePassportModal()" style="background:transparent; border:none; color:var(--muted); font-size:1rem; cursor:pointer; line-height:1; padding:0 2px;">✕</button>
+      </div>
+
+      <!-- HERO PHOTO AREA: full width, click to upload -->
+      <div class="passport-photo-hero" onclick="document.getElementById('passportFileUploader').click()" title="คลิกเพื่ออัปโหลดรูป">
+        <img id="passportImgView" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 260' width='380' height='260'><defs><radialGradient id='bg' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='rgba(216,27,96,0.06)'/><stop offset='100%25' stop-color='rgba(123,31,162,0.04)'/></radialGradient></defs><rect width='380' height='260' fill='url(%23bg)'/><g transform='translate(190,130)'><ellipse cx='0' cy='-55' rx='28' ry='28' fill='rgba(216,27,96,0.18)' stroke='rgba(216,27,96,0.5)' stroke-width='1.5'/><rect x='-18' y='-36' width='36' height='85' rx='18' fill='rgba(216,27,96,0.15)' stroke='rgba(216,27,96,0.45)' stroke-width='1.5'/><ellipse cx='-22' cy='58' rx='12' ry='8' fill='rgba(180,77,255,0.12)' stroke='rgba(180,77,255,0.3)' stroke-width='1'/><ellipse cx='22' cy='58' rx='12' ry='8' fill='rgba(180,77,255,0.12)' stroke='rgba(180,77,255,0.3)' stroke-width='1'/></g><text x='190' y='230' text-anchor='middle' font-family='Outfit,sans-serif' font-size='11' fill='rgba(216,27,96,0.45)' letter-spacing='2'>📷 TAP TO UPLOAD YOUR PHOTO</text></svg>" alt="รูปภาพ">
+        <!-- HOVER OVERLAY -->
+        <div class="photo-hover-overlay">
+          <span>📷</span>
+          <small>อัปโหลดรูปภาพ</small>
+        </div>
+      </div>
+      <input type="file" id="passportFileUploader" accept="image/*" style="display:none;" onchange="loadPassportPhoto(this)">
+      <input type="hidden" id="passName" value="">
+
+      <!-- SPECS GRID: 2-column -->
+      <div class="passport-specs-grid">
+        <div class="passport-spec-cell">
+          <div class="passport-spec-label">👑 ฉายาสรีระ</div>
+          <div class="passport-spec-value" style="color:var(--pink);" id="passArchetype">🥩 Flesh Shower</div>
+        </div>
+        <div class="passport-spec-cell">
+          <div class="passport-spec-label">📏 ยาว × รอบวง</div>
+          <div class="passport-spec-value" id="passSize">16.1 × 15.4 cm</div>
+        </div>
+        <div class="passport-spec-cell">
+          <div class="passport-spec-label">🛡️ ถุงยางที่พอดี</div>
+          <div class="passport-spec-value" style="color:var(--gold);" id="passCondom">69 mm Fit</div>
+        </div>
+        <div class="passport-spec-cell">
+          <div class="passport-spec-label">🩸 เลือดสูบฉีด</div>
+          <div class="passport-spec-value" style="color:var(--cyan);" id="passBloodVol">+134.8 cc</div>
+        </div>
+        <div class="passport-spec-cell" style="border-bottom:none;">
+          <div class="passport-spec-label">🌐 เปอร์เซ็นต์ไทล์โลก</div>
+          <div class="passport-spec-value" style="color:var(--purple);" id="passPercentile">Top 0.5%</div>
+        </div>
+        <div class="passport-spec-cell" style="border-bottom:none;">
+          <div class="passport-spec-label">🩸 BFPI Index</div>
+          <div class="passport-spec-value" style="color:var(--gold);" id="passBfpi">1.45</div>
+        </div>
+      </div>
+
+      <!-- CTA TAGLINE — static text, not clickable -->
+      <div class="passport-cta">
+        🍆 คุณอยากรู้สเปกตัวเองไหม? → ลองคำนวณดูที่ลิ้งค์ด้านล่าง!
+      </div>
+
+      <!-- FOOTER: Watermark + Export -->
+      <div class="passport-footer">
+        <div class="passport-watermark">
+          <span>⚕ male calculator</span>
+          <span class="passport-watermark-url" id="passportSiteUrl">localhost:3100/male_calculator.html</span>
+        </div>
+        <button class="btn-action" style="padding:5px 14px; font-size:0.78rem;" onclick="exportPassportCard()">
+          <span class="export-btn-text">📲 แชร์ / บันทึก</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDDEN EXPORT CARD — captured by html2canvas for PNG/Share -->
+  <div id="passportExportCard">
+    <div class="ec-stripe"></div>
+    <div class="ec-header">
+      <div class="ec-badge">⚕ SPEC PASSPORT</div>
+      <div class="ec-certified">★ CERTIFIED ★</div>
+    </div>
+
+    <!-- รูปภาพ — Hero -->
+    <div class="ec-photo">
+      <img id="exportImgView" src="" alt="spec photo">
+    </div>
+
+    <!-- ถุงยาง — เด่นบนสุด เข้าใจง่ายที่สุด -->
+    <div class="ec-condom-hero">
+      <div class="ec-condom-num" id="exportCondom">64</div>
+      <div class="ec-condom-label">mm · ไซส์ถุงยางอนามัยที่พอดี</div>
+    </div>
+
+    <!-- ยาว | รอบวง -->
+    <div class="ec-dims">
+      <div class="ec-dim-cell">
+        <div class="ec-dim-num" id="exportLength" style="color:#d81b60;">11.0</div>
+        <div class="ec-dim-unit">cm · ความยาว</div>
+      </div>
+      <div class="ec-dim-cell">
+        <div class="ec-dim-num" id="exportGirth" style="color:#7b1fa2;">14.5</div>
+        <div class="ec-dim-unit">cm · รอบวง</div>
+      </div>
+    </div>
+
+    <!-- ฉายาสรีระ | เปอร์เซ็นต์ไทล์ -->
+    <div class="ec-info-row">
+      <div class="ec-arch-text" id="exportArchetype">🥩 Flesh Shower</div>
+      <div class="ec-rank-text" id="exportPercentile">Top 85.8% 🌎</div>
+    </div>
+
+    <!-- Footer CTA + URL -->
+    <div class="ec-footer">
+      <div class="ec-cta">🍆 อยากรู้สเปกตัวเอง? → ลองคำนวณดูที่:</div>
+      <div class="ec-url" id="exportSiteUrl">localhost:3100/male_calculator.html</div>
+    </div>
+  </div>
+
+  <!-- MEDICAL REPORT MODAL OVERLAY -->
+  <div class="modal-overlay" id="medicalModalOverlay" onclick="if(event.target===this) closeMedicalModal()">
+    <div class="med-report-box" id="medReportCard">
+      <div class="med-header">
+        <div>
+          <div class="med-title-main">🩺 MALE UROLOGICAL & ANATOMICAL EVALUATION REPORT</div>
+          <div class="med-subtitle">รายงานสรุปผลวิเคราะห์สรีระเพศชายและระบบหลอดเลือดสำหรับการปรึกษาแพทย์</div>
+        </div>
+        <button onclick="closeMedicalModal()" style="background:transparent; border:none; color:#64748b; font-size:1.4rem; cursor:pointer;">✕</button>
+      </div>
+
+      <!-- MEDICAL REPORT BODY -->
+      <div style="font-size:0.82rem; margin-bottom:12px; color:#334155; display:flex; justify-content:space-between;">
+        <span><strong>ชื่อผู้รับการประเมิน:</strong> <span id="medPatientName">พี่โด Master Specs</span></span>
+        <span><strong>วันที่ประเมิน:</strong> <span id="medDate">10/08/2026</span></span>
+      </div>
+
+      <div class="med-sec-header">📌 1. Anatomical Measurement Summary (ค่าสรีระทางกายวิภาค)</div>
+      <table class="med-table">
+        <thead>
+          <tr>
+            <th>รายการประเมิน (Parameter)</th>
+            <th>สภาวะอ่อนตัว (Flaccid)</th>
+            <th>สภาวะแข็งตัวเต็มที่ (Erect)</th>
+            <th>หน่วย (Unit)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ความยาวสรีระ (Length)</td>
+            <td id="medLenFlaccid">135.0</td>
+            <td id="medLenErect">161.0</td>
+            <td>มิลลิเมตร (mm)</td>
+          </tr>
+          <tr>
+            <td>เส้นรอบวง (Girth)</td>
+            <td id="medGirthFlaccid">127.0</td>
+            <td id="medGirthErect">154.0</td>
+            <td>มิลลิเมตร (mm)</td>
+          </tr>
+          <tr>
+            <td>ความยาวชิดกระดูก (BPEL)</td>
+            <td colspan="2" id="medBPEL" style="text-align:center; font-weight:700;">176.0 mm (ชั้นไขมันโคน T<sub>fat</sub> = 15 mm)</td>
+            <td>มิลลิเมตร (mm)</td>
+          </tr>
+          <tr>
+            <td>เส้นผ่านศูนย์กลางลำควย (Mid-Shaft D<sub>m</sub>)</td>
+            <td colspan="2" id="medDiameter" style="text-align:center; font-weight:700;">49.0 mm</td>
+            <td>มิลลิเมตร (mm)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="med-sec-header">📌 2. Penile Hemodynamics & Elasticity (ระบบหลอดเลือดและการขยายตัว)</div>
+      <table class="med-table">
+        <tbody>
+          <tr>
+            <td style="width:45%;"><strong>ดัชนีควยเลือด vs ควยเนื้อ (BFPI Ratio):</strong></td>
+            <td id="medBFPI" style="font-weight:700; color:#d97706;">1.45 (🥩 Pure Flesh Shower)</td>
+          </tr>
+          <tr>
+            <td><strong>ปริมาตรเลือดสูบฉีดเข้าถ้ำ (Erect Blood Volume ΔV):</strong></td>
+            <td id="medBloodVol" style="font-weight:700; color:#00838f;">+134.8 cc (อัตราขยายตัว 1.79 เท่า)</td>
+          </tr>
+          <tr>
+            <td><strong>อัตราการยืดขยายตัว (Axial & Radial Ratio):</strong></td>
+            <td id="medExpandRatios">ความยาว +19.3% | รอบวง +21.3%</td>
+          </tr>
+          <tr>
+            <td><strong>ขนาดถุงยางอนามัยที่พอดี (Nominal Width Fit):</strong></td>
+            <td id="medCondomSize" style="font-weight:700; color:#d97706;">69 mm Nominal Width</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="med-sec-header">📌 3. Clinical Normative Scale (สถิติเปรียบเทียบประชากรการแพทย์)</div>
+      <table class="med-table">
+        <tbody>
+          <tr>
+            <td style="width:45%;"><strong>Length Percentile Rank (Veale et al. Norms):</strong></td>
+            <td id="medLenPercentile">Top 0.5% (ยาวกว่า 99.5% ของประชากร)</td>
+          </tr>
+          <tr>
+            <td><strong>Girth Percentile Rank (Veale et al. Norms):</strong></td>
+            <td id="medGirthPercentile">Top 0.01% (ใหญ่กว่า 99.99% ของประชากร)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- FOOTER ACTIONS -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:2px solid #0284c7; padding-top:12px;">
+        <div style="font-size:0.7rem; color:#64748b;">OFFICIAL UROLOGICAL CLINICAL EVALUATION REPORT • VERIFIED LOCALHOST</div>
+        <button class="btn-action-med" style="padding:8px 20px;" onclick="downloadMedicalReport()">💾 ดาวน์โหลดรายงานทางการแพทย์ (PNG/PDF)</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast">บันทึกรูปภาพเรียบร้อยแล้ว!</div>
+
+  <script>
+    let currentUnit = 'mm';
+    let currentRegion = 'thai';
+    let currentTheme = 'light';
+
+    // PRESETS
+    const PRESETS = {
+      p2: { name: 'ค่าเฉลี่ยมาตรฐาน', l_flaccid: 85, g_flaccid: 85, l_erect: 135, g_erect: 115, t_fat: 10 },
+      p3: { name: 'ควยเลือด Grower Specs', l_flaccid: 60, g_flaccid: 70, l_erect: 150, g_erect: 130, t_fat: 10 },
+      p4: { name: 'ควยเนื้อ Shower Specs', l_flaccid: 135, g_flaccid: 127, l_erect: 162, g_erect: 154, t_fat: 10 }
+    };
+
+    // ACCURATE NORMAL CUMULATIVE DISTRIBUTION FUNCTION (CDF)
+    function normalCDF(z) {
+      let t = 1 / (1 + 0.2316419 * Math.abs(z));
+      let d = 0.3989423 * Math.exp(-z * z / 2);
+      let p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+      return z >= 0 ? 1 - p : p;
+    }
+
+    function triggerPulseAnimation() {
+      const cards = ['cardDeltaL', 'cardDeltaG', 'cardBloodVol', 'cardLenRank', 'cardGirthRank', 'cardFatPercent'];
+      cards.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('updated');
+          void el.offsetWidth; // trigger reflow
+          el.classList.add('updated');
+        }
+      });
+    }
+
+    function toggleTheme() {
+      currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      document.getElementById('themeIcon').innerText = currentTheme === 'light' ? '☀️' : '🌙';
+      document.getElementById('themeText').innerText = currentTheme === 'light' ? 'ธีมสว่าง' : 'ธีมมืด';
+      calculate();
+    }
+
+    function loadPreset(key, btn) {
+      document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+      const data = PRESETS[key] || PRESETS.p4;
+
+      let scale = currentUnit === 'cm' ? 0.1 : (currentUnit === 'in' ? 1/25.4 : 1);
+      document.getElementById('l_flaccid').value = (data.l_flaccid * scale).toFixed(1);
+      document.getElementById('g_flaccid').value = (data.g_flaccid * scale).toFixed(1);
+      document.getElementById('l_erect').value = (data.l_erect * scale).toFixed(1);
+      document.getElementById('g_erect').value = (data.g_erect * scale).toFixed(1);
+      document.getElementById('t_fat').value = (data.t_fat * scale).toFixed(1);
+      document.getElementById('passName').value = data.name;
+      calculate();
+      triggerPulseAnimation();
+    }
+
+    function setUnit(unit) {
+      if (unit === currentUnit) return;
+      let oldUnit = currentUnit;
+      currentUnit = unit;
+
+      document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`u_${unit}`).classList.add('active');
+
+      let conversion = 1;
+      if (oldUnit === 'mm' && unit === 'cm') conversion = 0.1;
+      else if (oldUnit === 'mm' && unit === 'in') conversion = 1/25.4;
+      else if (oldUnit === 'cm' && unit === 'mm') conversion = 10;
+      else if (oldUnit === 'cm' && unit === 'in') conversion = 1/2.54;
+      else if (oldUnit === 'in' && unit === 'mm') conversion = 25.4;
+      else if (oldUnit === 'in' && unit === 'cm') conversion = 2.54;
+
+      ['l_flaccid', 'g_flaccid', 'l_erect', 'g_erect', 't_fat'].forEach(id => {
+        let val = parseFloat(document.getElementById(id).value) || 0;
+        document.getElementById(id).value = (val * conversion).toFixed(1);
+      });
+
+      ['unit_l1', 'unit_g1', 'unit_l2', 'unit_g2', 'unit_tfat'].forEach(id => {
+        document.getElementById(id).innerText = unit;
+      });
+
+      calculate();
+      triggerPulseAnimation();
+    }
+
+    function switchRegion(region) {
+      currentRegion = region;
+      document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
+      let btnId = region === 'thai' ? 'regThai' : (region === 'asia' ? 'regAsia' : 'regGlobal');
+      let btnElem = document.getElementById(btnId);
+      if(btnElem) btnElem.classList.add('active');
+
+      let subText = document.getElementById('regionSubText');
+      if(region === 'thai') subText.innerText = '🇹🇭 เปรียบเทียบกับเกณฑ์ประชากรชายไทย';
+      else if(region === 'asia') subText.innerText = '🌏 เปรียบเทียบกับเกณฑ์ประชากรชายเอเชีย';
+      else subText.innerText = '🌐 เปรียบเทียบกับเกณฑ์ประชากรชายทั่วโลก';
+
+      calculate();
+      triggerPulseAnimation();
+    }
+
+    function toggleCondomTooltip(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('condomTooltip').classList.toggle('show');
+    }
+
+    document.addEventListener('click', () => {
+      document.getElementById('condomTooltip').classList.remove('show');
+    });
+
+    function calculate() {
+      let scaleToMm = currentUnit === 'cm' ? 10 : (currentUnit === 'in' ? 25.4 : 1);
+      let l_flaccid = (parseFloat(document.getElementById('l_flaccid').value) || 1) * scaleToMm;
+      let g_flaccid = (parseFloat(document.getElementById('g_flaccid').value) || 1) * scaleToMm;
+      let l_erect   = (parseFloat(document.getElementById('l_erect').value) || 1) * scaleToMm;
+      let g_erect   = (parseFloat(document.getElementById('g_erect').value) || 1) * scaleToMm;
+      let t_fat     = (parseFloat(document.getElementById('t_fat').value) || 0) * scaleToMm;
+
+      // 1. CONDOM FIT & DIAMETER
+      let w_condom = g_erect / 2.3;
+      let standardSizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
+      let bestSize = standardSizes.reduce((prev, curr) => Math.abs(curr - w_condom) < Math.abs(prev - w_condom) ? curr : prev);
+      let diameter = g_erect / Math.PI;
+
+      document.getElementById('resCondom').innerText = `${bestSize} มม.`;
+      document.getElementById('resCondomSub').innerText = `สูตร: ${w_condom.toFixed(1)} มม. (Fit พอดี)`;
+      document.getElementById('condomCalcStep').innerText = `${g_erect.toFixed(1)} มม. ÷ 2.3 = ${w_condom.toFixed(1)} มม.`;
+      document.getElementById('resDiameter').innerText = `${diameter.toFixed(1)} mm`;
+
+      // 2. VOLUME & HEMODYNAMICS
+      let r_erect = g_erect / (2 * Math.PI);
+      let r_flaccid = g_flaccid / (2 * Math.PI);
+      let v_erect = Math.PI * r_erect * r_erect * l_erect / 1000;
+      let v_flaccid = Math.PI * r_flaccid * r_flaccid * l_flaccid / 1000;
+      let bloodVol = v_erect - v_flaccid;
+      let volRatio = v_flaccid > 0 ? (v_erect / v_flaccid) : 1;
+
+      // 3. BFPI INDEX & ARCHETYPE (9 types: Growth × Shape)
+      let bfpi = (l_erect * g_erect) / (l_flaccid * g_flaccid);
+      let badgeElem = document.getElementById('resBadgeType');
+      let archTitleElem = document.getElementById('resArchetypeTitle');
+      let archSubElem = document.getElementById('resArchetypeSub');
+
+      let pointerLeftPercent = 0;
+      if (bfpi < 1.8) {
+        let ratio = Math.max(0, Math.min(1, (bfpi - 1.0) / 0.8));
+        pointerLeftPercent = ratio * 33.3;
+      } else if (bfpi < 2.5) {
+        let ratio = Math.max(0, Math.min(1, (bfpi - 1.8) / 0.7));
+        pointerLeftPercent = 33.3 + (ratio * 33.3);
+      } else {
+        let ratio = Math.max(0, Math.min(1, (bfpi - 2.5) / 1.0));
+        pointerLeftPercent = 66.6 + (ratio * 33.4);
+      }
+      document.getElementById('resGaugePointer').style.left = `${pointerLeftPercent.toFixed(1)}%`;
+
+      // --- Growth type ---
+      let growthType; // 'shower' | 'hybrid' | 'grower'
+      if (bfpi < 1.8) growthType = 'shower';
+      else if (bfpi < 2.5) growthType = 'hybrid';
+      else growthType = 'grower';
+
+      // --- Shape type (L/G ratio ใช้ค่า erect) ---
+      let lgRatio = l_erect / g_erect;
+      let shapeType; // 'slim' | 'balanced' | 'thick'
+      if (lgRatio > 1.1) shapeType = 'slim';
+      else if (lgRatio >= 0.85) shapeType = 'balanced';
+      else shapeType = 'thick';
+
+      // --- 9 Archetypes ---
+      const ARCHETYPES = {
+        'shower_slim':     { emoji: '⚡', name: 'เพรียวพร้อม',     desc: 'อวบตั้งแต่อ่อน ทรงยาวเพรียวเฉียบ',                        badge: 'badge-flesh',  export: '⚡ เพรียวพร้อม' },
+        'shower_balanced': { emoji: '👁️', name: 'เปิดไพ่',        desc: 'แน่นเต็มมือตลอด ทุกสัดส่วนลงตัว',                         badge: 'badge-flesh',  export: '👁️ เปิดไพ่' },
+        'shower_thick':    { emoji: '🔥', name: 'เต็มพิกัด',      desc: 'อวบอัดแน่น หนาเต็มกำมือ ไม่ต้องแข็งก็เต็มตา',              badge: 'badge-flesh',  export: '🔥 เต็มพิกัด' },
+        'hybrid_slim':     { emoji: '✂️', name: 'เพรียวคม',       desc: 'ยืดตัวปานกลาง ทรงเพรียวคม',                                badge: 'badge-hybrid', export: '✂️ เพรียวคม' },
+        'hybrid_balanced': { emoji: '⚖️', name: 'ลงตัว',         desc: 'สมดุลทุกมิติ ตอบโจทย์ทุกสถานการณ์',                         badge: 'badge-hybrid', export: '⚖️ ลงตัว' },
+        'hybrid_thick':    { emoji: '💪', name: 'แน่นหนา',        desc: 'ยืดตัวพอประมาณ แต่หนาแน่นเต็มกำ',                          badge: 'badge-hybrid', export: '💪 แน่นหนา' },
+        'grower_slim':     { emoji: '🗡️', name: 'คมในฝัก',       desc: 'ตอนอ่อนเล็ก แข็งแล้วยืดยาวคม',                              badge: 'badge-blood',  export: '🗡️ คมในฝัก' },
+        'grower_balanced': { emoji: '🐯', name: 'เสือซ่อนเล็บ',   desc: 'กระทัดรัดตอนอ่อน แข็งแล้วขยายใหญ่สมส่วน',                   badge: 'badge-blood',  export: '🐯 เสือซ่อนเล็บ' },
+        'grower_thick':    { emoji: '🐉', name: 'มังกรซ่อนกาย',   desc: 'ตอนอ่อนเล็ก แข็งแล้วพองหนาสุดทาง',                         badge: 'badge-blood',  export: '🐉 มังกรซ่อนกาย' },
+      };
+
+      const archKey = `${growthType}_${shapeType}`;
+      const arch = ARCHETYPES[archKey] || ARCHETYPES['hybrid_balanced'];
+
+      badgeElem.className = `badge ${arch.badge}`;
+      badgeElem.innerText = `${arch.emoji} ${arch.name}`;
+      archTitleElem.innerText = `${arch.emoji} ${arch.name}`;
+      archSubElem.innerText = arch.desc;
+
+      if (document.getElementById('passArchetype')) document.getElementById('passArchetype').innerText = `${arch.emoji} ${arch.name}`;
+      if (document.getElementById('passBfpi')) document.getElementById('passBfpi').innerText = bfpi.toFixed(2);
+      if (document.getElementById('exportArchetype')) document.getElementById('exportArchetype').innerText = arch.export;
+
+      document.getElementById('resBfpi').innerText = bfpi.toFixed(2);
+
+      // 4. EXPANSION RATIOS & BPEL (BOX 1, 2, 3)
+      let dL = ((l_erect - l_flaccid) / l_flaccid * 100).toFixed(1);
+      let dG = ((g_erect - g_flaccid) / g_flaccid * 100).toFixed(1);
+      let l_bpel = l_erect + t_fat;
+      let fatRatio = ((t_fat / l_bpel) * 100).toFixed(1);
+
+      document.getElementById('resDeltaL').innerText = (dL >= 0 ? `+${dL}%` : `${dL}%`);
+      document.getElementById('resSubDeltaL').innerText = `อ่อน ${l_flaccid.toFixed(0)} → แข็ง ${l_erect.toFixed(0)} mm`;
+      document.getElementById('resDeltaG').innerText = (dG >= 0 ? `+${dG}%` : `${dG}%`);
+      document.getElementById('resSubDeltaG').innerText = `อ่อน ${g_flaccid.toFixed(0)} → แข็ง ${g_erect.toFixed(0)} mm`;
+      document.getElementById('resSubBloodVol').innerText = `ขยายตัว ${volRatio.toFixed(2)}x`;
+
+      // 5. REGIONAL PERCENTILES (BOX 4, 5, 6 — DYNAMICALLY DEPENDENT ON REGION TOGGLE)
+      let meanLen = 131.2, sdLen = 16.6;
+      let meanGirth = 116.6, sdGirth = 11.0;
+      let regionName = 'ชายทั่วโลก';
+
+      if (currentRegion === 'thai') {
+        meanLen = 125.0; sdLen = 14.0;
+        meanGirth = 112.0; sdGirth = 10.0;
+        regionName = 'ชายไทย';
+      } else if (currentRegion === 'asia') {
+        meanLen = 128.0; sdLen = 15.0;
+        meanGirth = 114.0; sdGirth = 10.5;
+        regionName = 'ชายเอเชีย';
+      }
+
+      let zL = (l_erect - meanLen) / sdLen;
+      let zG = (g_erect - meanGirth) / sdGirth;
+
+      let pctL = Math.min(99.99, Math.max(0.01, normalCDF(zL) * 100));
+      let pctG = Math.min(99.99, Math.max(0.01, normalCDF(zG) * 100));
+      let topL = (100 - pctL);
+      let topG = (100 - pctG);
+
+      let diffGirth = g_erect - meanGirth;
+      let diffGirthText = diffGirth >= 0 ? `+${diffGirth.toFixed(1)} มม.` : `${diffGirth.toFixed(1)} มม.`;
+
+      document.getElementById('resLenRank').innerText = topL < 0.1 ? 'Top 0.01%' : `Top ${topL.toFixed(1)}%`;
+      document.getElementById('resSubLenRank').innerText = `ยาวกว่า ${pctL.toFixed(1)}% (เทียบ${regionName})`;
+      
+      document.getElementById('resGirthRank').innerText = topG < 0.1 ? 'Top 0.01%' : `Top ${topG.toFixed(1)}%`;
+      document.getElementById('resSubGirthRank').innerText = `ใหญ่กว่า ${pctG.toFixed(2)}% (${diffGirthText})`;
+      
+      document.getElementById('resFatPercent').innerText = `${fatRatio}%`;
+      document.getElementById('resSubBPEL').innerText = `ชิดกระดูก: ${l_bpel.toFixed(0)} mm`;
+
+      document.getElementById('resVolume').innerText = `${v_erect.toFixed(1)} cc`;
+      document.getElementById('resBloodVol').innerText = (bloodVol >= 0 ? `+${bloodVol.toFixed(1)} cc` : `${bloodVol.toFixed(1)} cc`);
+
+      document.getElementById('passSize').innerText = `${(l_erect/10).toFixed(1)} x ${(g_erect/10).toFixed(1)} cm`;
+      document.getElementById('passBloodVol').innerText = (bloodVol >= 0 ? `+${bloodVol.toFixed(1)} cc` : `${bloodVol.toFixed(1)} cc`);
+      document.getElementById('passCondom').innerText = `${bestSize} มม. Fit`;
+      document.getElementById('passPercentile').innerText = topL < 0.1 ? 'Top 0.01%' : `Top ${topL.toFixed(1)}%`;
+
+      // SYNC TO EXPORT CARD
+      document.getElementById('exportLength').innerText     = (l_erect/10).toFixed(1);
+      document.getElementById('exportGirth').innerText      = (g_erect/10).toFixed(1);
+      document.getElementById('exportCondom').innerText     = `${bestSize}`;
+      document.getElementById('exportPercentile').innerText = topL < 0.1 ? 'Top 0.01% 🌎' : `Top ${topL.toFixed(1)}% 🌎`;
+
+      // UPDATE MEDICAL REPORT DATA
+      document.getElementById('medPatientName').innerText = document.getElementById('passName').value || 'พี่โด Master Specs';
+      let now = new Date();
+      document.getElementById('medDate').innerText = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+      document.getElementById('medLenFlaccid').innerText = l_flaccid.toFixed(1);
+      document.getElementById('medLenErect').innerText = l_erect.toFixed(1);
+      document.getElementById('medGirthFlaccid').innerText = g_flaccid.toFixed(1);
+      document.getElementById('medGirthErect').innerText = g_erect.toFixed(1);
+      document.getElementById('medBPEL').innerHTML = `${l_bpel.toFixed(1)} mm (ชั้นไขมันโคน T<sub>fat</sub> = ${t_fat.toFixed(1)} mm)`;
+      document.getElementById('medDiameter').innerText = `${diameter.toFixed(1)} mm`;
+
+      document.getElementById('medBFPI').innerText = `${bfpi.toFixed(2)} (${bfpi>=2.5?'🩸 Pure Blood Grower':(bfpi>=1.8?'🟣 Hybrid':'🥩 Pure Flesh Shower')})`;
+      document.getElementById('medBloodVol').innerText = `${bloodVol>=0?'+':''}${bloodVol.toFixed(1)} cc (ขยายตัว ${volRatio.toFixed(2)} เท่า)`;
+      document.getElementById('medExpandRatios').innerText = `ความยาว ${dL>=0?'+':''}${dL}% | รอบวง ${dG>=0?'+':''}${dG}%`;
+      document.getElementById('medCondomSize').innerText = `${bestSize} mm Nominal Width`;
+
+      document.getElementById('medLenPercentile').innerText = `Top ${(100 - pctL).toFixed(2)}% (ยาวกว่า ${pctL.toFixed(1)}% ของ${regionName})`;
+      document.getElementById('medGirthPercentile').innerText = `Top ${(100 - pctG).toFixed(2)}% (ใหญ่กว่า ${pctG.toFixed(2)}% ของ${regionName})`;
+
+      // DYNAMIC ANATOMICAL POSITION MATCHER (4-TIER EVALUATOR)
+      let bestPos = '', cautionPos = '';
+
+      if (dL >= 100) {
+        // High Expansion Grower (ควยเลือด)
+        bestPos = `<li>🩸 <strong>Grower Doggy Style:</strong> รองรับสภาวะพองตัวยืดขยายพุ่งสูงสุด</li>
+                   <li>🛏️ <strong>Elevated Missionary:</strong> หนุนหมอนยกสะโพก ส่งเสริมการยืดตัวเต็มพิกัด</li>
+                   <li>🛋️ <strong>Spooning:</strong> ผ่อนคลายกล้ามเนื้อ ให้เลือดสูบฉีดได้เต็มประสิทธิภาพ</li>`;
+        cautionPos = `<li>🤠 <strong>Fast Cowboy:</strong> หากสลับจังหวะเร็วเกินไปขณะพองตัวอาจพับโคน</li>
+                      <li>🤸 <strong>Standing Acrobatics:</strong> เสี่ยงหลุดจังหวะช่วงก่อนขยายเต็มที่</li>`;
+      } else if (l_erect >= 155 || g_erect >= 140) {
+        // Extra Large / Thick Girth (สายอวบยาวพิเศษ / พี่โด Master)
+        bestPos = `<li>🛋️ <strong>Spooning (ตะแคงซ้อน):</strong> กระชับแนบแน่น คุมลึกดีเยี่ยมไม่ชนจุก</li>
+                   <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> แน่นเต็มสัมผัส บดถูจุดคลิตอริสฟินสูงสุด</li>
+                   <li>📐 <strong>CAT Technique:</strong> เสียดสีเต็มพื้นที่แนบชิด โดยไม่ต้องแทงลึก</li>`;
+        cautionPos = `<li>🐕 <strong>Deep Doggy:</strong> สอดใส่ลึกสุดตัว เสี่ยงชนจุกปากมดลูกสำหรับควยยาว 16+ ซม.</li>
+                      <li>🤠 <strong>Cowboy (ผู้หญิงคุม):</strong> คุมมุมยาก อาจพับโคนหรือจุกแรงหากอวบใหญ่</li>`;
+      } else if (l_erect < 130 || g_erect < 112) {
+        // Compact Specs
+        bestPos = `<li>🐕 <strong>Doggy Style (เน้นเข้าลึก):</strong> สอดใส่ลึกสุดตัว สัมผัสคลื่นผนัง G-Spot ชัดเจน</li>
+                   <li>🛏️ <strong>Pillow Missionary:</strong> สอดหมอนหน่าว ยกสะโพกเพิ่มความลึก 20-30%</li>
+                   <li>🤸 <strong>Standing Position:</strong> คุมจังหวะและทิศทางสอดใส่ได้อย่างคล่องแคล่ว</li>`;
+        cautionPos = `<li>🧘 <strong>Lotus Position:</strong> เข้าไม่ลึกเท่าที่ควร หากช่องคลอดคู่รักยืดขยายกว้าง</li>`;
+      } else {
+        // Standard / Balanced Specs (ค่าเฉลี่ยมาตรฐาน)
+        bestPos = `<li>🛏️ <strong>Missionary (คลาสสิก):</strong> แนบชิด คุมจังหวะและแรงสอดใส่ได้สมดุล 100%</li>
+                   <li>🐕 <strong>Doggy Style:</strong> ได้มิติสัมผัสผนังช่องคลอดและความลึกกำลังดี</li>
+                   <li>🛋️ <strong>Spooning:</strong> ผ่อนคลายสบาย สัมผัสความแนบแน่นระดับมาตรฐาน</li>`;
+        cautionPos = `<li>🤸 <strong>Standing Acrobatics:</strong> ใช้แรงอุ้มเยอะ เสี่ยงหลุดจังหวะ</li>`;
+      }
+
+      if (document.getElementById('posBestList')) document.getElementById('posBestList').innerHTML = bestPos;
+      if (document.getElementById('posCautionList')) document.getElementById('posCautionList').innerHTML = cautionPos;
+
+      renderSvg(l_flaccid, g_flaccid, l_erect, g_erect);
+    }
+
+    function renderSvg(l_f, g_f, l_e, g_e) {
+      const svg = document.getElementById('anatomySvg');
+      let scale = 130 / Math.max(l_e, 180);
+      let f_len = l_f * scale;
+      let e_len = l_e * scale;
+      let f_w = (g_f / Math.PI) * scale * 1.6;
+      let e_w = (g_e / Math.PI) * scale * 1.6;
+
+      let isLight = currentTheme === 'light';
+      let strokeGrid = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+      let baseFill = isLight ? '#cbd5e1' : '#252535';
+      let baseText = isLight ? '#64748b' : '#777777';
+
+      svg.innerHTML = `
+        <rect width="360" height="150" fill="transparent"/>
+        <line x1="20" y1="75" x2="340" y2="75" stroke="${strokeGrid}" stroke-dasharray="3 3"/>
+        <rect x="20" y="25" width="16" height="100" rx="3" fill="${baseFill}" stroke="rgba(0,0,0,0.1)"/>
+        <text x="24" y="78" fill="${baseText}" font-size="8" font-weight="700">BASE</text>
+        <rect x="36" y="${75 - f_w/2}" width="${f_len}" height="${f_w}" rx="${f_w/3}" 
+              fill="rgba(123,31,162,0.18)" stroke="var(--purple)" stroke-dasharray="3 3"/>
+        <text x="${36 + f_len/2}" y="${75}" fill="var(--purple)" font-size="9" font-weight="700" text-anchor="middle">Flaccid</text>
+        <rect x="36" y="${75 - e_w/2}" width="${e_len}" height="${e_w}" rx="${e_w/3}" 
+              fill="rgba(216,27,96,0.18)" stroke="var(--pink)" stroke-width="1.8"/>
+        <text x="${36 + e_len - 15}" y="${75 + 3}" fill="var(--pink)" font-size="10" font-weight="800">Erect</text>
+      `;
+    }
+
+    function openPassportModal() {
+      // inject URL config ลง watermark อัตโนมัติ
+      const urlEl = document.getElementById('passportSiteUrl');
+      if (urlEl) urlEl.textContent = SITE_URL;
+      document.getElementById('passportModalOverlay').style.display = 'flex';
+    }
+    function closePassportModal() { document.getElementById('passportModalOverlay').style.display = 'none'; }
+
+    // Name Edit Toggle — double-click to edit, blur/Enter to save
+    function startEditName() {
+      const display = document.getElementById('passNameDisplay');
+      const input   = document.getElementById('passName');
+      input.value = display.textContent.trim();
+      display.style.display = 'none';
+      input.style.display = '';
+      input.focus();
+      input.select();
+    }
+
+    function finishEditName() {
+      const display = document.getElementById('passNameDisplay');
+      const input   = document.getElementById('passName');
+      const val = input.value.trim() || 'ชื่อผู้ถือการ์ด';
+      display.textContent = val;
+      input.style.display = 'none';
+      display.style.display = '';
+    }
+    
+    function openMedicalModal() { document.getElementById('medicalModalOverlay').style.display = 'flex'; }
+    function closeMedicalModal() { document.getElementById('medicalModalOverlay').style.display = 'none'; }
+
+    let _userPhotoUploaded = false; // flag: มีรูปจริงแล้วหรือยัง
+
+    function loadPassportPhoto(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const modalImg  = document.getElementById('passportImgView');
+          const exportImg = document.getElementById('exportImgView');
+          modalImg.src  = e.target.result;
+          exportImg.src = e.target.result;
+          _userPhotoUploaded = true;
+          showToast('📸 อัปโหลดรูปภาพเรียบร้อย!');
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // ===== CONFIG: เปลี่ยน URL ตรงนี้เมื่อ Deploy =====
+    const SITE_URL = 'localhost:3100/male_calculator.html';
+    // ===================================================
+
+    async function exportPassportCard() {
+      const card = document.getElementById('passportExportCard');
+      if (!card) return;
+
+      // sync URL
+      const urlEl = document.getElementById('exportSiteUrl');
+      if (urlEl) urlEl.textContent = SITE_URL;
+
+      // sync รูปจาก modal → export card (pre-crop เพราะ html2canvas ไม่รองรับ object-fit:cover)
+      const modalImg  = document.getElementById('passportImgView');
+      const exportImg = document.getElementById('exportImgView');
+      if (_userPhotoUploaded && modalImg && exportImg) {
+        const croppedUrl = await _preCropImage(modalImg.src, 400, 420);
+        exportImg.src = croppedUrl;
+        exportImg.style.objectFit = 'fill'; // รูป crop แล้ว แค่ fill เต็ม container
+        await new Promise((resolve) => {
+          if (exportImg.complete && exportImg.naturalHeight > 0) resolve();
+          else { exportImg.onload = resolve; exportImg.onerror = resolve; setTimeout(resolve, 3000); }
+        });
+      }
+
+      showToast('⏳ กำลังสร้างการ์ด...');
+
+      // ขยับ card มาหน้าจอชั่วคราว — ไม่เปลี่ยน position type เพื่อไม่ให้ layout เปลี่ยน
+      card.style.left         = '0px';
+      card.style.top          = '0px';
+      card.style.width        = '400px';   // บังคับ width ไม่ให้ยืด
+      card.style.zIndex       = '-1';
+      card.style.pointerEvents = 'none';
+
+      // delay ให้ browser paint ก่อน capture
+      await new Promise(r => setTimeout(r, 150));
+
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
+      try {
+        const canvas = await html2canvas(card, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: isLight ? '#ffffff' : '#0a0518',
+          logging: false
+        });
+
+        _hideExportCard(card);
+
+        // ทุก platform → download PNG ก่อน (ทำงานได้แน่นอน)
+        _downloadCanvas(canvas);
+
+      } catch (err) {
+        _hideExportCard(card);
+        console.error('Export error:', err);
+        showToast('❌ ส่งออกไม่สำเร็จ ลองใหม่');
+      }
+    }
+
+    // Pre-crop รูปด้วย canvas → จำลอง object-fit:cover แบบ manual
+    // html2canvas ไม่รองรับ object-fit:cover จึงต้อง crop เองก่อน
+    function _preCropImage(imgSrc, targetW, targetH) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = function() {
+          const c = document.createElement('canvas');
+          c.width = targetW * 2;   // 2x สำหรับ retina
+          c.height = targetH * 2;
+          const ctx = c.getContext('2d');
+
+          // คำนวณ cover crop: scale ให้เต็ม แล้ว center
+          const scale = Math.max((targetW * 2) / img.width, (targetH * 2) / img.height);
+          const sw = img.width * scale;
+          const sh = img.height * scale;
+          const ox = ((targetW * 2) - sw) / 2;
+          const oy = ((targetH * 2) - sh) / 2;
+
+          ctx.drawImage(img, ox, oy, sw, sh);
+          resolve(c.toDataURL('image/jpeg', 0.92));
+        };
+        img.onerror = () => resolve(imgSrc); // fallback ใช้รูปเดิม
+        img.src = imgSrc;
+      });
+    }
+
+    function _hideExportCard(card) {
+      card.style.left          = '-9999px';
+      card.style.top           = '0px';
+      card.style.width         = '400px';
+      card.style.zIndex        = '';
+      card.style.pointerEvents = '';
+    }
+
+    function _downloadCanvas(canvas) {
+      // มือถือ: link.click() อาจไม่ download → เปิดรูปใน tab ใหม่ให้ long press save
+      const dataUrl = canvas.toDataURL('image/png');
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        const w = window.open();
+        if (w) {
+          w.document.write(`<html><head><title>Spec Passport</title></head><body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#111;"><img src="${dataUrl}" style="max-width:100%;height:auto;"><br></body></html>`);
+          w.document.close();
+          showToast('📲 กดค้างที่รูปเพื่อบันทึก!');
+        } else {
+          // popup blocked → fallback download
+          const link = document.createElement('a');
+          link.download = 'spec_passport.png';
+          link.href = dataUrl;
+          link.click();
+          showToast('✅ บันทึกการ์ดเรียบร้อย!');
+        }
+      } else {
+        const link = document.createElement('a');
+        link.download = 'spec_passport.png';
+        link.href = dataUrl;
+        link.click();
+        showToast('✅ บันทึกการ์ดเรียบร้อย!');
+      }
+    }
+
+    function downloadPassportCard() { exportPassportCard(); }
+
+    function downloadMedicalReport() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 700; canvas.height = 500;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 700, 500);
+      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 4; ctx.strokeRect(10, 10, 680, 480);
+
+      ctx.fillStyle = '#0369a1'; ctx.font = 'bold 20px Prompt, sans-serif';
+      ctx.fillText('🩺 MALE UROLOGICAL EVALUATION REPORT', 30, 45);
+
+      ctx.fillStyle = '#64748b'; ctx.font = '14px Prompt, sans-serif';
+      let nameVal = document.getElementById('passName').value || 'พี่โด Master Specs';
+      let now = new Date();
+      ctx.fillText(`ผู้รับการประเมิน: ${nameVal} | วันที่: ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`, 30, 75);
+
+      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(30, 90); ctx.lineTo(670, 90); ctx.stroke();
+
+      ctx.fillStyle = '#0f172a'; ctx.font = '15px Prompt, sans-serif';
+      ctx.fillText(`🔹 สรีระอ่อนตัว (Flaccid): ${document.getElementById('medLenFlaccid').innerText} x ${document.getElementById('medGirthFlaccid').innerText} mm`, 30, 125);
+      ctx.fillText(`🔹 สรีระแข็งตัว (Erect): ${document.getElementById('medLenErect').innerText} x ${document.getElementById('medGirthErect').innerText} mm`, 30, 155);
+      ctx.fillText(`🔹 ความยาวชิดกระดูก (BPEL): ${document.getElementById('l_erect').value} + ${document.getElementById('t_fat').value} mm`, 30, 185);
+      ctx.fillText(`🔹 ดัชนีควยเลือด (BFPI): ${document.getElementById('resBfpi').innerText}`, 30, 215);
+      ctx.fillText(`🔹 เลือดสูบฉีดเข้าถ้ำ (Blood Vol): ${document.getElementById('resBloodVol').innerText}`, 30, 245);
+      ctx.fillText(`🔹 ไซส์ถุงยางอนามัย (Nominal Width): ${document.getElementById('resCondom').innerText}`, 30, 275);
+      ctx.fillText(`🔹 สถิติความยาวเปรียบเทียบ: ${document.getElementById('resLenRank').innerText}`, 30, 305);
+      ctx.fillText(`🔹 สถิติรอบวงเปรียบเทียบ: ${document.getElementById('resGirthRank').innerText}`, 30, 335);
+
+      ctx.strokeStyle = '#cbd5e1'; ctx.beginPath(); ctx.moveTo(30, 370); ctx.lineTo(670, 370); ctx.stroke();
+      ctx.fillStyle = '#0369a1'; ctx.font = 'bold 12px Prompt, sans-serif';
+      ctx.fillText('OFFICIAL CLINICAL REPORT • VERIFIED BY MALE DIAGNOSTICS CALCULATOR', 30, 410);
+
+      const link = document.createElement('a');
+      link.download = 'Urological_Medical_Report.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('💾 ดาวน์โหลดรายงานทางการแพทย์เรียบร้อย!');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    window.onload = calculate;
+  </script>
+</body>
+</html>
