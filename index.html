@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MySex — เครื่องมือคำนวณสรีระและความเข้ากันทางเพศ</title>
+  <meta name="description" content="MySex — เครื่องมือคำนวณสรีระเพศชาย เพศหญิง และความเข้ากันของคู่รัก วิเคราะห์แบบวิทยาศาสตร์">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #07070f;
+      background-image:
+        radial-gradient(ellipse at 20% 20%, rgba(255,42,133,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(0,229,255,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(180,77,255,0.06) 0%, transparent 60%);
+      font-family: 'Prompt', 'Outfit', sans-serif;
+      color: #f1f2f6;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .logo {
+      font-size: 3.5rem;
+      font-weight: 900;
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #ff2a85, #b44dff, #00e5ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+      animation: fadeUp 0.8s ease-out;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: #8a8fa8;
+      margin-bottom: 48px;
+      animation: fadeUp 0.8s ease-out 0.15s both;
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeUp 0.8s ease-out 0.3s both;
+    }
+
+    .card-link {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      border-radius: 16px;
+      text-decoration: none;
+      color: #f1f2f6;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-link::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: border-color 0.3s;
+    }
+
+    .card-link:hover::before {
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .card-link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+
+    .card-male {
+      background: linear-gradient(135deg, rgba(0,229,255,0.1) 0%, rgba(180,77,255,0.08) 100%);
+    }
+    .card-male:hover {
+      background: linear-gradient(135deg, rgba(0,229,255,0.18) 0%, rgba(180,77,255,0.14) 100%);
+    }
+
+    .card-pair {
+      background: linear-gradient(135deg, rgba(255,42,133,0.1) 0%, rgba(180,77,255,0.08) 100%);
+    }
+    .card-pair:hover {
+      background: linear-gradient(135deg, rgba(255,42,133,0.18) 0%, rgba(180,77,255,0.14) 100%);
+    }
+
+    .card-icon {
+      font-size: 2.2rem;
+      flex-shrink: 0;
+    }
+
+    .card-text {
+      text-align: left;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .card-desc {
+      font-size: 0.8rem;
+      color: #8a8fa8;
+      line-height: 1.4;
+    }
+
+    .card-arrow {
+      margin-left: auto;
+      font-size: 1.4rem;
+      color: #555872;
+      transition: transform 0.3s, color 0.3s;
+      flex-shrink: 0;
+    }
+
+    .card-link:hover .card-arrow {
+      transform: translateX(4px);
+      color: #f1f2f6;
+    }
+
+    .footer {
+      margin-top: 48px;
+      font-size: 0.72rem;
+      color: #555872;
+      animation: fadeUp 0.8s ease-out 0.45s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .logo { font-size: 2.5rem; }
+      .card-link { padding: 16px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">MySex</div>
+    <p class="tagline">เครื่องมือคำนวณสรีระและความเข้ากันทางเพศ</p>
+
+    <div class="cards">
+      <a href="male_calculator.html" class="card-link card-male">
+        <div class="card-icon">🍆</div>
+        <div class="card-text">
+          <div class="card-title">Male Calculator</div>
+          <div class="card-desc">คำนวณประเภทควยเลือด vs ควยเนื้อ สเปกถุงยาง สถิติประชากร</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a href="vagina_penis_calculator.html" class="card-link card-pair">
+        <div class="card-icon">💕</div>
+        <div class="card-text">
+          <div class="card-title">Pair Compatibility Calculator</div>
+          <div class="card-desc">วิเคราะห์ความเข้ากันทางสรีระ ชาย + หญิง + โหมดคู่รัก</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="footer">
+      MySex © 2026 — เครื่องมือวิเคราะห์เพื่อการศึกษา ข้อมูลทุกอย่างคำนวณบนเครื่องของคุณ ไม่มีการเก็บข้อมูลใดๆ
+    </div>
+  </div>
+</body>
+</html>
