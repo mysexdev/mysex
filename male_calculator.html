@@ -86,7 +86,7 @@
       transition: background-color 0.3s, color 0.3s;
     }
 
-    .container { max-width: 1140px; margin: 0 auto; }
+    .container { max-width: 880px; margin: 0 auto; }
 
     /* HEADER */
     header {
@@ -205,9 +205,9 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 16px 18px;
+      padding: 14px 16px;
       box-shadow: var(--shadow);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       position: relative;
     }
 
@@ -1378,6 +1378,69 @@
 
     .toast.show { transform: translateX(-50%) translateY(0); }
   </style>
+<style>
+  /* PROGRESSIVE DISCLOSURE WIZARD STYLES */
+  .wizard-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 8px;
+    box-shadow: var(--shadow);
+    width: 100%;
+  }
+  .wizard-step {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: 1px solid transparent;
+  }
+  .wizard-step:hover {
+    color: var(--text);
+    background: rgba(255,255,255,0.04);
+  }
+  .wizard-step.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, rgba(230, 0, 118, 0.25), rgba(156, 39, 176, 0.25));
+    border-color: rgba(230, 0, 118, 0.4);
+    box-shadow: 0 2px 10px rgba(230, 0, 118, 0.2);
+  }
+  .step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+  .wizard-step.active .step-num {
+    background: var(--pink);
+    color: #ffffff;
+  }
+  .step-view {
+    animation: fadeInStep 0.35s ease-out forwards;
+  }
+  @keyframes fadeInStep {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
 </head>
 <body>
 
@@ -1396,97 +1459,137 @@
       <p>คำนวณขนาดความยาวและรอบวง หาไซส์ถุงยางที่ใช่ พร้อมดูอันดับสถิติของคุณในกลุ่มประชากร</p>
     </header>
 
-    <!-- PRESETS -->
-    <div class="preset-toolbar">
-      <button class="btn-preset" onclick="loadPreset('p2', this)">🔷 Preset 2: ค่าเฉลี่ยมาตรฐาน</button>
-      <button class="btn-preset" onclick="loadPreset('p3', this)">🩸 Preset 3: ควยเลือด (Grower)</button>
-      <button class="btn-preset active" onclick="loadPreset('p4', this)">🥩 Preset 4: ควยเนื้อ (Shower)</button>
+    <!-- WIZARD STEP NAVIGATION BAR -->
+    <div class="wizard-bar" id="wizardBar">
+      <div class="wizard-step active" id="stepTab1" onclick="goToStep(1)">
+        <span class="step-num">1</span>
+        <span class="step-label">💤 สภาวะอ่อนตัว</span>
+      </div>
+      <div class="wizard-step" id="stepTab2" onclick="goToStep(2)">
+        <span class="step-num">2</span>
+        <span class="step-label">🍆 สภาวะแข็งตัว & ไขมัน</span>
+      </div>
+      <div class="wizard-step" id="stepTab3" onclick="goToStep(3)">
+        <span class="step-num">3</span>
+        <span class="step-label">🏆 แดชบอร์ดวิเคราะห์</span>
+      </div>
     </div>
 
+    <!-- PRESETS -->
+    
     <!-- MAIN GRID -->
-    <div class="grid-2col">
+    
       
-      <!-- LEFT COLUMN: INPUT FORM & SETUP -->
-      <div>
-        <div class="card">
-          <div class="card-title">
-            <div class="card-title-text">🍆 กรอกข้อมูลสรีระเพศชาย</div>
-          </div>
+      <!-- STEP 1 VIEW: FLACCID STATE (CENTERED) -->
+    <div id="step1View" class="step-view" style="width:100%;">
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-text">💤 สเต็ปที่ 1: กรอกสภาวะอ่อนตัว (Flaccid State)</div>
+        </div>
 
-          <!-- UNIT TOGGLE -->
-          <div class="unit-toggle">
-            <button class="unit-btn active" id="u_mm" onclick="setUnit('mm')">มิลลิเมตร (mm)</button>
-            <button class="unit-btn" id="u_cm" onclick="setUnit('cm')">เซนติเมตร (cm)</button>
-            <button class="unit-btn" id="u_in" onclick="setUnit('in')">นิ้ว (inch)</button>
-          </div>
+        <!-- UNIT TOGGLE -->
+        <div class="unit-toggle">
+          <button class="unit-btn active" id="u_mm" onclick="setUnit('mm')">มิลลิเมตร (mm)</button>
+          <button class="unit-btn" id="u_cm" onclick="setUnit('cm')">เซนติเมตร (cm)</button>
+          <button class="unit-btn" id="u_in" onclick="setUnit('in')">นิ้ว (inch)</button>
+        </div>
 
-          <!-- FLACCID STATE -->
-          <div class="form-group">
-            <div class="form-label">🔹 สภาวะอ่อนตัว (Flaccid State)</div>
-            <div class="input-row">
-              <div>
-                <div class="field-sublabel">📐 ความยาว (Length)</div>
-                <div class="input-wrapper">
-                  <input type="number" id="l_flaccid" class="form-input" value="135" step="0.1" oninput="calculate()">
-                  <span class="input-unit" id="unit_l1">mm</span>
-                </div>
-              </div>
-              <div>
-                <div class="field-sublabel">⭕ รอบวง (Girth)</div>
-                <div class="input-wrapper">
-                  <input type="number" id="g_flaccid" class="form-input" value="127" step="0.1" oninput="calculate()">
-                  <span class="input-unit" id="unit_g1">mm</span>
-                </div>
+        <!-- FLACCID STATE INPUTS -->
+        <div class="form-group">
+          <div class="form-label">🔹 สภาวะอ่อนตัว (Flaccid State)</div>
+          <div class="input-row">
+            <div>
+              <div class="field-sublabel">📐 ความยาวอ่อนตัว (Length)</div>
+              <div class="input-wrapper">
+                <input type="number" id="l_flaccid" class="form-input" value="135" step="0.1" oninput="calculate()">
+                <span class="input-unit" id="unit_l1">mm</span>
               </div>
             </div>
-          </div>
-
-          <!-- ERECT STATE -->
-          <div class="form-group">
-            <div class="form-label">🔹 สภาวะแข็งตัวเต็มที่ (Erect State)</div>
-            <div class="input-row">
-              <div>
-                <div class="field-sublabel">📐 ความยาว (Length)</div>
-                <div class="input-wrapper">
-                  <input type="number" id="l_erect" class="form-input" value="162" step="0.1" oninput="calculate()">
-                  <span class="input-unit" id="unit_l2">mm</span>
-                </div>
-              </div>
-              <div>
-                <div class="field-sublabel">⭕ รอบวง (Girth)</div>
-                <div class="input-wrapper">
-                  <input type="number" id="g_erect" class="form-input" value="154" step="0.1" oninput="calculate()">
-                  <span class="input-unit" id="unit_g2">mm</span>
-                </div>
+            <div>
+              <div class="field-sublabel">⭕ รอบวงอ่อนตัว (Girth)</div>
+              <div class="input-wrapper">
+                <input type="number" id="g_flaccid" class="form-input" value="127" step="0.1" oninput="calculate()">
+                <span class="input-unit" id="unit_g1">mm</span>
               </div>
             </div>
-          </div>
-
-          <!-- FAT LAYER -->
-          <div class="form-group">
-            <div class="form-label"><span>🔹 ชั้นไขมันโคนควย/เนินหัวหน่าว (T<sub>fat</sub>)</span></div>
-            <div class="input-wrapper">
-              <input type="number" id="t_fat" class="form-input" value="15" step="0.1" oninput="calculate()">
-              <span class="input-unit" id="unit_tfat">mm</span>
-            </div>
-          </div>
-
-          <!-- PASSPORT & MEDICAL BUTTON TRIGGERS -->
-          <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
-            <button class="btn-action" style="width:100%; justify-content:center;" onclick="openPassportModal()">
-              🪪 เปิดการ์ดประจำตัว (Penis Spec Passport)
-            </button>
-            <button class="btn-action-med" style="width:100%; justify-content:center;" onclick="openMedicalModal()">
-              🩺 ออกรายงานสำหรับส่งแพทย์ (Medical Report)
-            </button>
           </div>
         </div>
+
+        <div style="margin-top:16px;">
+          <button type="button" class="btn-action" style="width:100%; justify-content:center; padding:12px;" onclick="goToStep(2)">
+            ถัดไป: สภาวะแข็งตัว & ชั้นไขมัน ➔
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 VIEW: ERECT STATE & FAT LAYER (CENTERED) -->
+    <div id="step2View" class="step-view" style="display:none; width:100%;">
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-text">🍆 สเต็ปที่ 2: กรอกสภาวะแข็งตัว & ชั้นไขมัน</div>
+        </div>
+
+        <!-- ERECT STATE INPUTS -->
+        <div class="form-group">
+          <div class="form-label">🔹 สภาวะแข็งตัวเต็มที่ (Erect State)</div>
+          <div class="input-row">
+            <div>
+              <div class="field-sublabel">📐 ความยาวแข็งตัว (Length)</div>
+              <div class="input-wrapper">
+                <input type="number" id="l_erect" class="form-input" value="162" step="0.1" oninput="calculate()">
+                <span class="input-unit" id="unit_l2">mm</span>
+              </div>
+            </div>
+            <div>
+              <div class="field-sublabel">⭕ รอบวงแข็งตัว (Girth)</div>
+              <div class="input-wrapper">
+                <input type="number" id="g_erect" class="form-input" value="154" step="0.1" oninput="calculate()">
+                <span class="input-unit" id="unit_g2">mm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAT LAYER -->
+        <div class="form-group">
+          <div class="form-label"><span>🔹 ชั้นไขมันโคนควย/เนินหัวหน่าว (T<sub>fat</sub>)</span></div>
+          <div class="input-wrapper">
+            <input type="number" id="t_fat" class="form-input" value="15" step="0.1" oninput="calculate()">
+            <span class="input-unit" id="unit_tfat">mm</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <button type="button" class="btn-preset" onclick="goToStep(1)" style="padding:10px 16px;">
+            ⬅️ ย้อนกลับ
+          </button>
+          <button type="button" class="btn-action" style="flex:1; justify-content:center; padding:12px;" onclick="goToStep(3, true)">
+            🏆 ประมวลผลและเปิดม่านแดชบอร์ด ➔
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 VIEW: GRAND REVEAL & LIVE LAB (FULL DASHBOARD 960PX) -->
+    <div id="step3View" class="step-view" style="display:none; width:100%;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; background:var(--card); backdrop-filter:blur(16px); padding:12px 18px; border-radius:var(--radius-lg); border:1px solid var(--border); box-shadow:var(--shadow);">
+        <div>
+          <div style="font-weight:900; color:var(--text); font-size:1.05rem;">
+            🏆 แดชบอร์ดวิเคราะห์สรีระเต็มรูปแบบ (The Grand Reveal & Live Lab)
+          </div>
+          <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">
+            วิเคราะห์ยศสรีระ · ถุงยางที่แนะนำ · แผนภาพ 2D มาตราส่วน · สถิติประชากร
+          </div>
+        </div>
+        <button type="button" class="btn-preset" onclick="goToStep(1)" style="font-size:0.8rem; padding:6px 14px;">
+          🔄 เริ่มคำนวณใหม่
+        </button>
       </div>
 
-      <!-- RIGHT COLUMN: SLEEK STATISTICAL CARDS -->
-      <div>
+      <div style="display:flex; flex-direction:column;">
 
-        <!-- CARD 1: CONDOM SPEC & VOLUME CARD -->
+      <!-- CARD 1: CONDOM SPEC & VOLUME CARD -->
         <div class="card card-top-stack">
           <div class="card-title">
             <div class="card-title-text">🛡️ สเปกถุงยางอนามัย & ปริมาตร</div>
@@ -1616,6 +1719,16 @@
           </div>
         </div>
 
+        <!-- CARD 4: FLACCID VS ERECT SVG VISUALIZER CARD -->
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-text">📊 แผนภาพเปรียบเทียบสภาวะยืดพองตัว (Anatomical Scaled Visualizer)</div>
+          </div>
+          <div style="background:var(--metric-bg); border:1px solid var(--border); border-radius:var(--radius-md); padding:8px; text-align:center;">
+            <svg id="anatomySvg" width="100%" height="220" viewBox="0 0 760 300"></svg>
+          </div>
+        </div>
+
         <!-- CARD: ANATOMICAL POSITION MATCHER CARD -->
         <div class="card">
           <div class="card-title">
@@ -1649,17 +1762,6 @@
           </div>
         </div>
 
-        <!-- CARD 4: FLACCID VS ERECT SVG VISUALIZER CARD -->
-        <div class="card">
-          <div class="card-title">
-            <div class="card-title-text">📊 แผนภาพเปรียบเทียบสภาวะยืดพองตัว (Anatomical Scaled Visualizer)</div>
-          </div>
-          <div style="background:var(--metric-bg); border:1px solid var(--border); border-radius:var(--radius-md); padding:8px; text-align:center;">
-            <svg id="anatomySvg" width="100%" height="220" viewBox="0 0 760 300"></svg>
-          </div>
-        </div>
-
-        <!-- FOOTER SECTION (INSIDE RIGHT COLUMN) -->
         <footer style="margin-top:14px; padding:20px; background:var(--card); backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow); text-align:center;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:14px;">
             <div style="text-align:left;">
@@ -1688,8 +1790,11 @@
           </div>
         </footer>
       </div>
-    </div>
+    </div> <!-- END STEP 3 VIEW CONTAINER -->
   </div>
+    </div> <!-- END STEP 3 VIEW CONTAINER -->
+
+    
 
   <!-- PASSPORT MODAL OVERLAY -->
   <div class="modal-overlay" id="passportModalOverlay" onclick="if(event.target===this) closePassportModal()">
@@ -2016,6 +2121,57 @@
     document.addEventListener('click', () => {
       document.getElementById('condomTooltip').classList.remove('show');
     });
+
+    
+    // --- WIZARD 3-STEP NAVIGATION LOGIC ---
+    let _currentWizardStep = 1;
+
+    function goToStep(stepNum, triggerCalculate = false) {
+      _currentWizardStep = stepNum;
+
+      for (let i = 1; i <= 3; i++) {
+        const tab = document.getElementById('stepTab' + i);
+        if (tab) {
+          if (i === stepNum) tab.classList.add('active');
+          else tab.classList.remove('active');
+        }
+      }
+
+      const step1View = document.getElementById('step1View');
+      const step2View = document.getElementById('step2View');
+      const step3View = document.getElementById('step3View');
+
+      if (step1View && step2View && step3View) {
+        if (stepNum === 1) {
+          step1View.style.display = 'block';
+          step2View.style.display = 'none';
+          step3View.style.display = 'none';
+        } else if (stepNum === 2) {
+          step1View.style.display = 'none';
+          step2View.style.display = 'block';
+          step3View.style.display = 'none';
+        } else if (stepNum === 3) {
+          step1View.style.display = 'none';
+          step2View.style.display = 'none';
+          step3View.style.display = 'block';
+        }
+      }
+
+      if (triggerCalculate) {
+        calculate();
+        triggerPulseAnimation();
+        if (typeof sendAnonymousAnalytics === 'function') {
+          sendAnonymousAnalytics(true, 500);
+        }
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      goToStep(1);
+    });
+
 
     function calculate() {
       let scaleToMm = currentUnit === 'cm' ? 10 : (currentUnit === 'in' ? 25.4 : 1);
