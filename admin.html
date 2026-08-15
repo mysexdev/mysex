@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MySex Admin — แดชบอร์ดวิเคราะห์สถิติสรีระหลังบ้าน | Analytics Vault</title>
+  <meta name="description" content="ระบบหลังบ้านสำหรับดูข้อมูลสถิติสรีระเพศชาย หญิง คู่ปะทะ และคลังรูปภาพสดจาก Google Sheets และ Google Drive">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       THEME VARIABLES — CYBER-SEXOLOGY GLASSMORPHISM
+    ============================================================ */
+    :root, [data-theme="dark"] {
+      --bg: #080914;
+      --bg-surface: #0f1123;
+      --card-bg: rgba(20, 23, 45, 0.78);
+      --card-hover: rgba(28, 32, 62, 0.9);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-focus: rgba(255, 42, 133, 0.5);
+
+      --pink:   #ff2a85;
+      --purple: #b44dff;
+      --cyan:   #00e5ff;
+      --gold:   #ffc600;
+      --green:  #2ed573;
+      --red:    #ff4757;
+      --blue:   #3b82f6;
+
+      --text:   #f8fafc;
+      --muted:  #94a3b8;
+      --dim:    #64748b;
+      --table-stripe: rgba(255, 255, 255, 0.02);
+      --table-hover: rgba(255, 42, 133, 0.07);
+
+      --shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+      --font: 'Prompt', 'Outfit', sans-serif;
+      --font-mono: 'Outfit', monospace;
+    }
+
+    [data-theme="light"] {
+      --bg: #f3f5fa;
+      --bg-surface: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --card-hover: rgba(255, 255, 255, 0.98);
+      --border: rgba(0, 0, 0, 0.08);
+      --border-focus: rgba(216, 27, 96, 0.4);
+
+      --pink:   #d81b60;
+      --purple: #7b1fa2;
+      --cyan:   #00838f;
+      --gold:   #d97706;
+      --green:  #16a34a;
+      --red:    #dc2626;
+      --blue:   #2563eb;
+
+      --text:   #0f172a;
+      --muted:  #475569;
+      --dim:    #94a3b8;
+      --table-stripe: rgba(0, 0, 0, 0.018);
+      --table-hover: rgba(216, 27, 96, 0.05);
+
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 15% 10%, rgba(255, 42, 133, 0.08) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 85%, rgba(0, 229, 255, 0.06) 0%, transparent 45%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.5;
+      padding: 16px 14px 60px;
+      min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    /* HEADER */
+    header {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px 22px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-title h1 {
+      font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--pink), var(--purple), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--pink);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255, 42, 133, 0.3);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      box-shadow: 0 6px 18px rgba(255, 42, 133, 0.4);
+    }
+
+    /* STATUS BAR */
+    .status-bar {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 18px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.82rem;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.76rem;
+    }
+
+    .status-live { background: rgba(46, 213, 115, 0.15); color: var(--green); border: 1px solid rgba(46, 213, 115, 0.3); }
+    .status-error { background: rgba(255, 71, 87, 0.15); color: var(--red); border: 1px solid rgba(255, 71, 87, 0.3); }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 8px currentColor;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* KPI METRICS GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-focus);
+    }
+
+    .kpi-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-value {
+      font-size: 1.65rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    .kpi-sub {
+      font-size: 0.72rem;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    /* CHARTS ROW */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .chart-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .chart-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    /* BAR CHART ITEMS */
+    .bar-item { margin-bottom: 8px; }
+    .bar-header { display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 3px; }
+    .bar-bg { height: 8px; background: rgba(255, 255, 255, 0.06); border-radius: 50px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--pink), var(--purple)); transition: width 0.6s ease; }
+
+    /* TOOLBAR & FILTERS */
+    .toolbar-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .toolbar-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toolbar-row-filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.8rem;
+    }
+
+    .tab-pills {
+      display: flex;
+      gap: 5px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 4px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--pink);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(255, 42, 133, 0.3);
+    }
+
+    .select-filter {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 0.78rem;
+      outline: none;
+    }
+
+    .select-filter option { background: #14172d; color: #fff; }
+
+    .search-input {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px 6px 32px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.82rem;
+      width: 220px;
+      outline: none;
+      transition: border-color 0.2s, width 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--pink);
+      width: 260px;
+    }
+
+    .search-wrapper { position: relative; display: inline-block; }
+    .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--muted); pointer-events: none; }
+
+    /* DATA TABLE */
+    .table-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      max-height: 650px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.82rem;
+    }
+
+    thead th {
+      background: rgba(15, 17, 35, 0.96);
+      color: var(--muted);
+      font-weight: 800;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      font-size: 0.76rem;
+      letter-spacing: 0.3px;
+    }
+
+    thead th:hover { color: var(--pink); }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background-color 0.15s;
+      cursor: pointer;
+    }
+
+    tbody tr:nth-child(even) { background-color: var(--table-stripe); }
+    tbody tr:hover { background-color: var(--table-hover); }
+
+    tbody td {
+      padding: 10px 14px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .badge-male { background: rgba(255, 42, 133, 0.12); color: var(--pink); border: 1px solid rgba(255, 42, 133, 0.3); }
+    .badge-female { background: rgba(0, 229, 255, 0.12); color: var(--cyan); border: 1px solid rgba(0, 229, 255, 0.3); }
+    .badge-pair { background: rgba(180, 77, 255, 0.12); color: var(--purple); border: 1px solid rgba(180, 77, 255, 0.3); }
+
+    .badge-grower { background: rgba(255, 42, 133, 0.15); color: var(--pink); border: 1px solid rgba(255, 42, 133, 0.3); }
+    .badge-hybrid { background: rgba(180, 77, 255, 0.15); color: var(--purple); border: 1px solid rgba(180, 77, 255, 0.3); }
+    .badge-shower { background: rgba(255, 198, 0, 0.15); color: var(--gold); border: 1px solid rgba(255, 198, 0, 0.3); }
+
+    /* PHOTO THUMBNAIL WRAPPER */
+    .thumb-wrapper {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      border: 1.5px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .thumb-wrapper:hover {
+      border-color: var(--pink);
+      box-shadow: 0 0 14px rgba(255, 42, 133, 0.5);
+      transform: scale(1.05);
+    }
+
+    .thumb-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* UPGRADED SUPER-SIZE HOVER PREVIEW CARD */
+    #hoverPreviewCard {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999999;
+      display: none;
+      width: 380px;
+      max-width: 90vw;
+      background: var(--bg-surface);
+      border: 2px solid var(--pink);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 42, 133, 0.5);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      transition: opacity 0.12s ease;
+      opacity: 0;
+    }
+
+    #hoverPreviewCard.active {
+      display: block;
+      opacity: 1;
+    }
+
+    #hoverPreviewImgWrap {
+      width: 100%;
+      height: 330px;
+      background: #05060d;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #hoverPreviewImg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    #hoverPreviewInfo {
+      padding: 14px 18px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+    }
+
+    /* PHOTO VAULT GALLERY GRID */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .gallery-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--pink);
+      box-shadow: 0 16px 40px rgba(255, 42, 133, 0.25);
+    }
+
+    .gallery-img-box {
+      width: 100%;
+      height: 240px;
+      background: #000;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gallery-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-card:hover .gallery-img-box img {
+      transform: scale(1.06);
+    }
+
+    .gallery-info {
+      padding: 14px 16px;
+      font-size: 0.8rem;
+    }
+
+    /* PAGINATION */
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: rgba(0, 0, 0, 0.15);
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pagination-controls { display: flex; gap: 6px; }
+
+    /* MODALS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 650px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h3 { font-size: 1.15rem; font-weight: 800; }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    .close-btn:hover { color: var(--pink); }
+
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; color: var(--muted); }
+    .form-group input {
+      width: 100%;
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    /* DETAIL DRAWER / INSPECTION CARD */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 0.82rem;
+    }
+
+    .detail-cell {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+    }
+
+    .detail-cell-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 2px; }
+    .detail-cell-value { font-weight: 800; font-family: var(--font-mono); color: var(--text); font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- HEADER -->
+    <header>
+      <div class="brand-title">
+        <span style="font-size:1.7rem;">📊</span>
+        <div>
+          <h1>MySex Analytics & Vault Dashboard</h1>
+          <div class="brand-subtitle">ระบบวิเคราะห์และคลังสถิติสรีระหลังบ้านสดจาก Google Sheets & Drive</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn">🏠 หน้าหลัก</a>
+        <a href="male_calculator.html" class="btn">🍆 Male Spec</a>
+        <a href="vagina_penis_calculator.html" class="btn">💕 Pair Spec</a>
+        <button class="btn" onclick="openConfigModal()">⚙️ Webhook URL</button>
+        <button class="btn btn-primary" onclick="fetchData()">🔄 รีเฟรชข้อมูล</button>
+        <button class="btn" id="themeToggleBtn" onclick="toggleTheme()">☀️ ธีมสว่าง</button>
+      </div>
+    </header>
+
+    <!-- STATUS BAR (REAL LIVE ONLY) -->
+    <div class="status-bar">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span class="status-pill status-live" id="connectionStatusBadge">
+          <span class="pulse-dot"></span>
+          <span id="connectionStatusText">กำลังเชื่อมต่อข้อมูลสด...</span>
+        </span>
+        <span style="color:var(--muted);">อัปเดตล่าสุด: <strong id="lastSyncTime" style="color:var(--text);">-</strong></span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.78rem;">
+          <input type="checkbox" id="autoRefreshToggle" onchange="toggleAutoRefresh(this)" checked>
+          <span>Auto-Refresh (30s)</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- KPI METRICS (6 REAL METRICS) -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>บันทึกจริงทั้งหมด</span>
+          <span>📁</span>
+        </div>
+        <div class="kpi-value" id="kpiTotalCount" style="color:var(--pink);">0</div>
+        <div class="kpi-sub" id="kpiModeBreakdown">ชาย: 0 · หญิง: 0 · คู่: 0</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>ความยาวเฉลี่ย (Erect)</span>
+          <span>📏</span>
+        </div>
+        <div class="kpi-value" id="kpiAvgLength" style="color:var(--purple);">0.0 <small style="font-size:0.9rem;">cm</small></div>
+        <div class="kpi-sub" id="kpiLengthRange">มิน: - · แม็กซ์: -</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>เส้นรอบวงเฉลี่ย</span>
+          <span>📐</span>
+        </div>
+        <div class="kpi-value" id="kpiAvgGirth" style="color:var(--cyan);">0.0 <small style="font-size:0.9rem;">cm</small></div>
+        <div class="kpi-sub" id="kpiGirthRange">มิน: - · แม็กซ์: -</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>ถุงยางยอดนิยม</span>
+          <span>🛡️</span>
+        </div>
+        <div class="kpi-value" id="kpiTopCondom" style="color:var(--gold);">-</div>
+        <div class="kpi-sub" id="kpiCondomPercent">สัดส่วน -% ของทั้งหมด</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>สัดส่วนควยเลือด</span>
+          <span>🩸</span>
+        </div>
+        <div class="kpi-value" id="kpiGrowerRatio" style="color:var(--green);">0%</div>
+        <div class="kpi-sub" id="kpiArchetypeCount">Grower: 0 · Shower: 0</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>รูปภาพใน Drive Vault</span>
+          <span>📸</span>
+        </div>
+        <div class="kpi-value" id="kpiPhotoCount" style="color:var(--blue);">0</div>
+        <div class="kpi-sub" id="kpiPhotoPercent">มีรูปภาพ -% ของบันทึก</div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="charts-grid">
+      <!-- CONDOM CHART -->
+      <div class="chart-card">
+        <div class="chart-title">
+          <span>🛡️ การกระจายตัวขนาดถุงยางอนามัย (Condom Sizes)</span>
+          <span style="font-size:0.75rem; color:var(--muted);" id="condomChartSub">รวม 0 รายการ</span>
+        </div>
+        <div id="condomBarsContainer"></div>
+      </div>
+
+      <!-- ARCHETYPE CHART -->
+      <div class="chart-card">
+        <div class="chart-title">
+          <span>🩸 สัดส่วนประเภทสรีระ (BFPI Archetypes)</span>
+          <span style="font-size:0.75rem; color:var(--muted);" id="archetypeChartSub">Grower vs Shower</span>
+        </div>
+        <div id="archetypeBarsContainer"></div>
+      </div>
+
+      <!-- MODE BREAKDOWN CHART -->
+      <div class="chart-card">
+        <div class="chart-title">
+          <span>⚖️ สัดส่วนโหมดการใช้งาน (Mode Breakdown)</span>
+          <span style="font-size:0.75rem; color:var(--muted);" id="modeChartSub">สัดส่วนชาย/หญิง/คู่</span>
+        </div>
+        <div id="modeBarsContainer"></div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR & FILTERS -->
+    <div class="toolbar-card">
+      <div class="toolbar-row-top">
+        <!-- TABS -->
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div class="tab-pills">
+            <button class="tab-btn active" id="tabAllBtn" onclick="setFilterMode('all', this)">ทั้งหมด (<span id="countTabAll">0</span>)</button>
+            <button class="tab-btn" id="tabMaleBtn" onclick="setFilterMode('male', this)">🍆 ชาย (<span id="countTabMale">0</span>)</button>
+            <button class="tab-btn" id="tabFemaleBtn" onclick="setFilterMode('female', this)">🦋 หญิง (<span id="countTabFemale">0</span>)</button>
+            <button class="tab-btn" id="tabPairBtn" onclick="setFilterMode('pair', this)">💜 คู่ปะทะ (<span id="countTabPair">0</span>)</button>
+          </div>
+
+          <div class="tab-pills">
+            <button class="tab-btn active" id="viewTableBtn" onclick="setViewMode('table', this)">📋 ตารางข้อมูล</button>
+            <button class="tab-btn" id="viewGalleryBtn" onclick="setViewMode('gallery', this)">🖼️ แกลเลอรีรูป (<span id="countTabPhotos">0</span>)</button>
+          </div>
+        </div>
+
+        <!-- SEARCH & EXPORTS -->
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="ค้นหาข้อมูล..." oninput="applyFilters()">
+          </div>
+          <button class="btn" style="padding:6px 12px; font-size:0.78rem;" onclick="exportCSV()">📥 ส่งออก CSV</button>
+          <button class="btn" style="padding:6px 12px; font-size:0.78rem;" onclick="copyJSON()">📋 คัดลอก JSON</button>
+        </div>
+      </div>
+
+      <!-- FILTER ROW -->
+      <div class="toolbar-row-filters">
+        <label style="display:flex; align-items:center; gap:6px; color:var(--text); cursor:pointer;">
+          <input type="checkbox" id="onlyPhotosFilter" onchange="applyFilters()">
+          <span>📸 เฉพาะที่มีรูปภาพ</span>
+        </label>
+
+        <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
+          <span style="color:var(--muted); font-size:0.76rem;">ไซส์ถุงยาง:</span>
+          <select id="condomFilterSelect" class="select-filter" onchange="applyFilters()">
+            <option value="all">ทุกขนาด</option>
+            <option value="49">49 mm</option>
+            <option value="52">52 mm</option>
+            <option value="54">54 mm</option>
+            <option value="56">56 mm</option>
+            <option value="58">58 mm</option>
+            <option value="60">60 mm</option>
+            <option value="64">64 mm</option>
+            <option value="69">69 mm</option>
+          </select>
+
+          <span style="color:var(--muted); font-size:0.76rem; margin-left:8px;">ประเภทสรีระ:</span>
+          <select id="bfpiFilterSelect" class="select-filter" onchange="applyFilters()">
+            <option value="all">ทุกประเภท</option>
+            <option value="grower">ควยเลือด (Grower)</option>
+            <option value="hybrid">กึ่งเลือดกึ่งเนื้อ (Hybrid)</option>
+            <option value="shower">ควยเนื้อ (Shower)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE VIEW -->
+    <div class="table-container" id="tableViewSection">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortTable('index')"># ⇅</th>
+              <th onclick="sortTable('Timestamp')">วันที่/เวลา ⇅</th>
+              <th onclick="sortTable('Mode')">โหมด ⇅</th>
+              <th onclick="sortTable('Erect Length (mm)')">ขนาดแข็ง (ยาว×รอบวง) / ความลึก ⇅</th>
+              <th onclick="sortTable('Flaccid Length (mm)')">ขนาดอ่อน / ขยาย ⇅</th>
+              <th onclick="sortTable('Condom (mm)')">ถุงยาง ⇅</th>
+              <th onclick="sortTable('BFPI Type')">ประเภทสรีระ / ฉายา ⇅</th>
+              <th onclick="sortTable('Blood Volume (cc)')">เลือด / แคมใน ⇅</th>
+              <th>รูปถ่าย (ชี้พรีวิวขยายใหญ่)</th>
+              <th>การกระทำ</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="pagination-bar">
+        <div>
+          แสดง <span id="pageStart" style="color:var(--text); font-weight:700;">0</span> - <span id="pageEnd" style="color:var(--text); font-weight:700;">0</span> จากทั้งหมด <span id="pageTotal" style="color:var(--pink); font-weight:800;">0</span> รายการ
+        </div>
+        <div class="pagination-controls">
+          <button class="btn" style="padding:3px 10px; font-size:0.75rem;" onclick="changePage(-1)" id="prevPageBtn">‹ ก่อนหน้า</button>
+          <span style="display:flex; align-items:center; padding:0 8px; font-weight:700;" id="pageIndicator">หน้า 1/1</span>
+          <button class="btn" style="padding:3px 10px; font-size:0.75rem;" onclick="changePage(1)" id="nextPageBtn">ถัดไป ›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY VIEW SECTION (อัลบัมรูปภาพ) -->
+    <div id="galleryViewSection" style="display:none;">
+      <div class="gallery-grid" id="galleryContainer"></div>
+    </div>
+
+  </div>
+
+  <!-- UPGRADED SUPER-SIZE FLOATING HOVER PREVIEW CARD -->
+  <div id="hoverPreviewCard">
+    <div id="hoverPreviewImgWrap">
+      <img id="hoverPreviewImg" src="" alt="preview" referrerpolicy="no-referrer">
+    </div>
+    <div id="hoverPreviewInfo">
+      <div id="hoverPreviewTitle" style="font-weight:900; color:var(--text); font-size:1rem; margin-bottom:4px;">-</div>
+      <div id="hoverPreviewSub" style="color:var(--muted); font-size:0.78rem; line-height:1.4;">-</div>
+    </div>
+  </div>
+
+  <!-- RECORD DETAIL INSPECTION MODAL -->
+  <div class="modal-overlay" id="detailModal" onclick="if(event.target===this) closeDetailModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="detailModalTitle">🔬 รายละเอียดสเปกสรีระ</h3>
+        <button class="close-btn" onclick="closeDetailModal()">✕</button>
+      </div>
+
+      <!-- PHOTO HERO IN MODAL -->
+      <div id="detailPhotoContainer" style="margin-bottom:14px; text-align:center; display:none;">
+        <img id="detailModalImg" src="" alt="photo" referrerpolicy="no-referrer" style="max-height:300px; width:auto; border-radius:14px; border:1px solid var(--border); box-shadow:0 10px 30px rgba(0,0,0,0.6);">
+      </div>
+
+      <!-- DETAILS GRID -->
+      <div class="detail-grid" id="detailGridContent"></div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid var(--border); padding-top:14px;">
+        <a id="detailDriveLinkBtn" href="#" target="_blank" class="btn" style="font-size:0.78rem; color:var(--cyan); border-color:rgba(0,229,255,0.3);">📂 เปิดดูไฟล์ใน Google Drive</a>
+        <button class="btn btn-primary" onclick="closeDetailModal()">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG MODAL -->
+  <div class="modal-overlay" id="configModal" onclick="if(event.target===this) closeConfigModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>⚙️ ตั้งค่า Webhook URL (Google Apps Script)</h3>
+        <button class="close-btn" onclick="closeConfigModal()">✕</button>
+      </div>
+      <div class="form-group">
+        <label>Google Apps Script Web App URL (doGet / doPost):</label>
+        <input type="text" id="webhookUrlInput" value="https://script.google.com/macros/s/AKfycbyWXF1m27L--GD3GJz_5nAxx9Q9Ev_hl6VGgDA7wmeR32Jduf75u1zo3u7Mnxvn4E6w/exec">
+      </div>
+      <div style="font-size:0.75rem; color:var(--muted); margin-bottom:16px;">
+        💡 URL นี้จะถูกบันทึกลงในเครื่อง (localStorage) อัตโนมัติ หากทำการ Deploy Web App เวอร์ชันใหม่ สามารถนำ URL มาอัปเดตที่นี่ได้ทันที
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn" onclick="closeConfigModal()">ยกเลิก</button>
+        <button class="btn btn-primary" onclick="saveWebhookUrl()">💾 บันทึกและดึงข้อมูลใหม่</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX MODAL -->
+  <div class="modal-overlay" id="lightboxModal" onclick="if(event.target===this) closeLightbox()">
+    <div class="modal-card" style="max-width:800px; text-align:center; padding:18px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div id="lightboxTitle" style="font-weight:900; font-size:1.05rem; color:var(--pink);">รูปภาพสรีระ</div>
+        <button class="close-btn" onclick="closeLightbox()">✕</button>
+      </div>
+      <div style="max-height:580px; overflow:hidden; border-radius:14px; background:#000; margin-bottom:14px; display:flex; align-items:center; justify-content:center;">
+        <img id="lightboxImg" src="" alt="Full preview" referrerpolicy="no-referrer" style="width:100%; height:auto; max-height:580px; object-fit:contain;">
+      </div>
+      <div id="lightboxDetails" style="font-size:0.85rem; color:var(--muted); margin-bottom:12px;">-</div>
+      <a id="lightboxDriveBtn" href="#" target="_blank" class="btn btn-primary" style="font-size:0.82rem;">📂 เปิดดูไฟล์ต้นฉบับบน Google Drive</a>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // SMART GOOGLE DRIVE DIRECT THUMBNAIL PARSER
+    function extractDriveId(link) {
+      if (!link || typeof link !== 'string' || link.startsWith('Error:') || link === '-') return null;
+      const m = link.match(/\/d\/([a-zA-Z0-9_-]+)/) || link.match(/id=([a-zA-Z0-9_-]+)/);
+      return m ? m[1] : null;
+    }
+
+    function getDriveImgUrl(link) {
+      const id = extractDriveId(link);
+      if (id) {
+        return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w600';
+      }
+      if (link && link.startsWith('http') && !link.startsWith('Error:')) {
+        return link;
+      }
+      return '';
+    }
+
+    function handleImgError(img, link) {
+      const id = extractDriveId(link);
+      if (id && !img.dataset.retried) {
+        img.dataset.retried = "1";
+        img.src = 'https://lh3.googleusercontent.com/d/' + id;
+      } else if (id && img.dataset.retried === "1") {
+        img.dataset.retried = "2";
+        img.src = 'https://drive.google.com/uc?export=view&id=' + id;
+      } else {
+        img.onerror = null;
+        img.style.display = 'none';
+        if (img.parentElement) {
+          img.parentElement.innerHTML = '<span style="font-size:0.68rem; color:var(--muted); font-weight:700;">📂 Drive</span>';
+        }
+      }
+    }
+
+    // DEFAULT CONFIG & STATE
+    const DEFAULT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyWXF1m27L--GD3GJz_5nAxx9Q9Ev_hl6VGgDA7wmeR32Jduf75u1zo3u7Mnxvn4E6w/exec";
+    let rawData = [];
+    let filteredData = [];
+    let currentFilterMode = 'all';
+    let currentViewMode = 'table';
+    let autoRefreshTimer = null;
+    let currentPage = 1;
+    const PAGE_SIZE = 25;
+    let sortColumn = 'Timestamp';
+    let sortAsc = false;
+
+    // INIT
+    window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      const savedUrl = localStorage.getItem('mysex_admin_webhook_url');
+      if (savedUrl) {
+        document.getElementById('webhookUrlInput').value = savedUrl;
+      }
+      fetchData();
+      startAutoRefresh();
+      initHoverPreview();
+    });
+
+    // THEME
+    function initTheme() {
+      const savedTheme = localStorage.getItem('mysex_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeBtn(savedTheme);
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('mysex_theme', next);
+      updateThemeBtn(next);
+    }
+
+    function updateThemeBtn(theme) {
+      document.getElementById('themeToggleBtn').innerHTML = theme === 'dark' ? '☀️ ธีมสว่าง' : '🌙 ธีมมืด';
+    }
+
+    // FETCH REAL DATA FROM GOOGLE SHEETS
+    function getWebhookUrl() {
+      return localStorage.getItem('mysex_admin_webhook_url') || DEFAULT_WEBHOOK_URL;
+    }
+
+    async function fetchData() {
+      updateStatus('loading', 'กำลังดึงข้อมูลสดจาก Google Sheets...');
+      const url = getWebhookUrl();
+
+      try {
+        const res = await fetch(url, { method: 'GET' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const json = await res.json();
+
+        if (json.status === 'success' && Array.isArray(json.data)) {
+          rawData = json.data;
+          updateStatus('live', 'เชื่อมต่อชีทสดสำเร็จ (' + rawData.length + ' รายการ)');
+          document.getElementById('lastSyncTime').innerText = json.lastUpdated || new Date().toLocaleTimeString('th-TH');
+        } else {
+          rawData = [];
+          updateStatus('live', 'ชีทยังไม่มีข้อมูล (0 รายการ)');
+          document.getElementById('lastSyncTime').innerText = new Date().toLocaleTimeString('th-TH');
+        }
+      } catch (err) {
+        console.error('Error fetching Google Sheets data:', err);
+        rawData = [];
+        updateStatus('error', 'ไม่สามารถเชื่อมต่อ Google Sheets ได้ (กรุณากด ⚙️ Webhook URL เพื่อตรวจสอบ)');
+        document.getElementById('lastSyncTime').innerText = new Date().toLocaleTimeString('th-TH') + ' (Error)';
+      }
+
+      applyFilters();
+      updateAnalytics();
+    }
+
+    function updateStatus(type, msg) {
+      const badge = document.getElementById('connectionStatusBadge');
+      const txt = document.getElementById('connectionStatusText');
+      badge.className = 'status-pill ' + (type === 'live' ? 'status-live' : 'status-error');
+      txt.innerText = msg;
+    }
+
+    // AUTO REFRESH
+    function startAutoRefresh() {
+      if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+      autoRefreshTimer = setInterval(() => {
+        fetchData();
+      }, 30000);
+    }
+
+    function toggleAutoRefresh(el) {
+      if (el.checked) startAutoRefresh();
+      else if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+    }
+
+    // HOVER PREVIEW LOGIC
+    function initHoverPreview() {
+      const card = document.getElementById('hoverPreviewCard');
+      window.addEventListener('mousemove', (e) => {
+        if (card.classList.contains('active')) {
+          const cardWidth = 390;
+          const cardHeight = 440;
+          let left = e.clientX + 24;
+          let top = e.clientY - (cardHeight / 2);
+
+          if (left + cardWidth > window.innerWidth) {
+            left = e.clientX - cardWidth - 14;
+          }
+          if (top + cardHeight > window.innerHeight) {
+            top = window.innerHeight - cardHeight - 16;
+          }
+          if (top < 16) {
+            top = 16;
+          }
+
+          card.style.left = Math.max(10, left) + 'px';
+          card.style.top = top + 'px';
+        }
+      });
+    }
+
+    function showHoverPreview(imgUrl, title, sub) {
+      if (!imgUrl) return;
+      const card = document.getElementById('hoverPreviewCard');
+      const img = document.getElementById('hoverPreviewImg');
+      img.src = imgUrl;
+      document.getElementById('hoverPreviewTitle').innerHTML = title || 'รูปภาพสรีระ';
+      document.getElementById('hoverPreviewSub').innerHTML = sub || '';
+      card.classList.add('active');
+    }
+
+    function hideHoverPreview() {
+      document.getElementById('hoverPreviewCard').classList.remove('active');
+    }
+
+    // FILTERING & SEARCH
+    function setFilterMode(mode, el) {
+      currentFilterMode = mode;
+      document.querySelectorAll('.tab-pills .tab-btn').forEach(btn => {
+        if (btn.id && (btn.id === 'tabAllBtn' || btn.id === 'tabMaleBtn' || btn.id === 'tabFemaleBtn' || btn.id === 'tabPairBtn')) {
+          btn.classList.remove('active');
+        }
+      });
+      el.classList.add('active');
+      currentPage = 1;
+      applyFilters();
+    }
+
+    function setViewMode(view, el) {
+      currentViewMode = view;
+      document.getElementById('viewTableBtn').classList.toggle('active', view === 'table');
+      document.getElementById('viewGalleryBtn').classList.toggle('active', view === 'gallery');
+      document.getElementById('tableViewSection').style.display = view === 'table' ? 'block' : 'none';
+      document.getElementById('galleryViewSection').style.display = view === 'gallery' ? 'block' : 'none';
+      if (view === 'gallery') renderGallery();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const onlyPhotos = document.getElementById('onlyPhotosFilter').checked;
+      const condomFilter = document.getElementById('condomFilterSelect').value;
+      const bfpiFilter = document.getElementById('bfpiFilterSelect').value;
+
+      filteredData = rawData.filter(item => {
+        const itemMode = (item.Mode || item['mode'] || '').toLowerCase();
+        if (currentFilterMode !== 'all' && itemMode !== currentFilterMode) return false;
+
+        const photoLink = item['Photo Link'] || item.PhotoLink || '';
+        const imgUrl = getDriveImgUrl(photoLink);
+        if (onlyPhotos && !imgUrl) return false;
+
+        // Condom Filter
+        if (condomFilter !== 'all') {
+          const c = String(item['Condom (mm)'] || '');
+          if (c !== condomFilter) return false;
+        }
+
+        // BFPI Filter
+        if (bfpiFilter !== 'all') {
+          const t = (item['BFPI Type'] || '').toLowerCase();
+          if (bfpiFilter === 'grower' && !t.includes('blood') && !t.includes('เลือด')) return false;
+          if (bfpiFilter === 'shower' && !t.includes('flesh') && !t.includes('เนื้อ')) return false;
+          if (bfpiFilter === 'hybrid' && !t.includes('hybrid') && !t.includes('กึ่ง')) return false;
+        }
+
+        if (q) {
+          const matchStr = Object.values(item).join(' ').toLowerCase();
+          if (!matchStr.includes(q)) return false;
+        }
+
+        return true;
+      });
+
+      // Update Counts
+      document.getElementById('countTabAll').innerText = rawData.length;
+      document.getElementById('countTabMale').innerText = rawData.filter(d => (d.Mode || '').toLowerCase() === 'male').length;
+      document.getElementById('countTabFemale').innerText = rawData.filter(d => (d.Mode || '').toLowerCase() === 'female').length;
+      document.getElementById('countTabPair').innerText = rawData.filter(d => (d.Mode || '').toLowerCase() === 'pair').length;
+      document.getElementById('countTabPhotos').innerText = rawData.filter(d => {
+        return !!getDriveImgUrl(d['Photo Link']);
+      }).length;
+
+      sortData();
+      renderTable();
+      if (currentViewMode === 'gallery') renderGallery();
+    }
+
+    // SORTING
+    function sortTable(col) {
+      if (sortColumn === col) sortAsc = !sortAsc;
+      else {
+        sortColumn = col;
+        sortAsc = false;
+      }
+      sortData();
+      renderTable();
+    }
+
+    function sortData() {
+      filteredData.sort((a, b) => {
+        let vA = a[sortColumn] || '';
+        let vB = b[sortColumn] || '';
+        if (typeof vA === 'number' && typeof vB === 'number') {
+          return sortAsc ? vA - vB : vB - vA;
+        }
+        return sortAsc ? String(vA).localeCompare(String(vB)) : String(vB).localeCompare(String(vA));
+      });
+    }
+
+    // RENDER TABLE (USING CLEAN DOM API TO PREVENT QUOTE/STRING PARSING BUGS)
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      const total = filteredData.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const end = Math.min(start + PAGE_SIZE, total);
+      const pageItems = filteredData.slice(start, end);
+
+      document.getElementById('pageStart').innerText = total > 0 ? start + 1 : 0;
+      document.getElementById('pageEnd').innerText = end;
+      document.getElementById('pageTotal').innerText = total;
+      document.getElementById('pageIndicator').innerText = 'หน้า ' + currentPage + '/' + totalPages;
+      document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+      document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+
+      if (pageItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:35px; color:var(--muted);">ไม่พบข้อมูลใน Google Sheets</td></tr>';
+        return;
+      }
+
+      pageItems.forEach((row, i) => {
+        const mode = (row.Mode || 'male').toLowerCase();
+        const modeBadge = mode === 'female' ? '<span class="badge badge-female">🦋 Female</span>'
+                        : mode === 'pair' ? '<span class="badge badge-pair">💜 Pair</span>'
+                        : '<span class="badge badge-male">🍆 Male</span>';
+
+        let col4 = '-', col5 = '-', col6 = '-', col7 = '-', col8 = '-';
+        let hoverTitle = '';
+        let hoverSub = '';
+
+        if (mode === 'female') {
+          col4 = '<strong style="color:var(--cyan); font-family:var(--font-mono);">ลึก ' + (row['Vaginal Resting (mm)'] ? (row['Vaginal Resting (mm)']/10).toFixed(1) : '-') + '</strong> <small style="color:var(--dim);">cm</small>';
+          col5 = '<span style="color:var(--muted); font-family:var(--font-mono);">ขยาย ' + (row['Vaginal Expanded (mm)'] ? (row['Vaginal Expanded (mm)']/10).toFixed(1) : '-') + ' cm</span>';
+          col6 = '<span style="color:var(--dim); font-size:0.75rem;">-</span>';
+          col7 = '<span style="color:var(--purple); font-weight:700;">' + (row.Archetype || '🦋 สรีระหญิง') + '</span>';
+          col8 = '<span style="color:var(--pink); font-family:var(--font-mono); font-weight:700;">แคม ' + (row['Labia Asym (mm)'] || '-') + ' mm</span>';
+
+          hoverTitle = '🦋 ' + (row.Archetype || 'สรีระหญิง');
+          hoverSub = '📅 ' + (row.Timestamp || '-') + '<br>📏 ลึกปกติ: <strong>' + (row['Vaginal Resting (mm)'] ? (row['Vaginal Resting (mm)']/10).toFixed(1) : '-') + ' cm</strong> (ขยาย ' + (row['Vaginal Expanded (mm)'] ? (row['Vaginal Expanded (mm)']/10).toFixed(1) : '-') + ' cm)<br>🌸 แคมใน: <strong>' + (row['Labia Asym (mm)'] || '-') + ' mm</strong> · คะแนน: <strong style="color:var(--green);">' + (row.Score || '-') + '%</strong>';
+        } else if (mode === 'pair') {
+          const erectLen = row['Erect Length (mm)'] ? (row['Erect Length (mm)'] / 10).toFixed(1) : '-';
+          const erectGirth = row['Erect Girth (mm)'] ? (row['Erect Girth (mm)'] / 10).toFixed(1) : '-';
+          col4 = '<strong style="color:var(--purple); font-family:var(--font-mono);">' + erectLen + ' × ' + erectGirth + '</strong> <small style="color:var(--dim);">cm</small>';
+          col5 = '<span style="color:var(--cyan); font-family:var(--font-mono);">หี ' + (row['Vaginal Resting (mm)'] ? (row['Vaginal Resting (mm)']/10).toFixed(1) : '-') + ' cm</span>';
+          col6 = row['Condom (mm)'] ? '<span style="font-weight:800; color:var(--gold); font-family:var(--font-mono);">' + row['Condom (mm)'] + ' mm</span>' : '-';
+          col7 = '<span style="color:var(--green); font-weight:700;">🎯 ชนลึก +' + (row['Cervical Impact (mm)'] || '0') + ' mm (' + (row.Score || '100') + '%)</span>';
+          col8 = '<span style="color:var(--cyan); font-family:var(--font-mono); font-weight:700;">+' + (row['Blood Volume (cc)'] ? parseFloat(row['Blood Volume (cc)']).toFixed(1) : '0') + ' cc</span>';
+
+          hoverTitle = '💜 ' + (row.Archetype || 'คู่ปะทะ Master Pair');
+          hoverSub = '📅 ' + (row.Timestamp || '-') + '<br>🍆 ควย: <strong>' + (row['Erect Length (mm)'] ? (row['Erect Length (mm)']/10).toFixed(1) : '-') + ' × ' + (row['Erect Girth (mm)'] ? (row['Erect Girth (mm)']/10).toFixed(1) : '-') + ' cm</strong> · ถุงยาง: <strong>' + (row['Condom (mm)'] || '-') + ' mm</strong><br>🦋 ช่องคลอด: <strong>' + (row['Vaginal Resting (mm)'] ? (row['Vaginal Resting (mm)']/10).toFixed(1) : '-') + ' cm</strong> · ชนลึก: <strong style="color:var(--purple);">+' + (row['Cervical Impact (mm)'] || '0') + ' mm</strong>';
+        } else {
+          // Male
+          const erectLen = row['Erect Length (mm)'] ? (row['Erect Length (mm)'] / 10).toFixed(1) : '-';
+          const erectGirth = row['Erect Girth (mm)'] ? (row['Erect Girth (mm)'] / 10).toFixed(1) : '-';
+          const flaccidLen = row['Flaccid Length (mm)'] ? (row['Flaccid Length (mm)'] / 10).toFixed(1) : '-';
+          const flaccidGirth = row['Flaccid Girth (mm)'] ? (row['Flaccid Girth (mm)'] / 10).toFixed(1) : '-';
+          col4 = '<strong style="color:var(--text); font-family:var(--font-mono);">' + erectLen + ' × ' + erectGirth + '</strong> <small style="color:var(--dim);">cm</small>';
+          col5 = '<span style="color:var(--muted); font-family:var(--font-mono); font-size:0.76rem;">' + flaccidLen + ' × ' + flaccidGirth + ' cm</span>';
+          col6 = row['Condom (mm)'] ? '<span style="font-weight:800; color:var(--gold); font-family:var(--font-mono);">' + row['Condom (mm)'] + ' mm</span>' : '-';
+          
+          let bfpiBadge = '<span style="color:var(--muted);">' + (row.Archetype || row['BFPI Type'] || '-') + '</span>';
+          const bfpi = row['BFPI Type'] || '';
+          if (bfpi.includes('Blood') || bfpi.includes('เลือด')) bfpiBadge = '<span class="badge badge-grower">🩸 Grower</span>';
+          else if (bfpi.includes('Flesh') || bfpi.includes('เนื้อ')) bfpiBadge = '<span class="badge badge-shower">🥩 Shower</span>';
+          else if (bfpi.includes('Hybrid') || bfpi.includes('กึ่ง')) bfpiBadge = '<span class="badge badge-hybrid">🟣 Hybrid</span>';
+          col7 = bfpiBadge;
+          col8 = row['Blood Volume (cc)'] ? '<span style="color:var(--cyan); font-family:var(--font-mono); font-weight:700;">+' + parseFloat(row['Blood Volume (cc)']).toFixed(1) + ' cc</span>' : '-';
+
+          hoverTitle = '🍆 ' + (row.Archetype || 'สรีระชาย');
+          hoverSub = '📅 ' + (row.Timestamp || '-') + '<br>📏 แข็ง: <strong>' + (row['Erect Length (mm)'] ? (row['Erect Length (mm)']/10).toFixed(1) : '-') + ' × ' + (row['Erect Girth (mm)'] ? (row['Erect Girth (mm)']/10).toFixed(1) : '-') + ' cm</strong> · ถุงยาง: <strong style="color:var(--gold);">' + (row['Condom (mm)'] || '-') + ' mm</strong><br>🩸 เลือดสูบฉีด: <strong>+' + (row['Blood Volume (cc)'] ? parseFloat(row['Blood Volume (cc)']).toFixed(1) : '0') + ' cc</strong> · สรีระ: <strong>' + (row['BFPI Type'] || '-') + '</strong>';
+        }
+
+        const photoLink = row['Photo Link'] || row.PhotoLink || '';
+        const imgUrl = getDriveImgUrl(photoLink);
+
+        const tr = document.createElement('tr');
+        tr.addEventListener('click', () => openDetailModal(row));
+
+        // Create Cells
+        const tdIndex = document.createElement('td');
+        tdIndex.style.color = 'var(--muted)';
+        tdIndex.style.fontFamily = 'var(--font-mono)';
+        tdIndex.innerText = start + i + 1;
+
+        const tdTime = document.createElement('td');
+        tdTime.style.fontSize = '0.75rem';
+        tdTime.style.fontFamily = 'var(--font-mono)';
+        tdTime.style.color = 'var(--muted)';
+        tdTime.innerText = row.Timestamp || '-';
+
+        const tdMode = document.createElement('td');
+        tdMode.innerHTML = modeBadge;
+
+        const tdCol4 = document.createElement('td');
+        tdCol4.innerHTML = col4;
+
+        const tdCol5 = document.createElement('td');
+        tdCol5.innerHTML = col5;
+
+        const tdCol6 = document.createElement('td');
+        tdCol6.innerHTML = col6;
+
+        const tdCol7 = document.createElement('td');
+        tdCol7.innerHTML = col7;
+
+        const tdCol8 = document.createElement('td');
+        tdCol8.innerHTML = col8;
+
+        // Photo Thumbnail Cell with Clean DOM Events
+        const tdPhoto = document.createElement('td');
+        if (imgUrl) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'thumb-wrapper';
+
+          const img = document.createElement('img');
+          img.src = imgUrl;
+          img.alt = 'photo';
+          img.referrerPolicy = 'no-referrer';
+          img.onerror = () => handleImgError(img, photoLink);
+
+          wrapper.appendChild(img);
+
+          wrapper.addEventListener('mouseenter', () => showHoverPreview(imgUrl, hoverTitle, hoverSub));
+          wrapper.addEventListener('mouseleave', () => hideHoverPreview());
+          wrapper.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox(imgUrl, hoverTitle);
+          });
+
+          tdPhoto.appendChild(wrapper);
+        } else {
+          tdPhoto.innerHTML = '<span style="color:var(--dim); font-size:0.75rem;">ไม่มีรูป</span>';
+        }
+
+        // Action Button Cell
+        const tdAction = document.createElement('td');
+        const btnInspect = document.createElement('button');
+        btnInspect.className = 'btn';
+        btnInspect.style.padding = '2px 8px';
+        btnInspect.style.fontSize = '0.72rem';
+        btnInspect.innerText = '🔍 ดูสเปก';
+        btnInspect.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openDetailModal(row);
+        });
+        tdAction.appendChild(btnInspect);
+
+        // Append all cells
+        tr.appendChild(tdIndex);
+        tr.appendChild(tdTime);
+        tr.appendChild(tdMode);
+        tr.appendChild(tdCol4);
+        tr.appendChild(tdCol5);
+        tr.appendChild(tdCol6);
+        tr.appendChild(tdCol7);
+        tr.appendChild(tdCol8);
+        tr.appendChild(tdPhoto);
+        tr.appendChild(tdAction);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      renderTable();
+    }
+
+    // RENDER GALLERY (USING CLEAN DOM API)
+    function renderGallery() {
+      const container = document.getElementById('galleryContainer');
+      container.innerHTML = '';
+
+      const photos = filteredData.filter(d => {
+        return !!getDriveImgUrl(d['Photo Link']);
+      });
+
+      if (photos.length === 0) {
+        container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--muted); font-size:0.95rem;">ยังไม่มีรูปภาพในระบบสำหรับหมวดหมู่นี้</div>';
+        return;
+      }
+
+      photos.forEach(item => {
+        const mode = (item.Mode || 'male').toLowerCase();
+        const imgUrl = getDriveImgUrl(item['Photo Link']);
+        const title = item.Archetype || (mode === 'female' ? '🦋 สรีระหญิง' : mode === 'pair' ? '💜 คู่ปะทะ' : '🍆 สรีระชาย');
+
+        let modeBadge = '';
+        let badgeRight = '';
+        let infoLine1 = '';
+        let infoLine2 = item.Timestamp || '-';
+        let hoverSub = '';
+
+        if (mode === 'female') {
+          modeBadge = '<span class="badge badge-female" style="position:absolute; top:10px; left:10px;">🦋 FEMALE</span>';
+          badgeRight = '<span class="badge" style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.75); color:var(--cyan); font-family:var(--font-mono); font-weight:800;">ลึก ' + (item['Vaginal Resting (mm)'] ? (item['Vaginal Resting (mm)']/10).toFixed(1) : '-') + ' cm</span>';
+          infoLine1 = '<div style="font-weight:800; color:var(--text);">' + (item.Archetype || 'สรีระหญิง') + '</div>';
+          hoverSub = '📅 ' + (item.Timestamp || '-') + '<br>📏 ลึกปกติ: <strong>' + (item['Vaginal Resting (mm)'] ? (item['Vaginal Resting (mm)']/10).toFixed(1) : '-') + ' cm</strong> (ขยาย ' + (item['Vaginal Expanded (mm)'] ? (item['Vaginal Expanded (mm)']/10).toFixed(1) : '-') + ' cm)<br>🌸 แคมใน: <strong>' + (item['Labia Asym (mm)'] || '-') + ' mm</strong> · คะแนน: <strong style="color:var(--green);">' + (item.Score || '-') + '%</strong>';
+        } else if (mode === 'pair') {
+          modeBadge = '<span class="badge badge-pair" style="position:absolute; top:10px; left:10px;">💜 PAIR</span>';
+          badgeRight = '<span class="badge" style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.75); color:var(--green); font-family:var(--font-mono); font-weight:800;">ชนลึก +' + (item['Cervical Impact (mm)'] || '0') + ' mm</span>';
+          infoLine1 = '<div style="font-weight:800; color:var(--purple);">' + (item.Archetype || 'คู่ปะทะ Master Pair') + '</div>';
+          hoverSub = '📅 ' + (item.Timestamp || '-') + '<br>🍆 ควย: <strong>' + (item['Erect Length (mm)'] ? (item['Erect Length (mm)']/10).toFixed(1) : '-') + ' × ' + (item['Erect Girth (mm)'] ? (item['Erect Girth (mm)']/10).toFixed(1) : '-') + ' cm</strong><br>🦋 หี: <strong>' + (item['Vaginal Resting (mm)'] ? (item['Vaginal Resting (mm)']/10).toFixed(1) : '-') + ' cm</strong> · ชนลึก: <strong style="color:var(--purple);">+' + (item['Cervical Impact (mm)'] || '0') + ' mm</strong>';
+        } else {
+          const erectLen = item['Erect Length (mm)'] ? (item['Erect Length (mm)'] / 10).toFixed(1) : '-';
+          const erectGirth = item['Erect Girth (mm)'] ? (item['Erect Girth (mm)'] / 10).toFixed(1) : '-';
+          const condom = item['Condom (mm)'] ? item['Condom (mm)'] + ' mm' : '-';
+          modeBadge = '<span class="badge badge-male" style="position:absolute; top:10px; left:10px;">🍆 MALE</span>';
+          badgeRight = '<span class="badge" style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.75); color:var(--gold); font-family:var(--font-mono); font-weight:800;">' + condom + '</span>';
+          infoLine1 = '<div style="font-weight:800; color:var(--text);">' + erectLen + ' × ' + erectGirth + ' cm <span style="font-size:0.75rem; font-weight:600; color:var(--muted);">(' + (item['BFPI Type'] || 'ควย') + ')</span></div>';
+          hoverSub = '📅 ' + (item.Timestamp || '-') + '<br>📏 แข็ง: <strong>' + erectLen + ' × ' + erectGirth + ' cm</strong> · ถุงยาง: <strong style="color:var(--gold);">' + condom + '</strong><br>🩸 เลือด: <strong>+' + (item['Blood Volume (cc)'] ? parseFloat(item['Blood Volume (cc)']).toFixed(1) : '0') + ' cc</strong>';
+        }
+
+        const card = document.createElement('div');
+        card.className = 'gallery-card';
+        card.addEventListener('click', () => openDetailModal(item));
+        card.addEventListener('mouseenter', () => showHoverPreview(imgUrl, title, hoverSub));
+        card.addEventListener('mouseleave', () => hideHoverPreview());
+
+        const imgBox = document.createElement('div');
+        imgBox.className = 'gallery-img-box';
+        imgBox.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openLightbox(imgUrl, title);
+        });
+
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = 'photo';
+        img.referrerPolicy = 'no-referrer';
+        img.onerror = () => handleImgError(img, item['Photo Link'] || '');
+
+        imgBox.appendChild(img);
+        imgBox.innerHTML += modeBadge + badgeRight;
+
+        const infoBox = document.createElement('div');
+        infoBox.className = 'gallery-info';
+        infoBox.innerHTML = infoLine1 + '<div style="font-size:0.72rem; color:var(--muted); margin-top:3px; font-family:var(--font-mono);">' + infoLine2 + '</div>';
+
+        card.appendChild(imgBox);
+        card.appendChild(infoBox);
+
+        container.appendChild(card);
+      });
+    }
+
+    // DETAIL MODAL / RECORD INSPECTION
+    function openDetailModal(row) {
+      document.getElementById('detailModalTitle').innerText = '🔬 สเปกสรีระ: ' + (row.Archetype || row.Mode || 'เคสสรีระ');
+      const imgUrl = getDriveImgUrl(row['Photo Link']);
+      const photoBox = document.getElementById('detailPhotoContainer');
+      
+      if (imgUrl) {
+        photoBox.style.display = 'block';
+        document.getElementById('detailModalImg').src = imgUrl;
+      } else {
+        photoBox.style.display = 'none';
+      }
+
+      const grid = document.getElementById('detailGridContent');
+      const mode = (row.Mode || 'male').toLowerCase();
+
+      let content = 
+        '<div class="detail-cell"><div class="detail-cell-label">📅 วันที่บันทึก</div><div class="detail-cell-value">' + (row.Timestamp || '-') + '</div></div>' +
+        '<div class="detail-cell"><div class="detail-cell-label">🏷️ โหมด</div><div class="detail-cell-value">' + mode.toUpperCase() + '</div></div>';
+
+      if (mode === 'female') {
+        content += 
+          '<div class="detail-cell"><div class="detail-cell-label">🦋 ความลึกช่องคลอด (ปกติ)</div><div class="detail-cell-value" style="color:var(--cyan);">' + (row['Vaginal Resting (mm)'] ? (row['Vaginal Resting (mm)']/10).toFixed(1) + ' cm' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🌊 ความลึกช่องคลอด (ขยายตัว)</div><div class="detail-cell-value" style="color:var(--purple);">' + (row['Vaginal Expanded (mm)'] ? (row['Vaginal Expanded (mm)']/10).toFixed(1) + ' cm' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🌸 แคมในอสมมาตร (Labia Asym)</div><div class="detail-cell-value" style="color:var(--pink);">' + (row['Labia Asym (mm)'] ? row['Labia Asym (mm)'] + ' mm' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">💯 คะแนนความเข้ากัน (Score)</div><div class="detail-cell-value" style="color:var(--green);">' + (row['Score'] ? row['Score'] + '%' : '-') + '</div></div>' +
+          '<div class="detail-cell" style="grid-column:1/-1;"><div class="detail-cell-label">🧬 ฉายาสรีระ</div><div class="detail-cell-value">' + (row.Archetype || '-') + '</div></div>';
+      } else if (mode === 'pair') {
+        content += 
+          '<div class="detail-cell"><div class="detail-cell-label">🍆 ขนาดควยตอนแข็ง</div><div class="detail-cell-value" style="color:var(--pink);">' + (row['Erect Length (mm)'] ? (row['Erect Length (mm)']/10).toFixed(1) + ' × ' + (row['Erect Girth (mm)']/10).toFixed(1) + ' cm' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🦋 ความลึกช่องคลอด</div><div class="detail-cell-value" style="color:var(--cyan);">' + (row['Vaginal Resting (mm)'] ? (row['Vaginal Resting (mm)']/10).toFixed(1) + ' / ' + (row['Vaginal Expanded (mm)']/10).toFixed(1) + ' cm' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🎯 ระยะชนลึกสุด (Cervical Impact)</div><div class="detail-cell-value" style="color:var(--purple);">+' + (row['Cervical Impact (mm)'] || '0') + ' mm</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">💯 คะแนนความเข้ากัน (Score)</div><div class="detail-cell-value" style="color:var(--green);">' + (row['Score'] ? row['Score'] + '%' : '100%') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🛡️ ถุงยาง</div><div class="detail-cell-value" style="color:var(--gold);">' + (row['Condom (mm)'] ? row['Condom (mm)'] + ' mm' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🩸 เลือดสูบฉีด</div><div class="detail-cell-value" style="color:var(--cyan);">+' + (row['Blood Volume (cc)'] ? parseFloat(row['Blood Volume (cc)']).toFixed(1) : '0') + ' cc</div></div>';
+      } else {
+        // Male
+        content += 
+          '<div class="detail-cell"><div class="detail-cell-label">🍆 ขนาดตอนแข็ง (ยาว × รอบวง)</div><div class="detail-cell-value" style="color:var(--pink);">' + (row['Erect Length (mm)'] ? (row['Erect Length (mm)']/10).toFixed(1) + ' × ' + (row['Erect Girth (mm)']/10).toFixed(1) + ' cm' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">💤 ขนาดตอนอ่อน (ยาว × รอบวง)</div><div class="detail-cell-value">' + (row['Flaccid Length (mm)'] ? (row['Flaccid Length (mm)']/10).toFixed(1) + ' × ' + (row['Flaccid Girth (mm)']/10).toFixed(1) + ' cm' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🛡️ ขนาดถุงยางที่พอดี</div><div class="detail-cell-value" style="color:var(--gold);">' + (row['Condom (mm)'] ? row['Condom (mm)'] + ' mm' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🩸 ปริมาตรเลือดสูบฉีด</div><div class="detail-cell-value" style="color:var(--cyan);">' + (row['Blood Volume (cc)'] ? '+' + parseFloat(row['Blood Volume (cc)']).toFixed(1) + ' cc' : '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🧬 ประเภทสรีระ</div><div class="detail-cell-value">' + (row['BFPI Type'] || '-') + '</div></div>' +
+          '<div class="detail-cell"><div class="detail-cell-label">🍖 ไขมันเนินโคน (Fat)</div><div class="detail-cell-value">' + (row['Fat (mm)'] ? row['Fat (mm)'] + ' mm' : '-') + '</div></div>';
+      }
+
+      grid.innerHTML = content;
+      document.getElementById('detailDriveLinkBtn').href = row['Photo Link'] || '#';
+      document.getElementById('detailDriveLinkBtn').style.display = (row['Photo Link'] && row['Photo Link'].startsWith('http')) ? 'inline-flex' : 'none';
+      document.getElementById('detailModal').classList.add('active');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.remove('active');
+    }
+
+    // ANALYTICS & CHARTS
+    function updateAnalytics() {
+      const maleRecords = rawData.filter(d => (d.Mode || '').toLowerCase() === 'male' || (d.Mode || '').toLowerCase() === 'pair');
+      const femaleCount = rawData.filter(d => (d.Mode || '').toLowerCase() === 'female').length;
+      const pairCount = rawData.filter(d => (d.Mode || '').toLowerCase() === 'pair').length;
+      const maleOnlyCount = rawData.filter(d => (d.Mode || '').toLowerCase() === 'male').length;
+
+      // Total & Breakdown
+      document.getElementById('kpiTotalCount').innerText = rawData.length;
+      document.getElementById('kpiModeBreakdown').innerText = 'ชาย: ' + maleOnlyCount + ' · หญิง: ' + femaleCount + ' · คู่: ' + pairCount;
+
+      // Avg Length & Girth
+      let totalLen = 0, lenCount = 0, minLen = 999, maxLen = 0;
+      let totalGirth = 0, girthCount = 0, minGirth = 999, maxGirth = 0;
+
+      maleRecords.forEach(d => {
+        const l = parseFloat(d['Erect Length (mm)']);
+        if (!isNaN(l) && l > 0) {
+          totalLen += l;
+          lenCount++;
+          if (l < minLen) minLen = l;
+          if (l > maxLen) maxLen = l;
+        }
+        const g = parseFloat(d['Erect Girth (mm)']);
+        if (!isNaN(g) && g > 0) {
+          totalGirth += g;
+          girthCount++;
+          if (g < minGirth) minGirth = g;
+          if (g > maxGirth) maxGirth = g;
+        }
+      });
+
+      if (lenCount > 0) {
+        const avgL = (totalLen / lenCount / 10).toFixed(1);
+        document.getElementById('kpiAvgLength').innerHTML = avgL + ' <small style="font-size:0.9rem;">cm</small>';
+        document.getElementById('kpiLengthRange').innerText = 'มิน: ' + (minLen/10).toFixed(1) + ' · แม็กซ์: ' + (maxLen/10).toFixed(1) + ' cm';
+      } else {
+        document.getElementById('kpiAvgLength').innerHTML = '0.0 <small style="font-size:0.9rem;">cm</small>';
+        document.getElementById('kpiLengthRange').innerText = 'มิน: - · แม็กซ์: -';
+      }
+
+      if (girthCount > 0) {
+        const avgG = (totalGirth / girthCount / 10).toFixed(1);
+        document.getElementById('kpiAvgGirth').innerHTML = avgG + ' <small style="font-size:0.9rem;">cm</small>';
+        document.getElementById('kpiGirthRange').innerText = 'มิน: ' + (minGirth/10).toFixed(1) + ' · แม็กซ์: ' + (maxGirth/10).toFixed(1) + ' cm';
+      } else {
+        document.getElementById('kpiAvgGirth').innerHTML = '0.0 <small style="font-size:0.9rem;">cm</small>';
+        document.getElementById('kpiGirthRange').innerText = 'มิน: - · แม็กซ์: -';
+      }
+
+      // Condom Distribution
+      const condomCounts = {};
+      maleRecords.forEach(d => {
+        const c = d['Condom (mm)'];
+        if (c) {
+          condomCounts[c] = (condomCounts[c] || 0) + 1;
+        }
+      });
+
+      let topCondom = '-', topCount = 0;
+      for (const c in condomCounts) {
+        if (condomCounts[c] > topCount) {
+          topCount = condomCounts[c];
+          topCondom = c + ' mm';
+        }
+      }
+      document.getElementById('kpiTopCondom').innerText = topCondom;
+      document.getElementById('kpiCondomPercent').innerText = maleRecords.length > 0 ? 'สัดส่วน ' + Math.round((topCount / maleRecords.length) * 100) + '% ของทั้งหมด' : '-';
+
+      // Render Condom Bars
+      const condomContainer = document.getElementById('condomBarsContainer');
+      condomContainer.innerHTML = '';
+      const condomSizes = [49, 52, 54, 56, 58, 60, 64, 69];
+      document.getElementById('condomChartSub').innerText = 'รวม ' + maleRecords.length + ' ตัวอย่าง';
+
+      condomSizes.forEach(size => {
+        const count = condomCounts[size] || 0;
+        const pct = maleRecords.length > 0 ? Math.round((count / maleRecords.length) * 100) : 0;
+        condomContainer.innerHTML += 
+          '<div class="bar-item">' +
+            '<div class="bar-header">' +
+              '<span style="font-weight:700;">' + size + ' mm</span>' +
+              '<span style="color:var(--muted); font-family:var(--font-mono);">' + count + ' เคส (' + pct + '%)</span>' +
+            '</div>' +
+            '<div class="bar-bg">' +
+              '<div class="bar-fill" style="width: ' + pct + '%;"></div>' +
+            '</div>' +
+          '</div>';
+      });
+
+      // Archetype Breakdown
+      let growerCount = 0, showerCount = 0, hybridCount = 0;
+      maleRecords.forEach(d => {
+        const t = (d['BFPI Type'] || '').toLowerCase();
+        if (t.includes('blood') || t.includes('เลือด')) growerCount++;
+        else if (t.includes('flesh') || t.includes('เนื้อ')) showerCount++;
+        else if (t.includes('hybrid') || t.includes('กึ่ง')) hybridCount++;
+      });
+
+      const totalArch = growerCount + showerCount + hybridCount;
+      const growerPct = totalArch > 0 ? Math.round((growerCount / totalArch) * 100) : 0;
+      document.getElementById('kpiGrowerRatio').innerText = growerPct + '%';
+      document.getElementById('kpiArchetypeCount').innerText = 'Grower: ' + growerCount + ' · Shower: ' + showerCount + ' · Hybrid: ' + hybridCount;
+
+      const archContainer = document.getElementById('archetypeBarsContainer');
+      archContainer.innerHTML = 
+        '<div class="bar-item">' +
+          '<div class="bar-header">' +
+            '<span style="font-weight:700; color:var(--pink);">🩸 Pure Grower (ควยเลือด)</span>' +
+            '<span style="color:var(--muted); font-family:var(--font-mono);">' + growerCount + ' เคส (' + (totalArch > 0 ? Math.round((growerCount/totalArch)*100) : 0) + '%)</span>' +
+          '</div>' +
+          '<div class="bar-bg"><div class="bar-fill" style="background:var(--pink); width:' + (totalArch > 0 ? Math.round((growerCount/totalArch)*100) : 0) + '%;"></div></div>' +
+        '</div>' +
+        '<div class="bar-item">' +
+          '<div class="bar-header">' +
+            '<span style="font-weight:700; color:var(--purple);">🟣 Hybrid (กึ่งเลือดกึ่งเนื้อ)</span>' +
+            '<span style="color:var(--muted); font-family:var(--font-mono);">' + hybridCount + ' เคส (' + (totalArch > 0 ? Math.round((hybridCount/totalArch)*100) : 0) + '%)</span>' +
+          '</div>' +
+          '<div class="bar-bg"><div class="bar-fill" style="background:var(--purple); width:' + (totalArch > 0 ? Math.round((hybridCount/totalArch)*100) : 0) + '%;"></div></div>' +
+        '</div>' +
+        '<div class="bar-item">' +
+          '<div class="bar-header">' +
+            '<span style="font-weight:700; color:var(--gold);">🥩 Pure Shower (ควยเนื้อ)</span>' +
+            '<span style="color:var(--muted); font-family:var(--font-mono);">' + showerCount + ' เคส (' + (totalArch > 0 ? Math.round((showerCount/totalArch)*100) : 0) + '%)</span>' +
+          '</div>' +
+          '<div class="bar-bg"><div class="bar-fill" style="background:var(--gold); width:' + (totalArch > 0 ? Math.round((showerCount/totalArch)*100) : 0) + '%;"></div></div>' +
+        '</div>';
+
+      // Mode Breakdown Chart
+      const modeContainer = document.getElementById('modeBarsContainer');
+      const totalRecords = rawData.length || 1;
+      modeContainer.innerHTML = 
+        '<div class="bar-item">' +
+          '<div class="bar-header">' +
+            '<span style="font-weight:700; color:var(--pink);">🍆 สรีระชาย (Male)</span>' +
+            '<span style="color:var(--muted); font-family:var(--font-mono);">' + maleOnlyCount + ' เคส (' + Math.round((maleOnlyCount/totalRecords)*100) + '%)</span>' +
+          '</div>' +
+          '<div class="bar-bg"><div class="bar-fill" style="background:var(--pink); width:' + Math.round((maleOnlyCount/totalRecords)*100) + '%;"></div></div>' +
+        '</div>' +
+        '<div class="bar-item">' +
+          '<div class="bar-header">' +
+            '<span style="font-weight:700; color:var(--cyan);">🦋 สรีระหญิง (Female)</span>' +
+            '<span style="color:var(--muted); font-family:var(--font-mono);">' + femaleCount + ' เคส (' + Math.round((femaleCount/totalRecords)*100) + '%)</span>' +
+          '</div>' +
+          '<div class="bar-bg"><div class="bar-fill" style="background:var(--cyan); width:' + Math.round((femaleCount/totalRecords)*100) + '%;"></div></div>' +
+        '</div>' +
+        '<div class="bar-item">' +
+          '<div class="bar-header">' +
+            '<span style="font-weight:700; color:var(--purple);">💜 คู่ปะทะ (Pair)</span>' +
+            '<span style="color:var(--muted); font-family:var(--font-mono);">' + pairCount + ' เคส (' + Math.round((pairCount/totalRecords)*100) + '%)</span>' +
+          '</div>' +
+          '<div class="bar-bg"><div class="bar-fill" style="background:var(--purple); width:' + Math.round((pairCount/totalRecords)*100) + '%;"></div></div>' +
+        '</div>';
+
+      // Photos Count
+      const photosCount = rawData.filter(d => {
+        return !!getDriveImgUrl(d['Photo Link']);
+      }).length;
+      document.getElementById('kpiPhotoCount').innerText = photosCount;
+      document.getElementById('kpiPhotoPercent').innerText = rawData.length > 0 ? 'มีรูปภาพ ' + Math.round((photosCount / rawData.length) * 100) + '% ของบันทึก' : '-';
+    }
+
+    // LIGHTBOX
+    function openLightbox(url, details) {
+      document.getElementById('lightboxImg').src = url;
+      document.getElementById('lightboxDetails').innerHTML = details;
+      document.getElementById('lightboxDriveBtn').href = url;
+      document.getElementById('lightboxModal').classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightboxModal').classList.remove('active');
+    }
+
+    // CONFIG MODAL
+    function openConfigModal() {
+      document.getElementById('configModal').classList.add('active');
+    }
+
+    function closeConfigModal() {
+      document.getElementById('configModal').classList.remove('active');
+    }
+
+    function saveWebhookUrl() {
+      const val = document.getElementById('webhookUrlInput').value.trim();
+      if (val) {
+        localStorage.setItem('mysex_admin_webhook_url', val);
+        closeConfigModal();
+        fetchData();
+      }
+    }
+
+    // EXPORTS
+    function exportCSV() {
+      if (filteredData.length === 0) return alert('ไม่มีข้อมูลสำหรับส่งออก');
+      const headers = Object.keys(filteredData[0]);
+      let csv = headers.join(',') + '\n';
+      filteredData.forEach(row => {
+        const line = headers.map(h => '"' + String(row[h] || '').replace(/"/g, '""') + '"').join(',');
+        csv += line + '\n';
+      });
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mysex_analytics_' + new Date().toISOString().slice(0,10) + '.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function copyJSON() {
+      if (filteredData.length === 0) return alert('ไม่มีข้อมูลสำหรับส่งออก');
+      navigator.clipboard.writeText(JSON.stringify(filteredData, null, 2)).then(() => {
+        alert('คัดลอก JSON เรียบร้อยแล้ว!');
+      });
+    }
+  </script>
+</body>
+</html>
