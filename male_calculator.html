@@ -1530,7 +1530,7 @@
         <!-- CARD 2: BLOOD VS FLESH DIAGNOSTICS CARD -->
         <div class="card">
           <div class="card-title">
-            <div class="card-title-text">🩸 ผลวิเคราะห์ประเภทควย (Blood vs Flesh)</div>
+            <div class="card-title-text">🩸 ผลวิเคราะห์ประเภทสรีระ (Grower vs Shower)</div>
           </div>
 
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
@@ -1547,9 +1547,9 @@
               <div class="gauge-pointer" id="resGaugePointer" style="left:18.7%;"></div>
             </div>
             <div class="gauge-labels">
-              <span style="color:var(--gold);">🥩 Flesh Shower &lt;1.8</span>
+              <span style="color:var(--gold);">🥩 Shower &lt;1.8</span>
               <span style="color:var(--purple);">🟣 Hybrid 1.8-2.5</span>
-              <span style="color:var(--pink);">🩸 Blood Grower &gt;2.5</span>
+              <span style="color:var(--pink);">🩸 Grower &gt;2.5</span>
             </div>
           </div>
 
@@ -1652,42 +1652,43 @@
         <!-- CARD 4: FLACCID VS ERECT SVG VISUALIZER CARD -->
         <div class="card">
           <div class="card-title">
-            <div class="card-title-text">📊 แผนภาพเปรียบเทียบสภาวะยืดพองตัว</div>
+            <div class="card-title-text">📊 แผนภาพเปรียบเทียบสภาวะยืดพองตัว (Anatomical Scaled Visualizer)</div>
           </div>
           <div style="background:var(--metric-bg); border:1px solid var(--border); border-radius:var(--radius-md); padding:8px; text-align:center;">
-            <svg id="anatomySvg" width="100%" height="150" viewBox="0 0 360 150"></svg>
-      </div>
+            <svg id="anatomySvg" width="100%" height="220" viewBox="0 0 760 300"></svg>
+          </div>
+        </div>
 
+        <!-- FOOTER SECTION (INSIDE RIGHT COLUMN) -->
+        <footer style="margin-top:14px; padding:20px; background:var(--card); backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow); text-align:center;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:14px;">
+            <div style="text-align:left;">
+              <div style="font-weight:900; font-size:1.05rem; background:linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">⚡ MALE ANATOMICAL & DIAGNOSTICS ENGINE</div>
+              <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">เครื่องมือคำนวณและวิเคราะห์สรีระเพศชายเชิงกลศาสตร์การแพทย์</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-preset" style="font-size:0.75rem; padding:4px 12px;" onclick="openPassportModal()">🪪 Spec Passport</button>
+              <button class="btn-preset" style="font-size:0.75rem; padding:4px 12px; color:var(--cyan); border-color:rgba(0,131,143,0.3);" onclick="openMedicalModal()">🩺 Medical Report</button>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:14px; text-align:left; font-size:0.76rem; color:var(--dim); margin-bottom:14px;">
+            <div style="background:var(--metric-bg); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
+              <strong style="color:var(--text); display:block; margin-bottom:3px;">🔬 อ้างอิงมาตรฐานการแพทย์ (Clinical Sources):</strong>
+              <span>ข้อมูลเปอร์เซ็นต์ไทล์สากลอ้างอิงจาก Veale et al. (2015) BJU International, Herbenick et al. (2014) Journal of Sexual Medicine และเกณฑ์มาตรฐานสมาคมยูโรวิทยาไทย</span>
+            </div>
+            <div style="background:var(--metric-bg); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
+              <strong style="color:var(--text); display:block; margin-bottom:3px;">🔒 นโยบายความเป็นส่วนตัว (100% Privacy First):</strong>
+              <span>ข้อมูลทั้งหมดถูกประมวลผลภายในเครื่องส่วนบุคคล (Local Machine Client-Side) ไม่มีเทรซการบันทึกหรือส่งออกข้อมูลไปยังเซิร์ฟเวอร์ภายนอกใดๆ ทั้งสิ้น</span>
+            </div>
+          </div>
+
+          <div style="font-size:0.72rem; color:var(--dim); opacity:0.85;">
+            © 2026 Male Anatomical Diagnostics Engine • Designed with Precision & Clinical Excellence
+          </div>
+        </footer>
+      </div>
     </div>
-
-    <!-- FOOTER SECTION -->
-    <footer style="margin-top:24px; padding:20px; background:var(--card); backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow); text-align:center;">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:14px;">
-        <div style="text-align:left;">
-          <div style="font-weight:900; font-size:1.05rem; background:linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">⚡ MALE ANATOMICAL & DIAGNOSTICS ENGINE</div>
-          <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">เครื่องมือคำนวณและวิเคราะห์สรีระเพศชายเชิงกลศาสตร์การแพทย์</div>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn-preset" style="font-size:0.75rem; padding:4px 12px;" onclick="openPassportModal()">🪪 Spec Passport</button>
-          <button class="btn-preset" style="font-size:0.75rem; padding:4px 12px; color:var(--cyan); border-color:rgba(0,131,143,0.3);" onclick="openMedicalModal()">🩺 Medical Report</button>
-        </div>
-      </div>
-
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:14px; text-align:left; font-size:0.76rem; color:var(--dim); margin-bottom:14px;">
-        <div style="background:var(--metric-bg); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
-          <strong style="color:var(--text); display:block; margin-bottom:3px;">🔬 อ้างอิงมาตรฐานการแพทย์ (Clinical Sources):</strong>
-          <span>ข้อมูลเปอร์เซ็นต์ไทล์สากลอ้างอิงจาก Veale et al. (2015) BJU International, Herbenick et al. (2014) Journal of Sexual Medicine และเกณฑ์มาตรฐานสมาคมยูโรวิทยาไทย</span>
-        </div>
-        <div style="background:var(--metric-bg); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
-          <strong style="color:var(--text); display:block; margin-bottom:3px;">🔒 นโยบายความเป็นส่วนตัว (100% Privacy First):</strong>
-          <span>ข้อมูลทั้งหมดถูกประมวลผลภายในเครื่องส่วนบุคคล (Local Machine Client-Side) ไม่มีเทรซการบันทึกหรือส่งออกข้อมูลไปยังเซิร์ฟเวอร์ภายนอกใดๆ ทั้งสิ้น</span>
-        </div>
-      </div>
-
-      <div style="font-size:0.72rem; color:var(--dim); opacity:0.85;">
-        © 2026 Male Anatomical Diagnostics Engine • Designed with Precision & Clinical Excellence
-      </div>
-    </footer>
   </div>
 
   <!-- PASSPORT MODAL OVERLAY -->
@@ -2077,15 +2078,15 @@
 
       // --- 9 Archetypes ---
       const ARCHETYPES = {
-        'shower_slim':     { emoji: '⚡', name: 'เพรียวพร้อม',     desc: 'อวบตั้งแต่อ่อน ทรงยาวเพรียวเฉียบ',                        badge: 'badge-flesh',  export: '⚡ เพรียวพร้อม' },
-        'shower_balanced': { emoji: '👁️', name: 'เปิดไพ่',        desc: 'แน่นเต็มมือตลอด ทุกสัดส่วนลงตัว',                         badge: 'badge-flesh',  export: '👁️ เปิดไพ่' },
-        'shower_thick':    { emoji: '🔥', name: 'เต็มพิกัด',      desc: 'อวบอัดแน่น หนาเต็มกำมือ ไม่ต้องแข็งก็เต็มตา',              badge: 'badge-flesh',  export: '🔥 เต็มพิกัด' },
-        'hybrid_slim':     { emoji: '✂️', name: 'เพรียวคม',       desc: 'ยืดตัวปานกลาง ทรงเพรียวคม',                                badge: 'badge-hybrid', export: '✂️ เพรียวคม' },
-        'hybrid_balanced': { emoji: '⚖️', name: 'ลงตัว',         desc: 'สมดุลทุกมิติ ตอบโจทย์ทุกสถานการณ์',                         badge: 'badge-hybrid', export: '⚖️ ลงตัว' },
-        'hybrid_thick':    { emoji: '💪', name: 'แน่นหนา',        desc: 'ยืดตัวพอประมาณ แต่หนาแน่นเต็มกำ',                          badge: 'badge-hybrid', export: '💪 แน่นหนา' },
-        'grower_slim':     { emoji: '🗡️', name: 'คมในฝัก',       desc: 'ตอนอ่อนเล็ก แข็งแล้วยืดยาวคม',                              badge: 'badge-blood',  export: '🗡️ คมในฝัก' },
-        'grower_balanced': { emoji: '🐯', name: 'เสือซ่อนเล็บ',   desc: 'กระทัดรัดตอนอ่อน แข็งแล้วขยายใหญ่สมส่วน',                   badge: 'badge-blood',  export: '🐯 เสือซ่อนเล็บ' },
-        'grower_thick':    { emoji: '🐉', name: 'มังกรซ่อนกาย',   desc: 'ตอนอ่อนเล็ก แข็งแล้วพองหนาสุดทาง',                         badge: 'badge-blood',  export: '🐉 มังกรซ่อนกาย' },
+        'shower_slim':     { emoji: '🗡️', name: 'ดาบยาวพร้อมรบ', desc: 'ลำยาวเด่นสะดุดตา ทรงเรียวคมชัดเจนทุกสถานการณ์', badge: 'badge-flesh',  export: '🗡️ ดาบยาวพร้อมรบ' },
+        'shower_balanced': { emoji: '👑', name: 'ของจริงไม่ต้องลุ้น', desc: 'ขนาดแน่นเต็มตา สมดุลทุกมิติ ตอบโจทย์ทุกสถานการณ์', badge: 'badge-flesh',  export: '👑 ของจริงไม่ต้องลุ้น' },
+        'shower_thick':    { emoji: '🔥', name: 'อวบแน่นจอมพลัง', desc: 'อวบหนาเต็มพิกัด ใหญ่สะใจตั้งแต่ต้น แน่นเต็มกำมือ', badge: 'badge-flesh',  export: '🔥 อวบแน่นจอมพลัง' },
+        'hybrid_slim':     { emoji: '✂️', name: 'เพรียวคม',       desc: 'ยืดตัวปานกลาง ทรงเพรียวคม',                         badge: 'badge-hybrid', export: '✂️ เพรียวคม' },
+        'hybrid_balanced': { emoji: '⚖️', name: 'ลงตัว',         desc: 'สมดุลทุกมิติ ตอบโจทย์ทุกสถานการณ์',                  badge: 'badge-hybrid', export: '⚖️ ลงตัว' },
+        'hybrid_thick':    { emoji: '💪', name: 'แน่นหนา',        desc: 'ยืดตัวพอประมาณ แต่หนาแน่นเต็มกำ',                   badge: 'badge-hybrid', export: '💪 แน่นหนา' },
+        'grower_slim':     { emoji: '🗡️', name: 'คมในฝัก',       desc: 'ตอนอ่อนเล็ก แข็งแล้วยืดยาวคม',                       badge: 'badge-blood',  export: '🗡️ คมในฝัก' },
+        'grower_balanced': { emoji: '🐯', name: 'เสือซ่อนเล็บ',   desc: 'กระทัดรัดตอนอ่อน แข็งแล้วขยายใหญ่สมส่วน',            badge: 'badge-blood',  export: '🐯 เสือซ่อนเล็บ' },
+        'grower_thick':    { emoji: '🐉', name: 'มังกรซ่อนกาย',   desc: 'ตอนอ่อนเล็ก แข็งแล้วพองหนาสุดทาง',                  badge: 'badge-blood',  export: '🐉 มังกรซ่อนกาย' },
       };
 
       const archKey = `${growthType}_${shapeType}`;
@@ -2221,28 +2222,172 @@
 
     function renderSvg(l_f, g_f, l_e, g_e) {
       const svg = document.getElementById('anatomySvg');
-      let scale = 130 / Math.max(l_e, 180);
-      let f_len = l_f * scale;
-      let e_len = l_e * scale;
-      let f_w = (g_f / Math.PI) * scale * 1.6;
-      let e_w = (g_e / Math.PI) * scale * 1.6;
+      if (!svg) return;
 
-      let isLight = currentTheme === 'light';
-      let strokeGrid = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
-      let baseFill = isLight ? '#cbd5e1' : '#252535';
-      let baseText = isLight ? '#64748b' : '#777777';
+      const t_fat = parseFloat(document.getElementById('t_fat')?.value) || 0;
+      const bpel = l_e + t_fat;
+      
+      const cy = 145;
+      const x0 = 65; // Datum 0 mm โคนกระดูกหัวหน่าว
+      
+      // Dynamic scale: fit cleanly in 760px viewBox
+      const maxSpan = Math.max(bpel, 190);
+      const scale = 500 / maxSpan;
+
+      const fat_w = Math.max(16, t_fat * scale);
+      const visible_x = x0 + (t_fat > 0 ? fat_w : 0);
+
+      // Erect dimensions (Compact, Natural Acorn Dome proportions)
+      const e_total_len = l_e * scale;
+      const shaft_x = x0;
+      const e_dia = (g_e / Math.PI) * scale * 1.35;
+      const e_h = Math.max(48, Math.min(e_dia, 105));
+      const e_glans_h = e_h + 8; // Plump balanced corona
+      const e_glans_len = Math.max(42, Math.min(e_total_len * 0.265, e_glans_h * 0.86)); // Compact ratio (not bullet)
+      const e_shaft_len = Math.max(20, (visible_x - x0) + e_total_len - e_glans_len);
+      const glans_x = x0 + e_shaft_len;
+      const glans_tip_x = glans_x + e_glans_len;
+      const shaft_y = cy - (e_h / 2);
+
+      // Flaccid dimensions (Starts at x0 pubic bone)
+      const f_total_len = l_f * scale;
+      const f_dia = (g_f / Math.PI) * scale * 1.35;
+      const f_h = Math.max(32, Math.min(f_dia, e_h - 12));
+      const f_glans_h = f_h + 6;
+      const f_glans_len = Math.max(32, Math.min(f_total_len * 0.265, f_glans_h * 0.86));
+      const f_shaft_len = Math.max(15, f_total_len - f_glans_len);
+      const f_shaft_x = x0;
+      const f_shaft_y = cy - (f_h / 2);
+      const f_glans_x = x0 + f_shaft_len;
+      const f_tip_x = x0 + f_total_len;
+
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const mutedColor = isLight ? '#475569' : '#94a3b8';
+      const rulerLineColor = isLight ? '#d81b60' : '#ff2a85';
+      const visibleColor = isLight ? '#0284c7' : '#38bdf8';
+      const fatBorderColor = isLight ? '#d97706' : '#ffc600';
+      const fatTextColor = isLight ? '#92400e' : '#fef08a';
 
       svg.innerHTML = `
-        <rect width="360" height="150" fill="transparent"/>
-        <line x1="20" y1="75" x2="340" y2="75" stroke="${strokeGrid}" stroke-dasharray="3 3"/>
-        <rect x="20" y="25" width="16" height="100" rx="3" fill="${baseFill}" stroke="rgba(0,0,0,0.1)"/>
-        <text x="24" y="78" fill="${baseText}" font-size="8" font-weight="700">BASE</text>
-        <rect x="36" y="${75 - f_w/2}" width="${f_len}" height="${f_w}" rx="${f_w/3}" 
-              fill="rgba(123,31,162,0.18)" stroke="var(--purple)" stroke-dasharray="3 3"/>
-        <text x="${36 + f_len/2}" y="${75}" fill="var(--purple)" font-size="9" font-weight="700" text-anchor="middle">Flaccid</text>
-        <rect x="36" y="${75 - e_w/2}" width="${e_len}" height="${e_w}" rx="${e_w/3}" 
-              fill="rgba(216,27,96,0.18)" stroke="var(--pink)" stroke-width="1.8"/>
-        <text x="${36 + e_len - 15}" y="${75 + 3}" fill="var(--pink)" font-size="10" font-weight="800">Erect</text>
+        <defs>
+          <pattern id="gridM" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="${isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.04)'}" stroke-width="0.8"/>
+          </pattern>
+
+          <!-- 3D Erect Shaft Cylindrical Gradient -->
+          <linearGradient id="erectShaft3D" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#f5caa8"/>
+            <stop offset="16%"  stop-color="#e09e76"/>
+            <stop offset="50%"  stop-color="#c1764c"/>
+            <stop offset="85%"  stop-color="#964e2c"/>
+            <stop offset="100%" stop-color="#6d3219"/>
+          </linearGradient>
+
+          <!-- Natural Rosy Glans Radial Gradient (DO-PHY-01.jpg) -->
+          <radialGradient id="erectGlans3D" cx="38%" cy="30%" r="72%">
+            <stop offset="0%"   stop-color="#ffb8cd"/>
+            <stop offset="26%"  stop-color="#e97b97"/>
+            <stop offset="65%"  stop-color="#be4464"/>
+            <stop offset="88%"  stop-color="#8a233c"/>
+            <stop offset="100%" stop-color="#561324"/>
+          </radialGradient>
+
+          <!-- Glossy Specular Reflection Gradient -->
+          <linearGradient id="glossHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="rgba(255,255,255,0.75)"/>
+            <stop offset="50%"  stop-color="rgba(255,255,255,0.2)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </linearGradient>
+
+          <!-- Flaccid Overlay Cyan Gradient -->
+          <linearGradient id="flaccidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="rgba(0, 229, 255, 0.45)"/>
+            <stop offset="100%" stop-color="rgba(0, 229, 255, 0.12)"/>
+          </linearGradient>
+
+          <!-- Fat Pad Gradient -->
+          <linearGradient id="fatGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="${isLight ? 'rgba(217,119,6,0.32)' : 'rgba(255,198,0,0.35)'}"/>
+            <stop offset="100%" stop-color="${isLight ? 'rgba(217,119,6,0.12)' : 'rgba(255,198,0,0.12)'}"/>
+          </linearGradient>
+
+          <!-- 3D Soft Drop Shadow Filter -->
+          <filter id="shadow3D" x="-10%" y="-10%" width="130%" height="130%">
+            <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="rgba(0,0,0,0.35)"/>
+          </filter>
+        </defs>
+
+        <rect width="760" height="300" fill="url(#gridM)" rx="12"/>
+
+        <!-- Grid ruler datum at 0 mm (โคนกระดูกหัวหน่าว) -->
+        <line x1="${x0}" y1="36" x2="${x0}" y2="245" stroke="${isLight ? 'rgba(0,0,0,0.22)' : 'rgba(255,255,255,0.25)'}" stroke-width="1.6" stroke-dasharray="4 3"/>
+        <text x="${x0}" y="278" fill="${mutedColor}" font-size="11.5" font-weight="800" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif">โคนกระดูกหัวหน่าว</text>
+
+        <!-- 3D ERECT ANATOMY -->
+        <g filter="url(#shadow3D)">
+          <!-- 3D Erect Shaft Body (Starts at Pubic Bone x0) -->
+          <rect id="svgShaftErect" x="${shaft_x}" y="${shaft_y}" width="${e_shaft_len}" height="${e_h}" rx="12" 
+                fill="url(#erectShaft3D)" stroke="#74331e" stroke-width="1.4"/>
+          
+          <!-- Dorsal Vein Realism Path (เส้นเลือดหลังลำตัว) -->
+          <path d="M ${visible_x},${cy - e_h*0.25} C ${shaft_x + e_shaft_len*0.4},${cy - e_h*0.32} ${shaft_x + e_shaft_len*0.7},${cy - e_h*0.2} ${glans_x - 4},${cy - e_h*0.28}" 
+                fill="none" stroke="rgba(140, 50, 70, 0.45)" stroke-width="2.5" stroke-linecap="round"/>
+
+          <!-- Compact Smooth Acorn Dome (DO-PHY-01.jpg Natural Glans) -->
+          <path id="svgGlansErect" d="M ${glans_x},${cy - (e_glans_h/2)} 
+                    C ${glans_x + (e_glans_len*0.45)},${cy - (e_glans_h/2) - 0.5} ${glans_tip_x - (e_glans_len*0.15)},${cy - (e_glans_h*0.35)} ${glans_tip_x - 1.5},${cy - (e_glans_h*0.16)} 
+                    C ${glans_tip_x + 3.5},${cy - (e_glans_h*0.08)} ${glans_tip_x + 3.5},${cy + (e_glans_h*0.08)} ${glans_tip_x - 1.5},${cy + (e_glans_h*0.16)} 
+                    C ${glans_tip_x - (e_glans_len*0.15)},${cy + (e_glans_h*0.35)} ${glans_x + (e_glans_len*0.45)},${cy + (e_glans_h/2) + 0.5} ${glans_x},${cy + (e_glans_h/2)} 
+                    C ${glans_x - 3.5},${cy + (e_h*0.35)} ${glans_x - 3.5},${cy - (e_h*0.35)} ${glans_x},${cy - (e_glans_h/2)} Z" 
+                fill="url(#erectGlans3D)" stroke="#922339" stroke-width="1.6"/>
+
+          <!-- Glossy Specular Highlight Reflection on Compact Dome -->
+          <ellipse cx="${glans_x + e_glans_len*0.40}" cy="${cy - e_glans_h*0.24}" rx="${e_glans_len*0.26}" ry="${e_glans_h*0.11}" 
+                   fill="url(#glossHighlight)" transform="rotate(-6, ${glans_x + e_glans_len*0.40}, ${cy - e_glans_h*0.24})"/>
+          
+          <!-- Subtle Top Shaft Specular Reflection -->
+          <ellipse cx="${visible_x + (glans_x - visible_x)*0.45}" cy="${shaft_y + e_h*0.22}" rx="${(glans_x - visible_x)*0.35}" ry="${e_h*0.1}" 
+                   fill="url(#glossHighlight)"/>
+
+          <!-- Corona Ridge Rolled Lip Rim (ขอบสันหยักคอ) -->
+          <path d="M ${glans_x + 1},${cy - (e_glans_h/2) + 1} C ${glans_x - 3},${cy - (e_h*0.25)} ${glans_x - 3},${cy + (e_h*0.25)} ${glans_x + 1},${cy + (e_glans_h/2) - 1}" 
+                fill="none" stroke="rgba(255, 215, 230, 0.65)" stroke-width="1.8" stroke-linecap="round"/>
+
+
+        </g>
+
+        <!-- Pubic Fat Pad Layer -->
+        ${t_fat > 0 ? `
+          <text x="${x0 + (fat_w/2)}" y="${cy - (e_h/2) - 18}" fill="${fatTextColor}" font-size="11.5" font-weight="800" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif">ชั้นไขมัน T_fat: ${t_fat.toFixed(0)} mm</text>
+          <rect x="${x0}" y="${cy - (e_h/2) - 10}" width="${fat_w}" height="${e_h + 20}" rx="8"
+                fill="url(#fatGrad)" stroke="${fatBorderColor}" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <line x1="${visible_x}" y1="${cy - (e_h/2) - 14}" x2="${visible_x}" y2="${cy + (e_h/2) + 14}" stroke="${fatBorderColor}" stroke-width="1.5" stroke-dasharray="3 3"/>
+        ` : ''}
+
+        <!-- BPEL RULER LINE (Top - From Pubic Bone x0 to Glans Tip) -->
+        <line x1="${x0}" y1="46" x2="${glans_tip_x}" y2="46" stroke="${rulerLineColor}" stroke-width="2.5"/>
+        <line x1="${x0}" y1="38" x2="${x0}" y2="54" stroke="${rulerLineColor}" stroke-width="2.5"/>
+        <line x1="${glans_tip_x}" y1="38" x2="${glans_tip_x}" y2="54" stroke="${rulerLineColor}" stroke-width="2.5"/>
+        <text x="${(x0 + glans_tip_x) / 2}" y="34" fill="${rulerLineColor}" font-size="13.5" font-weight="900" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif" letter-spacing="0.3px">ยาวกดถึงกระดูก (BPEL): ${bpel.toFixed(1)} mm</text>
+
+        <!-- VISIBLE ERECT RULER LINE (Bottom - From Fat Boundary to Glans Tip) -->
+        <line x1="${visible_x}" y1="244" x2="${glans_tip_x}" y2="244" stroke="${visibleColor}" stroke-width="2" stroke-dasharray="4 2"/>
+        <line x1="${visible_x}" y1="237" x2="${visible_x}" y2="251" stroke="${visibleColor}" stroke-width="2"/>
+        <line x1="${glans_tip_x}" y1="237" x2="${glans_tip_x}" y2="251" stroke="${visibleColor}" stroke-width="2"/>
+        <text x="${(visible_x + glans_tip_x) / 2}" y="266" fill="${visibleColor}" font-size="12.5" font-weight="800" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif">ยาวมองเห็นพ้นไขมัน (NBPEL): ${l_e.toFixed(1)} mm</text>
+
+        <!-- FLACCID SHAPE OVERLAY (Cyan Dashed Contour starting at x0) -->
+        <rect id="svgShaftFlaccid" x="${f_shaft_x}" y="${f_shaft_y}" width="${f_shaft_len}" height="${f_h}" rx="8" 
+              fill="url(#flaccidGrad)" stroke="var(--cyan)" stroke-width="1.6" stroke-dasharray="5 3"/>
+        
+        <path id="svgGlansFlaccid" d="M ${f_glans_x},${cy - (f_glans_h/2)} 
+                  C ${f_glans_x + (f_glans_len*0.45)},${cy - (f_glans_h/2) - 0.5} ${f_tip_x - (f_glans_len*0.15)},${cy - (f_glans_h*0.35)} ${f_tip_x - 1.5},${cy - (f_glans_h*0.16)} 
+                  C ${f_tip_x + 3},${cy - (f_glans_h*0.08)} ${f_tip_x + 3},${cy + (f_glans_h*0.08)} ${f_tip_x - 1.5},${cy + (f_glans_h*0.16)} 
+                  C ${f_tip_x - (f_glans_len*0.15)},${cy + (f_glans_h*0.35)} ${f_glans_x + (f_glans_len*0.45)},${cy + (f_glans_h/2) + 0.5} ${f_glans_x},${cy + (f_glans_h/2)} 
+                  C ${f_glans_x - 3},${cy + (f_h*0.35)} ${f_glans_x - 3},${cy - (f_h*0.35)} ${f_glans_x},${cy - (f_glans_h/2)} Z" 
+              fill="rgba(0,229,255,0.22)" stroke="var(--cyan)" stroke-width="1.6" stroke-dasharray="5 3"/>
+        
+        <text x="${(x0 + f_tip_x) / 2}" y="${cy + 4}" fill="#ffffff" font-size="12" font-weight="900" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif" style="text-shadow:0 1px 4px rgba(0,0,0,0.85);">Flaccid: ${l_f.toFixed(1)} mm</text>
       `;
     }
 
@@ -2468,3 +2613,5 @@
   </script>
 </body>
 </html>
+
+
