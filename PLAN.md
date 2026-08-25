@@ -251,7 +251,7 @@ admin project/route
 
 ## 11. Decisions Required Before Execution
 
-- [ ] อนุมัติหรือไม่อนุมัติการล้างไฟล์ส่วนตัวออกจาก Git history และ force-push
+- [x] อนุมัติและดำเนินการล้างไฟล์ส่วนตัวออกจาก Git history พร้อม force-push แล้ว; รอ GitHub Support purge cache
 - [ ] เลือกให้ Pair Calculator ตอบ `404` หรือแสดง Coming Soon ระหว่างพัฒนา
 - [x] เลือกให้ Male Calculator เป็น `index.html` โดยตรง ไม่ใช้ rewrite/redirect
 - [ ] เลือกวิธี auth สำหรับ Admin
@@ -266,7 +266,7 @@ admin project/route
 - [x] เพิ่มไฟล์ส่วนตัวและ `/private/` ลง `.gitignore`
 - [x] สำรองไฟล์ส่วนตัวและหน้าเมนูเดิมไว้ที่ `D:\mysex\private\backup-2026-08-25`
 - [x] ตรวจว่าไฟล์สำรองครบและไม่ถูก Git ติดตาม
-- [ ] สำรอง Git repository ทั้งชุดก่อนทำ history rewrite (ทำเมื่อจะเริ่ม Step 4)
+- [x] สำรอง Git repository ทั้งชุดเป็น `private/backup-2026-08-25/mysex-before-step4.bundle` และตรวจ bundle/SHA-256 แล้ว
 
 Step 1 เป็นงาน local ไม่ต้องและไม่ควรอัปโหลดโฟลเดอร์ `/private/` ขึ้น Git
 
@@ -290,12 +290,18 @@ Step 2 จะมีผลกับเว็บ Production หลัง commit/pu
 - [x] ตรวจ security headers จาก Production response
 - [x] ตรวจว่าไม่มีลิงก์ Public ไปยัง Pair, Aye หรือ Admin
 
-### Step 4 — Public Git History Cleanup — ต้องอนุมัติก่อน
+### Step 4 — Public Git History Cleanup — rewrite เสร็จแล้ว รอ GitHub purge
 
-- [ ] สำรอง Git repository ทั้งชุด
-- [ ] ล้างไฟล์ส่วนตัวออกจากทุก commit ที่เคยเผยแพร่
-- [ ] Force-push เฉพาะหลังตรวจ backup และได้รับอนุมัติชัดเจน
-- [ ] ตรวจว่า Raw GitHub URL และ commit เก่าไม่เปิดไฟล์ส่วนตัวอีก
+- [x] สำรอง Git repository ทั้งชุดและตรวจว่า bundle เป็น complete history
+- [x] ล้างไฟล์ส่วนตัว 7 path ออกจากทุก commit บน `main`
+- [x] Force-push ด้วย `--force-with-lease` หลังได้รับอนุมัติ (`main` ใหม่ `2201606`)
+- [x] ลบ `refs/original`, หมดอายุ reflog และ prune object เก่าใน local repository
+- [x] ตรวจว่า branch/ref ที่เข้าถึงได้ใน local repository ไม่มีชื่อหรือ object ของไฟล์เป้าหมาย
+- [x] ตรวจว่าไฟล์เป้าหมายบน GitHub `main` ตอบ `404`
+- [ ] ส่งคำขอ GitHub Support ให้ purge cached views/dangling commits; commit เก่ายังเปิดด้วย SHA ตรง ๆ ได้
+- [ ] ตรวจ Raw GitHub URL และ commit เก่าอีกครั้งจนตอบ `404`
+
+ข้อมูลสำหรับ GitHub Support: repository `mysexdev/mysex`, PR refs `0`, forks `0`, first affected commit `8032671a10d7ba82134e7a47ebe6bf4951cc1778`
 
 ### Step 5 — Admin Endpoint Containment — ยังไม่เริ่ม
 
