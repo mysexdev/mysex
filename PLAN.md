@@ -83,11 +83,9 @@ mysex.vercel.app/
 
 ### 4.4 Admin Endpoint
 
-- [x] ถือว่า Google Apps Script endpoint ปัจจุบันถูกเปิดเผยแล้ว
-- [x] ตรวจยืนยันว่า endpoint เดิมเปิดอ่าน log ได้โดยไม่ต้องยืนยันตัวตน (`HTTP 200`)
-- [x] ถอด endpoint และระบบส่งค่าคำนวณ/รูปออกจากไฟล์ Public
+- [ ] ถือว่า Google Apps Script endpoint ปัจจุบันถูกเปิดเผยแล้ว
 - [ ] เปลี่ยนหรือ deploy endpoint ใหม่
-- [ ] ปิด deployment เดิมและทบทวนการลบข้อมูล/รูปที่เคยบันทึกใน Google Sheet/Drive
+- [ ] ปิด endpoint เดิมเมื่อระบบใหม่พร้อม
 - [ ] ให้ API ใหม่ตรวจ session/token ฝั่งเซิร์ฟเวอร์ก่อนคืนข้อมูล
 
 ## 5. Phase 1 — Public Male Calculator
@@ -305,16 +303,11 @@ Step 2 จะมีผลกับเว็บ Production หลัง commit/pu
 
 ข้อมูลสำหรับ GitHub Support: repository `mysexdev/mysex`, PR refs `0`, forks `0`, first affected commit `8032671a10d7ba82134e7a47ebe6bf4951cc1778`
 
-### Step 5 — Admin Endpoint Containment — ฝั่ง Public แก้แล้ว รอปิด Google endpoint
+### Step 5 — Admin Endpoint Containment — ยังไม่เริ่ม
 
-- [x] ถือว่า Google Apps Script endpoint เดิมถูกเปิดเผยแล้ว
-- [x] ตรวจพบว่า endpoint เดิมตอบข้อมูล log โดยไม่ต้องล็อกอิน
-- [x] ถอด webhook, payload ค่าคำนวณ และการส่งรูปออกจาก `index.html` และ Pair Calculator
-- [x] ยืนยันว่าไฟล์ Public ไม่มี Apps Script URL, `fetch()` หรือ analytics call site เหลืออยู่
-- [x] ยังไม่คืน `admin.html` เข้า Public repository
-- [ ] ปิด Apps Script deployment เดิมหรือจำกัดสิทธิ์ไม่ให้ผู้ไม่ยืนยันตัวตนอ่านข้อมูล
-- [ ] ทบทวนและลบข้อมูล/รูปเดิมใน Google Sheet และ Drive ตามขอบเขตที่ต้องการ
-- [ ] ตรวจ endpoint เดิมซ้ำให้ตอบ `401`, `403` หรือ `404`
+- [ ] ถือว่า Google Apps Script endpoint เดิมถูกเปิดเผยแล้ว
+- [ ] เปลี่ยนหรือปิด endpoint เดิม
+- [ ] ยังไม่คืน `admin.html` เข้า Public repository
 
 ### Step 6 — Male Calculator Stabilization — ยังไม่เริ่ม
 

