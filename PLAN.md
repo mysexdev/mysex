@@ -270,7 +270,7 @@ admin project/route
 
 Step 1 เป็นงาน local ไม่ต้องและไม่ควรอัปโหลดโฟลเดอร์ `/private/` ขึ้น Git
 
-### Step 2 — Public Cleanup & Main Route — ทำ local แล้ว รอ deploy
+### Step 2 — Public Cleanup & Main Route — เสร็จแล้ว
 
 - [x] Stage การนำ Infographic, รูปส่วนตัว และ `admin.html` ออกจาก Public repository
 - [x] ไม่แสดง Pair, Infographic และ Admin ในหน้า Public
@@ -278,17 +278,17 @@ Step 1 เป็นงาน local ไม่ต้องและไม่คว
 - [x] เปลี่ยน Male Calculator ให้เป็น `index.html` โดยตรง
 - [x] ตั้ง URL ของ Pair Calculator เดิมให้ redirect กลับ `/` ชั่วคราว
 - [x] เพิ่ม security headers ใน `vercel.json`
-- [ ] Commit และ push ชุดการเปลี่ยนแปลง
+- [x] Commit และ push ชุดการเปลี่ยนแปลง (`64b2364`)
 
 Step 2 จะมีผลกับเว็บ Production หลัง commit/push และ Vercel deploy สำเร็จเท่านั้น
 
-### Step 3 — Production Verification — ยังไม่เริ่ม
+### Step 3 — Production Verification — เสร็จแล้ว
 
-- [ ] ตรวจว่า `/` เปิด Male Calculator โดยตรง
-- [ ] ตรวจว่า URL เดิมของ Infographic, รูปส่วนตัว และ Admin ตอบ `404`
-- [ ] ตรวจว่า Pair URL redirect กลับ `/`
-- [ ] ตรวจ security headers จาก Production response
-- [ ] ตรวจว่าไม่มีลิงก์ Public ไปยัง Pair, Aye หรือ Admin
+- [x] ตรวจว่า `/` เปิด Male Calculator โดยตรง (`200`)
+- [x] ตรวจว่า URL เดิมของ Infographic, รูปส่วนตัว และ Admin ตอบ `404`
+- [x] ตรวจว่า Pair URL redirect กลับ `/` (`307`)
+- [x] ตรวจ security headers จาก Production response
+- [x] ตรวจว่าไม่มีลิงก์ Public ไปยัง Pair, Aye หรือ Admin
 
 ### Step 4 — Public Git History Cleanup — ต้องอนุมัติก่อน
 
