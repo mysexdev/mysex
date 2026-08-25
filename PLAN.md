@@ -1,353 +1,61 @@
-# MySex Finalization Plan
+# MySex Public Development Plan
 
-อัปเดตล่าสุด: 2026-08-25
+อัปเดตล่าสุด: 2026-08-26
 
-## 1. เป้าหมายสุดท้าย
+## เป้าหมาย Production
 
-เว็บ Production ต้องเปิดเข้าเครื่องคำนวณชายที่เสถียรโดยตรง ส่วนฟีเจอร์ที่ยังไม่พร้อม ข้อมูลส่วนตัว และระบบหลังบ้านต้องไม่ถูกเปิดเป็น static page สาธารณะ
+- หน้า `/` เปิดเครื่องมือคำนวณสำหรับผู้ชายโดยตรง
+- ทำ `Male Calculator` ให้เสถียรก่อนขยายไปส่วนอื่น
+- ไม่เผยแพร่หน้า รูป แผน หรือระบบ Admin ที่เป็นข้อมูลส่วนตัวใน Public repository
+- ใช้ Public GitHub/Vercel เฉพาะไฟล์ที่จำเป็นต่อเว็บคำนวณสาธารณะ
 
-```text
-mysex.vercel.app/
-├─ Male Calculator        Public · หน้าหลัก
-├─ Pair Calculator        Development · ยังไม่เปิด Production
-├─ Aye Infographic        Private/Selected audience · ยังไม่ตัดสินใจเปิดสาธารณะ
-└─ Admin                  Admin only · ต้องยืนยันตัวตนฝั่งเซิร์ฟเวอร์
-```
+## สถานะปัจจุบัน
 
-## 2. สถานะที่ตรวจพบจริง
+- [x] นำหน้าและ asset ส่วนตัวออกจาก Public branch
+- [x] หน้า Production ไม่มีลิงก์ไป Pair Calculator, Aye profile หรือ Admin
+- [x] URL สาธารณะเดิมของไฟล์ส่วนตัวตอบ `404`
+- [x] หน้า `/` ใช้ Male Calculator เป็นหน้าหลัก
+- [x] จำกัด Admin endpoint และเก็บ Admin UI ไว้นอก Public deployment
+- [ ] ทำ Male Calculator stabilization
+- [ ] ตัดสินใจแนวทาง Pair Calculator หลัง Male Calculator เสถียร
 
-ตรวจเมื่อ 2026-08-25:
+## งานหลักถัดไป — Male Calculator Stabilization
 
-- Vercel เชื่อมกับ GitHub และ deploy อัตโนมัติเมื่อ push
-- `/` ยังแสดงหน้าเมนูที่ลิงก์ไป Male, Pair และ Infographic
-- `/infographic_ay_pink_layered.html` ตอบ `200 OK` เมื่อเข้าด้วย URL ตรง
-- `/Vag0.JPG`, `/Vag3.JPG` และ `/aye_portrait_2.png` ตอบ `200 OK` จาก Vercel
-- `admin.html` ตอบ `200 OK` โดยไม่ต้องล็อกอิน
-- GitHub repository และไฟล์ raw เปิดได้โดยไม่ล็อกอิน
-- `admin.html` มี Google Apps Script endpoint อยู่ใน client-side HTML/JavaScript
-- ไฟล์จาก Vercel ใช้ `Cache-Control: public, max-age=0, must-revalidate`
-- ยังไม่มี `X-Robots-Tag` บน deployment ปัจจุบัน
-- `Vag0.webp` และ `Vag3.webp` ยังไม่ถูก deploy และตอบ `404`
-- local working tree มี `infographic_ay_pink_layered.html` ที่แก้แล้ว และ WebP ใหม่ที่ยังไม่ tracked
+- [ ] ทำรายการ input, validation, หน่วย และสูตรทั้งหมด
+- [ ] สร้าง regression test cases สำหรับค่าปกติ ค่าขอบเขต และค่าที่ไม่ถูกต้อง
+- [ ] ตรวจผลลัพธ์และการแปลงหน่วยให้สอดคล้องกันทุกส่วน
+- [ ] ทดสอบ responsive layout บน desktop, tablet และ mobile
+- [ ] ทดสอบ interaction สำคัญ รวมถึง reset, export และการส่ง log
+- [ ] จัดทำรายการ known bugs พร้อม severity
+- [ ] แก้ blocker/critical bugs และทดสอบซ้ำก่อน Production release
 
-ข้อสรุป: การไม่มีลิงก์จากหน้าแรกไม่ใช่ access control ปัจจุบัน Infographic, รูปต้นฉบับ และ Admin เข้าถึงได้ด้วย URL ตรง
+## Public Security and Privacy
 
-## 3. กติกาก่อนทำงานต่อ
+- [ ] รักษา `.gitignore` สำหรับ `/private/` และ asset ส่วนตัว
+- [ ] ตรวจ `git status` ก่อน commit ทุกครั้ง
+- [ ] ไม่ commit secret, Admin key, log ส่วนตัว หรือรูปส่วนตัว
+- [ ] เพิ่ม security headers ที่เหมาะสมกับ Public Calculator
+- [ ] ตรวจว่า route และ asset ที่ไม่ใช่ Public ยังเข้าไม่ได้หลัง deploy
 
-- [ ] ห้าม push `Vag0.webp`, `Vag3.webp` หรือ Infographic รุ่นใหม่ไป Production สาธารณะก่อนแยกพื้นที่
-- [ ] ห้ามใช้ JavaScript password หรือ age gate เป็นระบบรักษาความปลอดภัย
-- [ ] ห้ามฝัง secret, token หรือ endpoint ที่ถือเป็นความลับใน HTML/JavaScript
-- [ ] การเข้าถึงไฟล์ภาพโดยตรงต้องถูกป้องกันเหมือนหน้า HTML
-- [ ] การ rewrite Git history และ force-push ต้องได้รับคำยืนยันก่อนทุกครั้ง
-
-## 4. Phase 0 — Privacy Containment (เร่งด่วน)
-
-เป้าหมาย: หยุดเผยแพร่ข้อมูลที่ยังไม่ตั้งใจเปิด ก่อนทำฟีเจอร์ใหม่
-
-### 4.0 Local Backup
-
-- [x] เพิ่ม private assets และ `/private/` ลง `.gitignore`
-- [x] สร้าง local backup ที่ `D:\mysex\private\backup-2026-08-25`
-- [x] สำรอง Infographic, JPG, WebP, portrait และ `admin.html` ครบ 7 ไฟล์
-- [x] ตรวจ SHA-256 ของไฟล์สำรองตรงกับต้นฉบับทุกไฟล์
-- [x] สำรองหน้าเมนูเดิมเป็น `private\backup-2026-08-25\index-menu.html` และตรวจ SHA-256 แล้ว
-- [ ] ทำ secondary backup ไว้นอกดิสก์ `D:` เพื่อป้องกันกรณีดิสก์เสีย
-
-### 4.1 หยุด Public Navigation
-
-- [x] ยกเลิกหน้าเมนูเดิมที่มีลิงก์ Pair/Infographic และเก็บสำรองไว้ใน `/private/`
-- [x] เปลี่ยน Male Calculator ให้เป็น `index.html` โดยตรง (local · pending commit/push)
-- [x] ไม่แสดงลิงก์ Admin ในส่วน Public
-
-### 4.2 เอา Private/Unfinished Files ออกจาก Production
-
-- [x] Stage การลบ `infographic_ay_pink_layered.html` ออกจาก Public branch (pending commit/push)
-- [x] Stage การลบ `Vag0.JPG`, `Vag3.JPG` และลบ WebP ที่ยัง untracked ออกจาก root (pending commit/push)
-- [x] Stage การลบ `aye_portrait_2.png` ออกจาก Public branch (pending commit/push)
-- [x] Stage การลบ `admin.html` ออกจาก Public branch (pending commit/push)
-- [x] ปิด route `vagina_penis_calculator.html` ชั่วคราวด้วย Vercel redirect ไป `/` (pending commit/push)
-
-### 4.3 ล้างประวัติ Public Git
-
-รายการนี้เป็น destructive operation และต้องอนุมัติก่อน:
-
-- [ ] สำรอง repository ก่อน rewrite
-- [ ] ใช้ `git filter-repo` หรือเครื่องมือเทียบเท่าเพื่อลบไฟล์ส่วนตัวจากทุก commit
-- [ ] Force-push ประวัติใหม่ไป GitHub
-- [ ] ตรวจ raw GitHub URLs ให้ตอบ `404`
-- [ ] Redeploy Vercel จากประวัติใหม่
-- [ ] ตรวจ Production URLs ให้ตอบ `404`
-- [ ] พิจารณาคำขอล้าง cache/search removal หาก URL เคยถูกเก็บดัชนี
-
-หมายเหตุ: การล้างต้นทางลดการเข้าถึงต่อไป แต่ไม่สามารถรับประกันการเรียกคืนสำเนาที่บุคคลอื่นอาจบันทึกไว้ก่อนแล้ว
-
-### 4.4 Admin Endpoint
-
-- [x] ถือว่า Google Apps Script endpoint ปัจจุบันถูกเปิดเผยแล้ว
-- [x] Deploy เวอร์ชันใหม่บน URL เดิม โดยคง `doPost()` สำหรับรับ log
-- [x] บังคับ `ADMIN_KEY` สำหรับ `doGet()` และคำสั่งลบ
-- [x] ตรวจว่า request ที่ไม่มีกุญแจได้ `UNAUTHORIZED` และไม่คืน log/ลิงก์ Vault
-- [x] ตรวจว่า Admin ที่มีกุญแจอ่าน log ได้ และ Calculator ยังบันทึก log ได้
-- [ ] ให้ API ใหม่ตรวจ session/token ฝั่งเซิร์ฟเวอร์ก่อนคืนข้อมูล
-
-## 5. Phase 1 — Public Male Calculator
-
-เป้าหมาย: `https://mysex.vercel.app/` เปิด Male Calculator ที่เสถียรโดยตรง
-
-### 5.1 Routing
-
-แนวทางที่เลือก:
-
-- [x] เปลี่ยน `male_calculator.html` เป็น `index.html` เพื่อให้ `/` เปิดเครื่องคำนวณโดยตรง
-- [x] ถอด Vercel rewrite ที่ไม่จำเป็นออก
-- [x] เปลี่ยนปุ่ม Home ในเครื่องคำนวณให้ชี้กลับ `/`
-
-### 5.2 Stabilization
-
-- [ ] ทดสอบ input validation
-- [ ] ทดสอบค่าต่ำสุด/สูงสุด/ค่าว่าง/ตัวอักษร
-- [ ] ทดสอบสูตรและหน่วยทั้งหมดด้วย test cases ที่บันทึกผลคาดหวัง
-- [ ] ทดสอบ reset, export, print และ local storage ถ้ามี
-- [ ] ทดสอบ Chrome, Edge และ Safari/iOS
-- [ ] ทดสอบ viewport มือถือ 360, 390, 430px
-- [ ] ตรวจ console ให้ไม่มี error
-- [ ] ตรวจว่าไม่มีการส่งข้อมูลผู้ใช้ไปภายนอกโดยไม่ได้แจ้ง
-- [ ] ผ่าน regression test ก่อน merge เข้า branch ที่ Vercel deploy
-
-### 5.3 Public Security Headers
-
-- [x] เพิ่ม `vercel.json` (local · pending commit/push)
-- [x] ตั้ง `X-Content-Type-Options: nosniff`
-- [x] ตั้ง `X-Frame-Options: DENY`
-- [x] ตั้ง `Referrer-Policy: strict-origin-when-cross-origin`
-- [ ] วาง Content Security Policy หลังตรวจ external dependencies
-- [ ] ไม่ตั้ง `noindex` ทั้งเว็บ หากอนาคตต้องการให้เครื่องคำนวณค้นเจอ
-
-## 6. Phase 2 — Pair Compatibility Calculator
-
-สถานะ: ยังมีบัคจำนวนมากและยังไม่ใช่ Production feature
-
-- [ ] ย้ายการพัฒนาไป branch แยก
-- [ ] ใช้ Vercel Preview พร้อม Vercel Authentication สำหรับผู้พัฒนา/ผู้ทดสอบ
-- [ ] ไม่ลิงก์จากหน้า Production
-- [ ] แยกสูตรคำนวณออกจาก DOM เพื่อให้เขียน automated tests ได้
-- [ ] จัดทำรายการ known bugs และ severity
-- [ ] ใช้ test cases ชุดเดียวกับ Male Calculator ในส่วนข้อมูลร่วม
-- [ ] เปิด Production เมื่อไม่มี blocker/critical bug และผ่าน regression test
-
-## 7. Phase 3 — Aye Infographic
-
-สถานะ: ตัวหน้าออกแบบพร้อม แต่ยังไม่ตัดสินใจว่าจะเปิดแก่ใครในอนาคต
-
-### 7.1 ระหว่างยังไม่ตัดสินใจ
-
-- [ ] เก็บหน้าและรูปไว้ local encrypted storage หรือ private repository
-- [ ] ไม่เก็บไฟล์ใน Public Git history
-- [ ] ไม่ deploy ไป `mysex.vercel.app`
-- [ ] เก็บเอกสารความยินยอมไว้นอกเว็บไซต์
-
-### 7.2 หากเปิดเฉพาะบางกลุ่ม
-
-- [ ] สร้าง project/domain แยกจาก Public Calculator
-- [ ] ใช้ access control ฝั่งเซิร์ฟเวอร์ก่อนโหลด HTML และรูป
-- [ ] วาง age/content gate หลังผ่าน access control
-- [ ] ป้องกัน URL ของ HTML, WebP และ portrait ทั้งหมด
-- [ ] ตั้ง `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet`
-- [ ] ตั้ง `Cache-Control: private, no-store`
-- [ ] ตั้ง `Referrer-Policy: no-referrer`
-- [ ] ใช้ฟอนต์แบบ self-hosted
-- [ ] ตรวจขอบเขตความยินยอมใหม่เมื่อเปลี่ยนผู้ชม รูป หรือช่องทางเผยแพร่
-
-### 7.3 หากเปิดสาธารณะในอนาคต
-
-- [ ] ขอความยินยอมโดยชัดแจ้งสำหรับการเผยแพร่สาธารณะโดยเฉพาะ
-- [ ] ทบทวนความเสี่ยงด้านการระบุตัวบุคคล การดาวน์โหลด และการส่งต่อ
-- [ ] กำหนดช่องทางถอนความยินยอมและกระบวนการนำเนื้อหาออก
-- [ ] ตรวจข้อกฎหมายและเงื่อนไขของผู้ให้บริการอีกครั้งก่อนเปิด
-
-## 8. Phase 4 — Admin and Logs
-
-เป้าหมาย: มีเฉพาะ Admin ที่ได้รับอนุญาตเท่านั้นที่ดูหน้าและข้อมูลได้
-
-### 8.1 แนวทางที่ยืนยันแล้ว
-
-สถานะปัจจุบัน: ใช้หน้า Admin จากไฟล์ local ใน `/private/` เท่านั้น ไม่ deploy หน้า Admin ไป Public GitHub/Vercel
-
-```text
-mysex.vercel.app
-└─ Male Calculator (Public)
-   └─ ส่ง log ไปยัง write endpoint
-
-admin project/route (Future Production Admin)
-└─ Server-side login
-   └─ Protected server API
-      └─ อ่าน/ลบ log จาก Apps Script
-```
-
-- นำ UI จาก `admin.html` เดิมกลับมาใช้ได้ แต่ browser ต้องเรียก protected server API แทน Apps Script โดยตรง
-- เก็บ `ADMIN_KEY` และ secret อื่นไว้ใน environment variables ฝั่ง server เท่านั้น
-- ห้ามฝัง key ใน HTML, JavaScript, URL หรือ localStorage ของ Admin รุ่น Production
-- หน้าและข้อมูล Admin ต้องไม่ถูกโหลดก่อนผ่านการยืนยันตัวตน
-- Admin รุ่น Production ต้องแยกจาก Public Calculator เพื่อไม่ให้การพัฒนาหลังบ้านกระทบหน้าคำนวณ
-
-- [x] ห้าม deploy `admin.html` เป็น static public file
-- [ ] ใช้ server-side authentication และ HttpOnly secure session cookie
-- [ ] ตรวจสิทธิ์ทั้งหน้า Admin และทุก API request
-- [ ] เก็บ secret/API URL ใน Vercel Environment Variables
-- [ ] ห้ามส่ง secret มาที่ browser
-- [ ] API ต้องคืน `401/403` เมื่อไม่มีสิทธิ์ แม้ทราบ URL
-- [ ] จำกัด CORS ให้เฉพาะ origin ที่จำเป็น
-- [ ] ตั้ง `Cache-Control: private, no-store`
-- [ ] ปิดการแสดงข้อมูลละเอียดเกินความจำเป็นใน log
-- [ ] บันทึก audit log สำหรับ login, data access และ configuration changes
-- [ ] เพิ่ม logout, session expiry และการเพิกถอน session
-- [ ] ทดสอบเปิด `/admin` และ API ใน incognito แล้วต้องเข้าไม่ได้
-
-## 9. Vercel Strategy
-
-### Public Project
-
-```text
-mysex.vercel.app
-└─ Male Calculator
-```
-
-- GitHub auto-deploy ใช้ต่อได้
-- branch ที่ deploy ต้องมีเฉพาะ public assets
-- Preview deployments ใช้ทดสอบก่อน promote
-
-### Private Projects
-
-```text
-private-preview project
-├─ Pair Calculator development
-└─ จำกัดเฉพาะผู้พัฒนา/ผู้ทดสอบ
-
-aye-private project (ถ้าตัดสินใจเปิด)
-├─ Access control
-├─ Age/content gate
-└─ Infographic + protected assets
-
-admin project/route
-├─ Server authentication
-├─ Protected log API
-├─ Secret อยู่ใน server environment เท่านั้น
-└─ นำ UI Admin เดิมกลับมาใช้โดยไม่เรียก Apps Script ตรงจาก browser
-```
-
-หมายเหตุเรื่อง Vercel:
-
-- Standard Protection บน Hobby ป้องกัน Preview/Deployment URLs แต่ไม่ป้องกัน Production domain
-- การป้องกัน Production ทั้ง project ด้วย Vercel Password Protection ต้องตรวจ plan/add-on ปัจจุบัน
-- หากต้องการผู้ชมภายนอกบางกลุ่มและไม่ใช้ plan ที่รองรับ ให้ใช้ระบบ auth ของแอปหรือผู้ให้บริการ access control อื่น
-
-อ้างอิง:
-
-- https://vercel.com/docs/deployment-protection
-- https://vercel.com/docs/deployment-protection/methods-to-protect-deployments/password-protection
-- https://vercel.com/docs/project-configuration/vercel-json
-
-## 10. Definition of Done
-
-### Public Site
-
-- [ ] `/` เปิด Male Calculator โดยตรง
-- [ ] หน้า Public ไม่มีลิงก์ Pair, Aye หรือ Admin
-- [ ] URL เดิมของ Aye, รูป และ Admin เข้าไม่ได้จาก Production
-- [ ] Male Calculator ผ่าน test matrix และไม่มี console error
+## งานภายหลัง
 
 ### Pair Calculator
 
-- [ ] อยู่ใน protected development environment
-- [ ] มี known-bug list และ automated tests สำหรับสูตรหลัก
-- [ ] ยังไม่ deploy Production จนกว่าจะผ่านเกณฑ์
+- [ ] เก็บเป็นงานที่ยังไม่เปิดสาธารณะ
+- [ ] ใช้ test cases ร่วมกับ Male Calculator ในส่วนข้อมูลและสูตรที่เกี่ยวข้อง
+- [ ] เปิด Production เมื่อผ่าน regression tests และไม่มี blocker
 
-### Aye Infographic
+### Private Features
 
-- [ ] ไม่มีไฟล์หรือประวัติไฟล์ส่วนตัวใน Public repository
-- [ ] ไม่มีไฟล์ส่วนตัวใน Public Vercel deployment
-- [ ] หากเปิดเฉพาะกลุ่ม ทุก asset ต้องผ่าน access control
+- แผนละเอียด หน้า รูป และ source ที่เป็นส่วนตัวอยู่ใน private repository แยก
+- ห้ามเพิ่ม navigation จาก Public Calculator ไป Private Features จนกว่าจะตัดสินใจขอบเขตผู้ชมและระบบป้องกันเรียบร้อย
 
-### Admin
+## Definition of Done — Public Site
 
-- [ ] หน้า Admin และ API ตอบ `401/403` เมื่อไม่มี session
-- [ ] ไม่มี secret หรือ endpoint สำคัญใน client-side source
-- [x] endpoint เดิมถูกจำกัดสิทธิ์การอ่านและการลบด้วย `ADMIN_KEY`
+- [ ] `/` เปิด Male Calculator ได้โดยตรง
+- [ ] การคำนวณและ validation ผ่าน regression tests
+- [ ] layout และ interaction สำคัญใช้งานได้ในขนาดหน้าจอเป้าหมาย
+- [ ] การส่ง log ทำงานตามที่กำหนดและไม่เปิดเผย secret ใน browser
+- [ ] ไม่มีลิงก์หรือไฟล์ส่วนตัวใน Public build
+- [ ] Git working tree สะอาดก่อน release
 
-## 11. Decisions Required Before Execution
-
-- [x] อนุมัติและดำเนินการล้างไฟล์ส่วนตัวออกจาก Git history พร้อม force-push แล้ว; รอ GitHub Support purge cache
-- [ ] เลือกให้ Pair Calculator ตอบ `404` หรือแสดง Coming Soon ระหว่างพัฒนา
-- [x] เลือกให้ Male Calculator เป็น `index.html` โดยตรง ไม่ใช้ rewrite/redirect
-- [x] เลือกแนวทาง Admin เป็น server-side authentication + protected API ใน project/route แยก
-- [ ] เลือกผู้ให้บริการ auth/session สำหรับ Admin รุ่น Production
-- [ ] เลือกว่าจะเก็บ Aye Infographic ใน local encrypted storage หรือ private repository
-
-## 12. Execution Steps (เลขสเตปหลักที่ใช้คุยและทำงาน)
-
-เพื่อไม่ให้สับสนกับหมายเลข Phase ให้ยึดเลขสเตปในหัวข้อนี้เป็นเลขอ้างอิงหลักระหว่างทำงาน
-
-### Step 1 — Privacy Prep & Local Backup — เสร็จแล้ว
-
-- [x] เพิ่มไฟล์ส่วนตัวและ `/private/` ลง `.gitignore`
-- [x] สำรองไฟล์ส่วนตัวและหน้าเมนูเดิมไว้ที่ `D:\mysex\private\backup-2026-08-25`
-- [x] ตรวจว่าไฟล์สำรองครบและไม่ถูก Git ติดตาม
-- [x] สำรอง Git repository ทั้งชุดเป็น `private/backup-2026-08-25/mysex-before-step4.bundle` และตรวจ bundle/SHA-256 แล้ว
-
-Step 1 เป็นงาน local ไม่ต้องและไม่ควรอัปโหลดโฟลเดอร์ `/private/` ขึ้น Git
-
-### Step 2 — Public Cleanup & Main Route — เสร็จแล้ว
-
-- [x] Stage การนำ Infographic, รูปส่วนตัว และ `admin.html` ออกจาก Public repository
-- [x] ไม่แสดง Pair, Infographic และ Admin ในหน้า Public
-- [x] สำรองหน้า `index.html` เดิมเป็น `private/backup-2026-08-25/index-menu.html`
-- [x] เปลี่ยน Male Calculator ให้เป็น `index.html` โดยตรง
-- [x] ตั้ง URL ของ Pair Calculator เดิมให้ redirect กลับ `/` ชั่วคราว
-- [x] เพิ่ม security headers ใน `vercel.json`
-- [x] Commit และ push ชุดการเปลี่ยนแปลง (`64b2364`)
-
-Step 2 จะมีผลกับเว็บ Production หลัง commit/push และ Vercel deploy สำเร็จเท่านั้น
-
-### Step 3 — Production Verification — เสร็จแล้ว
-
-- [x] ตรวจว่า `/` เปิด Male Calculator โดยตรง (`200`)
-- [x] ตรวจว่า URL เดิมของ Infographic, รูปส่วนตัว และ Admin ตอบ `404`
-- [x] ตรวจว่า Pair URL redirect กลับ `/` (`307`)
-- [x] ตรวจ security headers จาก Production response
-- [x] ตรวจว่าไม่มีลิงก์ Public ไปยัง Pair, Aye หรือ Admin
-
-### Step 4 — Public Git History Cleanup — rewrite เสร็จแล้ว รอ GitHub purge
-
-- [x] สำรอง Git repository ทั้งชุดและตรวจว่า bundle เป็น complete history
-- [x] ล้างไฟล์ส่วนตัว 7 path ออกจากทุก commit บน `main`
-- [x] Force-push ด้วย `--force-with-lease` หลังได้รับอนุมัติ (`main` ใหม่ `2201606`)
-- [x] ลบ `refs/original`, หมดอายุ reflog และ prune object เก่าใน local repository
-- [x] ตรวจว่า branch/ref ที่เข้าถึงได้ใน local repository ไม่มีชื่อหรือ object ของไฟล์เป้าหมาย
-- [x] ตรวจว่าไฟล์เป้าหมายบน GitHub `main` ตอบ `404`
-- [ ] ส่งคำขอ GitHub Support ให้ purge cached views/dangling commits; commit เก่ายังเปิดด้วย SHA ตรง ๆ ได้
-- [ ] ตรวจ Raw GitHub URL และ commit เก่าอีกครั้งจนตอบ `404`
-
-ข้อมูลสำหรับ GitHub Support: repository `mysexdev/mysex`, PR refs `0`, forks `0`, first affected commit `8032671a10d7ba82134e7a47ebe6bf4951cc1778`
-
-### Step 5 — Admin Endpoint Containment — เสร็จแล้ว
-
-- [x] คง endpoint เดิมสำหรับรับ log จาก Calculator
-- [x] คง payload, รูป, Session ID และพฤติกรรมบันทึก log เดิม
-- [x] ป้องกัน `doGet()` และคำสั่งลบด้วย `ADMIN_KEY` ใน Script Properties
-- [x] ตรวจแบบไม่มีกุญแจแล้วได้ `UNAUTHORIZED` โดยไม่มีข้อมูลหลุด
-- [x] ผู้ดูแลยืนยันว่า Admin อ่าน log ได้และ log ใหม่เข้าแล้ว
-- [x] ยังไม่คืน `admin.html` เข้า Public repository
-- [ ] เปลี่ยนจาก Admin Key ใน URL เป็น server-side session authentication เมื่อสร้าง Admin รุ่น Production
-
-### Step 6 — Male Calculator Stabilization — ยังไม่เริ่ม
-
-- [ ] ทำ regression tests สำหรับ input, validation, หน่วย และสูตร
-- [ ] ทดสอบ responsive layout และ interaction สำคัญ
-- [ ] แก้บัคและทดสอบซ้ำจนผ่านเกณฑ์ Production
-
-### Step 7 — Private Features — ทำภายหลัง
-
-- [ ] ตั้ง protected Preview สำหรับ Pair Calculator
-- [ ] สร้าง Admin Production ใน project/route แยก พร้อม server-side authentication และ protected log API
-- [ ] นำ UI จาก Admin เดิมกลับมาใช้ โดยห้ามส่ง `ADMIN_KEY` ไป browser
-- [ ] ตัดสินใจขอบเขตผู้ชม Aye Infographic โดยไม่ผูกกับ Public release
