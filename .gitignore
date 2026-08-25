@@ -8,8 +8,20 @@ DO-*.jpg
 DO-*.JPG
 S__*.jpg
 
-# Allow infographic images (Vag0, Vag3, aye_portrait, favicon)
-# These are NOT blocked
+# Private Aye profile — never commit to the public repository
+/infographic_ay_pink_layered.html
+/Vag0.JPG
+/Vag3.JPG
+/Vag0.webp
+/Vag3.webp
+/aye_portrait_2.png
+/mockup_aye_*
+
+# Private admin dashboard — keep outside the public deployment
+/admin.html
+
+# Local-only backup vault (never deploy or commit)
+/private/
 
 # Internal docs
 implementation_plan.md
