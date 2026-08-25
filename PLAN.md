@@ -169,7 +169,28 @@ mysex.vercel.app/
 
 เป้าหมาย: มีเฉพาะ Admin ที่ได้รับอนุญาตเท่านั้นที่ดูหน้าและข้อมูลได้
 
-- [ ] ห้าม deploy `admin.html` เป็น static public file
+### 8.1 แนวทางที่ยืนยันแล้ว
+
+สถานะปัจจุบัน: ใช้หน้า Admin จากไฟล์ local ใน `/private/` เท่านั้น ไม่ deploy หน้า Admin ไป Public GitHub/Vercel
+
+```text
+mysex.vercel.app
+└─ Male Calculator (Public)
+   └─ ส่ง log ไปยัง write endpoint
+
+admin project/route (Future Production Admin)
+└─ Server-side login
+   └─ Protected server API
+      └─ อ่าน/ลบ log จาก Apps Script
+```
+
+- นำ UI จาก `admin.html` เดิมกลับมาใช้ได้ แต่ browser ต้องเรียก protected server API แทน Apps Script โดยตรง
+- เก็บ `ADMIN_KEY` และ secret อื่นไว้ใน environment variables ฝั่ง server เท่านั้น
+- ห้ามฝัง key ใน HTML, JavaScript, URL หรือ localStorage ของ Admin รุ่น Production
+- หน้าและข้อมูล Admin ต้องไม่ถูกโหลดก่อนผ่านการยืนยันตัวตน
+- Admin รุ่น Production ต้องแยกจาก Public Calculator เพื่อไม่ให้การพัฒนาหลังบ้านกระทบหน้าคำนวณ
+
+- [x] ห้าม deploy `admin.html` เป็น static public file
 - [ ] ใช้ server-side authentication และ HttpOnly secure session cookie
 - [ ] ตรวจสิทธิ์ทั้งหน้า Admin และทุก API request
 - [ ] เก็บ secret/API URL ใน Vercel Environment Variables
@@ -209,7 +230,9 @@ aye-private project (ถ้าตัดสินใจเปิด)
 
 admin project/route
 ├─ Server authentication
-└─ Protected log API
+├─ Protected log API
+├─ Secret อยู่ใน server environment เท่านั้น
+└─ นำ UI Admin เดิมกลับมาใช้โดยไม่เรียก Apps Script ตรงจาก browser
 ```
 
 หมายเหตุเรื่อง Vercel:
@@ -256,7 +279,8 @@ admin project/route
 - [x] อนุมัติและดำเนินการล้างไฟล์ส่วนตัวออกจาก Git history พร้อม force-push แล้ว; รอ GitHub Support purge cache
 - [ ] เลือกให้ Pair Calculator ตอบ `404` หรือแสดง Coming Soon ระหว่างพัฒนา
 - [x] เลือกให้ Male Calculator เป็น `index.html` โดยตรง ไม่ใช้ rewrite/redirect
-- [ ] เลือกวิธี auth สำหรับ Admin
+- [x] เลือกแนวทาง Admin เป็น server-side authentication + protected API ใน project/route แยก
+- [ ] เลือกผู้ให้บริการ auth/session สำหรับ Admin รุ่น Production
 - [ ] เลือกว่าจะเก็บ Aye Infographic ใน local encrypted storage หรือ private repository
 
 ## 12. Execution Steps (เลขสเตปหลักที่ใช้คุยและทำงาน)
@@ -324,5 +348,6 @@ Step 2 จะมีผลกับเว็บ Production หลัง commit/pu
 ### Step 7 — Private Features — ทำภายหลัง
 
 - [ ] ตั้ง protected Preview สำหรับ Pair Calculator
-- [ ] สร้าง Admin ใหม่ที่มี server-side authentication
+- [ ] สร้าง Admin Production ใน project/route แยก พร้อม server-side authentication และ protected log API
+- [ ] นำ UI จาก Admin เดิมกลับมาใช้ โดยห้ามส่ง `ADMIN_KEY` ไป browser
 - [ ] ตัดสินใจขอบเขตผู้ชม Aye Infographic โดยไม่ผูกกับ Public release
