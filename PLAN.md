@@ -83,9 +83,11 @@ mysex.vercel.app/
 
 ### 4.4 Admin Endpoint
 
-- [ ] ถือว่า Google Apps Script endpoint ปัจจุบันถูกเปิดเผยแล้ว
-- [ ] เปลี่ยนหรือ deploy endpoint ใหม่
-- [ ] ปิด endpoint เดิมเมื่อระบบใหม่พร้อม
+- [x] ถือว่า Google Apps Script endpoint ปัจจุบันถูกเปิดเผยแล้ว
+- [x] Deploy เวอร์ชันใหม่บน URL เดิม โดยคง `doPost()` สำหรับรับ log
+- [x] บังคับ `ADMIN_KEY` สำหรับ `doGet()` และคำสั่งลบ
+- [x] ตรวจว่า request ที่ไม่มีกุญแจได้ `UNAUTHORIZED` และไม่คืน log/ลิงก์ Vault
+- [x] ตรวจว่า Admin ที่มีกุญแจอ่าน log ได้ และ Calculator ยังบันทึก log ได้
 - [ ] ให้ API ใหม่ตรวจ session/token ฝั่งเซิร์ฟเวอร์ก่อนคืนข้อมูล
 
 ## 5. Phase 1 — Public Male Calculator
@@ -247,7 +249,7 @@ admin project/route
 
 - [ ] หน้า Admin และ API ตอบ `401/403` เมื่อไม่มี session
 - [ ] ไม่มี secret หรือ endpoint สำคัญใน client-side source
-- [ ] endpoint เก่าถูกเพิกถอนหรือจำกัดสิทธิ์
+- [x] endpoint เดิมถูกจำกัดสิทธิ์การอ่านและการลบด้วย `ADMIN_KEY`
 
 ## 11. Decisions Required Before Execution
 
@@ -303,11 +305,15 @@ Step 2 จะมีผลกับเว็บ Production หลัง commit/pu
 
 ข้อมูลสำหรับ GitHub Support: repository `mysexdev/mysex`, PR refs `0`, forks `0`, first affected commit `8032671a10d7ba82134e7a47ebe6bf4951cc1778`
 
-### Step 5 — Admin Endpoint Containment — ยังไม่เริ่ม
+### Step 5 — Admin Endpoint Containment — เสร็จแล้ว
 
-- [ ] ถือว่า Google Apps Script endpoint เดิมถูกเปิดเผยแล้ว
-- [ ] เปลี่ยนหรือปิด endpoint เดิม
-- [ ] ยังไม่คืน `admin.html` เข้า Public repository
+- [x] คง endpoint เดิมสำหรับรับ log จาก Calculator
+- [x] คง payload, รูป, Session ID และพฤติกรรมบันทึก log เดิม
+- [x] ป้องกัน `doGet()` และคำสั่งลบด้วย `ADMIN_KEY` ใน Script Properties
+- [x] ตรวจแบบไม่มีกุญแจแล้วได้ `UNAUTHORIZED` โดยไม่มีข้อมูลหลุด
+- [x] ผู้ดูแลยืนยันว่า Admin อ่าน log ได้และ log ใหม่เข้าแล้ว
+- [x] ยังไม่คืน `admin.html` เข้า Public repository
+- [ ] เปลี่ยนจาก Admin Key ใน URL เป็น server-side session authentication เมื่อสร้าง Admin รุ่น Production
 
 ### Step 6 — Male Calculator Stabilization — ยังไม่เริ่ม
 
