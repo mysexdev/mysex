@@ -6,14 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MySex | เครื่องมือคำนวณขนาดและสรีระเพศชาย</title>
   <meta name="description"
-    content="เครื่องมือคำนวณสรีระเพศชายแบบเจาะลึก ควยเลือด vs ควยเนื้อ สเปกถุงยางอนามัย ปริมาตรการสูบฉีดเลือด สถิติประชากร และการ์ดรายงานสำหรับแพทย์">
+    content="เครื่องมือคำนวณสรีระเพศชายแบบเจาะลึก ควยเลือด vs ควยเนื้อ สเปกถุงยางอนามัย ปริมาตรเพิ่มโดยประมาณ สถิติประชากร และ Deep Analysis">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Prompt:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
   <!-- html2canvas for passport PNG export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="/vendor/html2canvas.min.js"></script>
   <style>
     /* ============================================================
        CSS VARIABLES — LIGHT THEME (DEFAULT) & DARK THEME TOGGLE
@@ -368,6 +368,30 @@
       border-color: var(--pink);
     }
 
+    .form-input.is-invalid {
+      border-color: var(--red);
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+    }
+
+    .field-error {
+      min-height: 1.1em;
+      margin-top: 4px;
+      color: var(--red);
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    .measurement-warning {
+      margin-top: 10px;
+      padding: 9px 11px;
+      border: 1px solid rgba(217, 119, 6, 0.35);
+      border-radius: var(--radius-md);
+      background: rgba(217, 119, 6, 0.08);
+      color: var(--text);
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+
     .input-unit {
       position: absolute;
       right: 8px;
@@ -671,8 +695,54 @@
       object-fit: cover;
       object-position: center;
       display: block;
+      pointer-events: none;
+      user-select: none;
     }
 
+    .passport-photo-hero.is-editing { cursor: grab; touch-action: none; }
+    .passport-photo-hero.is-dragging { cursor: grabbing; }
+    .passport-photo-hero.is-editing .photo-hover-overlay { opacity: 0; }
+
+    .passport-photo-editor {
+      padding: 10px 14px 12px;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--card) 92%, var(--purple) 8%);
+    }
+
+    .passport-photo-editor[hidden] { display: none; }
+
+    .passport-photo-editor-top,
+    .passport-photo-editor-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .passport-photo-editor-top { margin-bottom: 9px; }
+    .passport-photo-editor-label { flex: 0 0 auto; color: var(--text); font-size: 0.72rem; font-weight: 800; }
+    .passport-photo-zoom { width: 100%; accent-color: var(--pink); cursor: pointer; }
+    .passport-photo-zoom-value { min-width: 38px; color: var(--pink); font-size: 0.7rem; font-weight: 800; text-align: right; }
+    .passport-photo-editor-actions { justify-content: flex-end; flex-wrap: wrap; }
+
+    .passport-photo-tool {
+      min-height: 32px;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--text);
+      font: 700 0.68rem var(--font);
+      cursor: pointer;
+    }
+
+    .passport-photo-tool:hover,
+    .passport-photo-tool:focus-visible { border-color: var(--pink); outline: none; }
+
+    .passport-photo-tool.done {
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+    }
     /* PHOTO HOVER OVERLAY */
     .photo-hover-overlay {
       position: absolute;
@@ -801,10 +871,17 @@
     /* PASSPORT FOOTER */
     .passport-footer {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
       padding: 10px 14px 14px;
       border-top: 1px solid;
+    }
+
+    .passport-footer .passport-watermark {
+      flex: 1 1 100%;
+      min-width: 0;
     }
 
     [data-theme="light"] .passport-footer {
@@ -1462,6 +1539,148 @@
       padding-left: 8px;
     }
 
+    .med-analysis-summary {
+      overflow: hidden;
+      margin: 0 0 8px;
+      border: 1px solid #bae6fd;
+      border-radius: 10px;
+      background: #f8fcff;
+    }
+
+    .med-summary-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 9px 12px;
+      border-bottom: 1px solid #dbeafe;
+      background: #eff8ff;
+    }
+
+    .med-summary-kicker {
+      display: block;
+      margin-bottom: 1px;
+      color: #64748b;
+      font-size: 0.61rem;
+      font-weight: 750;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .med-summary-profile {
+      color: #b45309;
+      font-size: 0.92rem;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .med-summary-bfpi {
+      flex: 0 0 auto;
+      min-width: 70px;
+      padding: 5px 8px;
+      border: 1px solid #fed7aa;
+      border-radius: 9px;
+      background: #fff7ed;
+      color: #9a3412;
+      text-align: center;
+    }
+
+    .med-summary-bfpi span {
+      display: block;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .med-summary-bfpi strong {
+      display: block;
+      margin-top: 1px;
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+
+    .med-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .med-summary-item {
+      min-width: 0;
+      padding: 7px 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .med-summary-item:nth-child(odd) { border-right: 1px solid #e2e8f0; }
+    .med-summary-item:nth-last-child(-n + 2) { border-bottom: 0; }
+
+    .med-summary-label {
+      display: block;
+      margin-bottom: 1px;
+      color: #64748b;
+      font-size: 0.61rem;
+      font-weight: 750;
+    }
+
+    .med-summary-value {
+      display: block;
+      color: #0369a1;
+      font-size: 0.86rem;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .med-summary-detail {
+      display: block;
+      margin-top: 1px;
+      color: #475569;
+      font-size: 0.63rem;
+      line-height: 1.35;
+    }
+
+    .med-summary-note {
+      margin: 0;
+      padding: 5px 12px;
+      border-top: 1px solid #dbeafe;
+      background: #ffffff;
+      color: #64748b;
+      font-size: 0.59rem;
+      line-height: 1.35;
+    }
+
+    .med-details-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 10px;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #0369a1;
+      font-size: 0.76rem;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .med-details-toggle:hover,
+    .med-details-toggle:focus-visible {
+      border-color: #0284c7;
+      outline: none;
+    }
+
+    .med-details-toggle-icon {
+      font-size: 0.9rem;
+      transition: transform 160ms ease;
+    }
+
+    .med-details-toggle[aria-expanded="true"] .med-details-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .med-details-panel[hidden] { display: none; }
+
     .toast {
       position: fixed;
       bottom: 24px;
@@ -1481,6 +1700,93 @@
     .toast.show {
       transform: translateX(-50%) translateY(0);
     }
+    .passport-save-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      background: rgba(4, 3, 10, 0.88);
+      backdrop-filter: blur(12px);
+    }
+
+    .passport-save-overlay.open { display: flex; }
+
+    .passport-save-dialog {
+      width: min(100%, 460px);
+      max-height: calc(100dvh - 28px);
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 20px;
+      background: #100b1c;
+      color: #fff;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+
+    .passport-save-header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(16, 11, 28, 0.94);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+    }
+
+    .passport-save-title { font-size: 0.88rem; font-weight: 900; }
+
+    .passport-save-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .passport-save-body { padding: 12px; }
+
+    .passport-save-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      background: #050407;
+      -webkit-touch-callout: default;
+      user-select: auto;
+    }
+
+    .passport-save-hint {
+      margin: 12px 2px 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.76rem;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .passport-save-actions { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+
+    .passport-save-share {
+      display: none;
+      width: 100%;
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      font: 800 0.8rem var(--font);
+      cursor: pointer;
+    }
+
+    .passport-save-share.available { display: block; }
   </style>
   <style>
     /* PROGRESSIVE DISCLOSURE WIZARD STYLES */
@@ -1575,6 +1881,8 @@
       transition: all 0.25s ease;
       border: 1px solid transparent;
       white-space: nowrap;
+      font-family: var(--font);
+      appearance: none;
     }
 
     .step-label {
@@ -1607,6 +1915,367 @@
       box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35) !important;
     }
 
+    /* RESULT CONTINUATION — prominent paths beyond the summary */
+    /* PERSONAL RESULT INSIGHTS */
+    .result-insights { margin:0 0 14px; padding:14px; border:1px solid var(--border); border-radius:var(--radius-xl); background:var(--card); box-shadow:var(--shadow); }
+    .result-insights-heading { display:flex; align-items:center; gap:8px; margin-bottom:10px; color:var(--text); font-size:0.86rem; font-weight:900; }
+    .result-insights-heading span { color:var(--muted); font-size:0.66rem; font-weight:700; }
+    .result-insights-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .result-insight { min-width:0; padding:11px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--metric-bg); }
+    .result-insight-top { display:flex; align-items:center; gap:6px; margin-bottom:5px; color:var(--pink); font-size:0.72rem; font-weight:900; }
+    .result-insight-text { color:var(--text); font-size:0.72rem; line-height:1.55; }
+
+    .foreskin-toggle { display:inline-flex; flex:0 0 auto; padding:3px; border:1px solid var(--border); border-radius:999px; background:var(--metric-bg); }
+    .foreskin-option { min-height:27px; padding:4px 9px; border:0; border-radius:999px; background:transparent; color:var(--muted); font:800 .62rem var(--font); cursor:pointer; }
+    .foreskin-option.active { background:var(--card); color:var(--pink); box-shadow:0 2px 7px rgba(15,23,42,.10); }
+    .foreskin-option:focus-visible { outline:2px solid var(--pink); outline-offset:1px; }
+    /* GROWTH EXPLORER */
+    .growth-explorer { display:grid; grid-template-columns:38px minmax(140px,1fr) auto; align-items:center; gap:10px; margin-top:8px; padding:8px 10px; border:1px solid rgba(123,31,162,.18); border-radius:14px; background:linear-gradient(135deg,rgba(216,27,96,.06),rgba(0,131,143,.05)); }
+    .growth-explorer-head { min-width:150px; text-align:right; }
+    .growth-state { display:flex; align-items:center; justify-content:flex-end; gap:6px; color:var(--text); font-size:.7rem; font-weight:900; white-space:nowrap; }
+    .growth-state-dot { width:7px; height:7px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--pink)); box-shadow:0 0 0 3px rgba(216,27,96,.10); }
+    .growth-live-values { margin-top:2px; color:var(--muted); font-size:.62rem; font-weight:700; white-space:nowrap; }
+    .growth-play { display:grid; place-items:center; width:38px; height:38px; padding:0; border:0; border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--purple)); color:#fff; box-shadow:0 4px 12px rgba(123,31,162,.22); font:900 .78rem var(--font); cursor:pointer; transition:transform .18s ease,box-shadow .18s ease; }
+    .growth-play:hover,.growth-play:focus-visible { transform:translateY(-1px); box-shadow:0 7px 17px rgba(123,31,162,.28); outline:none; }
+    .growth-range-wrap { min-width:0; }
+    .growth-slider { display:block; width:100%; height:5px; margin:0; appearance:none; border-radius:999px; background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink)); cursor:pointer; }
+    .growth-slider::-webkit-slider-thumb { width:19px; height:19px; appearance:none; border:3px solid #fff; border-radius:50%; background:var(--pink); box-shadow:0 2px 8px rgba(123,31,162,.35); }
+    .growth-slider::-moz-range-thumb { width:14px; height:14px; border:3px solid #fff; border-radius:50%; background:var(--pink); box-shadow:0 2px 8px rgba(123,31,162,.35); }
+    .growth-scale { display:flex; justify-content:space-between; margin-top:4px; color:var(--muted); font-size:.56rem; font-weight:700; }
+    @media (max-width:520px) { .growth-explorer{grid-template-columns:34px minmax(0,1fr);gap:8px}.growth-play{width:34px;height:34px}.growth-explorer-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;min-width:0;text-align:left}.growth-state{justify-content:flex-start}.growth-live-values{margin:0} }
+    @media (prefers-reduced-motion:reduce) { .growth-play{transition:none} }    .result-next-panel {
+      margin: 0 0 14px;
+      padding: 16px;
+      border: 1px solid rgba(123, 31, 162, 0.18);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(216, 27, 96, 0.10), transparent 42%),
+        linear-gradient(135deg, var(--card), rgba(123, 31, 162, 0.045));
+      box-shadow: var(--shadow);
+      animation: fadeInStep 0.45s ease both;
+    }
+
+    .result-next-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 11px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .result-next-heading span {
+      color: var(--pink);
+      font-size: 0.68rem;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .result-next-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .result-next-card {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.64);
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    [data-theme="dark"] .result-next-card {
+      background: rgba(18, 23, 42, 0.72);
+    }
+
+    .result-next-card:hover,
+    .result-next-card:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(216, 27, 96, 0.42);
+      box-shadow: 0 8px 24px rgba(123, 31, 162, 0.12);
+      outline: none;
+    }
+
+    .result-next-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, rgba(216, 27, 96, 0.14), rgba(123, 31, 162, 0.16));
+      font-size: 1.25rem;
+    }
+
+    .result-next-card.analysis .result-next-icon {
+      background: linear-gradient(135deg, rgba(0, 131, 143, 0.14), rgba(66, 165, 245, 0.16));
+    }
+
+    .result-next-title {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .result-next-desc {
+      display: block;
+      color: var(--muted);
+      font-size: 0.7rem;
+      line-height: 1.45;
+    }
+
+    .result-next-arrow {
+      color: var(--pink);
+      font-size: 1.05rem;
+      font-weight: 900;
+    }
+
+    .result-next-card.analysis .result-next-arrow {
+      color: var(--cyan);
+    }
+    /* RESPONSIVE LAYOUT */
+    .position-guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .result-next-panel {
+        padding: 13px;
+      }
+
+      .result-insights-grid { grid-template-columns: 1fr; }
+
+      .result-next-actions {
+        grid-template-columns: 1fr;
+      }
+body {
+        padding: 8px 8px 32px;
+      }
+
+      header {
+        padding: 10px 12px 12px;
+      }
+
+      .header-top-right {
+        position: static;
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 6px;
+      }
+
+      .badge-phase {
+        max-width: 100%;
+        white-space: normal;
+        line-height: 1.35;
+      }
+
+      .wizard-bar {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px !important;
+        padding: 6px;
+      }
+
+      .wizard-step {
+        min-width: 0;
+        min-height: 48px;
+        padding: 7px 6px;
+        gap: 5px;
+        font-size: 0.74rem;
+        white-space: normal;
+      }
+
+      .step-num {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+      }
+
+      .step-label {
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        line-height: 1.3;
+        text-align: center;
+      }
+
+      .card {
+        padding: 12px;
+      }
+
+      .card-title,
+      .card-title-text {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .input-row,
+      .position-guide-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-match-measurement,
+      .results-header,
+      .results-footer-main,
+      .med-meta,
+      .med-footer-actions {
+        flex-direction: column;
+        align-items: stretch !important;
+      }
+
+      .quick-match-measurement {
+        gap: 8px;
+      }
+
+      #qcGirthDisplay {
+        align-self: flex-start;
+      }
+
+      .results-header {
+        gap: 10px;
+      }
+
+      .results-header .btn-preset,
+      .results-footer-actions,
+      .results-footer-actions .btn-preset,
+      .med-footer-actions .btn-action-med {
+        width: 100%;
+      }
+
+      .results-footer-actions {
+        display: grid !important;
+        grid-template-columns: 1fr;
+      }
+
+      .results-footer-info {
+        grid-template-columns: 1fr !important;
+      }
+
+      #anatomySvg {
+        display: block;
+        height: auto;
+        min-height: 170px;
+      }
+
+      .modal-overlay {
+        align-items: flex-start;
+        padding: 8px;
+        overflow-y: auto;
+      }
+
+      .passport-card-box,
+      .med-report-box {
+        max-height: calc(100dvh - 16px);
+      }
+
+      .passport-header-row {
+        flex-wrap: wrap;
+      }
+
+      .passport-certified {
+        order: 3;
+        width: 100%;
+      }
+
+      .passport-photo-hero {
+        height: auto;
+        aspect-ratio: 20 / 21;
+      }
+
+      .passport-spec-value,
+      .passport-watermark-url {
+        overflow-wrap: anywhere;
+      }
+
+      .passport-footer,
+      .passport-watermark {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .passport-footer {
+        gap: 10px;
+      }
+
+      .passport-footer .btn-action {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .med-report-box {
+        padding: 14px;
+      }
+
+      .med-header {
+        gap: 8px;
+      }
+
+      .med-title-main,
+      .med-subtitle,
+      .med-sec-header,
+      .med-meta,
+      .med-footer-actions {
+        overflow-wrap: anywhere;
+      }
+
+      .med-meta,
+      .med-footer-actions {
+        gap: 8px;
+      }
+
+      .med-table {
+        table-layout: fixed;
+        font-size: 0.68rem;
+      }
+
+      .med-table th,
+      .med-table td {
+        padding: 5px 4px;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .toast {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: none;
+        text-align: center;
+        transform: translateY(100px);
+      }
+
+      .toast.show {
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 340px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .passport-specs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .passport-spec-cell:nth-child(odd) {
+        border-right: none;
+      }
+    }
+
     .brand-chip {
       background: var(--input-bg);
       border: 1px solid var(--border);
@@ -1628,75 +2297,70 @@
     <!-- HEADER -->
     <header>
       <div class="header-top-right">
-        <a href="/"
-          style="text-decoration:none; display:inline-flex; align-items:center; gap:5px; background:linear-gradient(135deg, rgba(255,42,133,0.15), rgba(180,77,255,0.15)); border:1px solid rgba(255,42,133,0.25); padding:6px 14px; border-radius:50px; color:var(--text); font-size:0.82rem; font-weight:700; transition:all 0.2s;"
-          onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 12px rgba(255,42,133,0.3)'"
-          onmouseout="this.style.transform='';this.style.boxShadow=''">🏠 MySex</a>
         <button class="theme-toggle-btn" onclick="toggleTheme()">
           <span id="themeIcon">☀️</span> <span id="themeText">ธีมสว่าง</span>
         </button>
       </div>
 
-      <div class="badge-phase">⚡ MALE ANATOMICAL & DIAGNOSTICS CALCULATOR</div>
+      <div class="badge-phase">⚡ MALE ANATOMY & DISCOVERY CALCULATOR</div>
       <h1>เครื่องมือคำนวณขนาดและสรีระเพศชาย</h1>
-      <p>คำนวณขนาดความยาวและรอบวง หาไซส์ถุงยางที่ใช่ พร้อมดูอันดับสถิติของคุณในกลุ่มประชากร</p>
+      <p>คำนวณขนาดความยาวและรอบวง เทียบไซส์ถุงยาง พร้อมดูอันดับสถิติของคุณในกลุ่มประชากร</p>
     </header>
 
     <!-- SINGLE UNIFIED 4-TAB NAVIGATION BAR (1 ROW ONLY) -->
-    <div class="wizard-bar" id="wizardBar" style="display:flex; gap:6px; margin-bottom:14px;">
-      <div class="wizard-step active" id="stepTab1" onclick="selectTab(1)">
+    <div class="wizard-bar" id="wizardBar" role="tablist" aria-label="ขั้นตอนการคำนวณ" style="display:flex; gap:6px; margin-bottom:14px;">
+      <button type="button" class="wizard-step active" id="stepTab1" role="tab" aria-selected="true" aria-controls="step1View" onclick="selectTab(1)">
         <span class="step-num">1</span>
         <span class="step-label">💤 ตอนอ่อนตัว</span>
-      </div>
-      <div class="wizard-step" id="stepTab2" onclick="selectTab(2)">
+      </button>
+      <button type="button" class="wizard-step" id="stepTab2" role="tab" aria-selected="false" aria-controls="step2View" onclick="selectTab(2)">
         <span class="step-num">2</span>
         <span class="step-label">🍆 ตอนแข็งตัว</span>
-      </div>
-      <div class="wizard-step" id="stepTab3" onclick="selectTab(3)">
+      </button>
+      <button type="button" class="wizard-step" id="stepTab3" role="tab" aria-selected="false" aria-controls="step3View" onclick="selectTab(3)">
         <span class="step-num">3</span>
         <span class="step-label">🏆 ผลวิเคราะห์</span>
-      </div>
-      <div class="wizard-step wizard-step-condom" id="stepTabCondom" onclick="selectTab('condom')">
+      </button>
+      <button type="button" class="wizard-step wizard-step-condom" id="stepTabCondom" role="tab" aria-selected="false" aria-controls="condomMatchView" onclick="selectTab('condom')">
         <span class="step-label">🛡️ เทียบไซส์ถุงยาง</span>
-      </div>
+      </button>
     </div>
 
     <!-- CONDOM MATCHING VIEW (QUICK MATCH MODE) -->
-    <div id="condomMatchView" class="step-view" style="display:none; width:100%;">
+    <div id="condomMatchView" class="step-view" role="tabpanel" aria-labelledby="stepTabCondom" style="display:none; width:100%;">
       <div class="card" style="padding: 20px;">
         <div class="card-title">
-          <div class="card-title-text">🛡️ เทียบขนาดถุงยางอนามัยที่พอดี</div>
+          <div class="card-title-text">🛡️ เทียบไซส์ถุงยางอนามัย</div>
         </div>
         <div style="font-size:0.8rem; color:var(--muted); margin-bottom:16px;">
-          เลื่อนปรับเฉพาะเส้นรอบวงตอนแข็งตัว เพื่อเทียบหาขนาดไซส์ถุงยางอนามัยมาตรฐานที่สวมใส่พอดี
+          เลื่อนปรับเส้นรอบวงตอนแข็งตัว เพื่อเทียบกับช่วงไซส์มาตรฐาน 49–72 มม.
         </div>
 
         <!-- UNIT TOGGLE -->
         <div class="unit-toggle" style="margin-bottom:16px;">
-          <button class="unit-btn active" id="qc_u_mm" onclick="setUnit('mm')">มิลลิเมตร (mm)</button>
-          <button class="unit-btn" id="qc_u_cm" onclick="setUnit('cm')">เซนติเมตร (cm)</button>
+          <button class="unit-btn active" id="qc_u_cm" onclick="setUnit('cm')">เซนติเมตร (cm)</button>
           <button class="unit-btn" id="qc_u_in" onclick="setUnit('in')">นิ้ว (inch)</button>
         </div>
 
         <!-- GIRTH SLIDER & NUMERIC INPUT -->
         <div style="background:var(--metric-bg); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; margin-bottom:16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div class="quick-match-measurement" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <span style="font-size:0.88rem; font-weight:800; color:var(--text);">⭕ เส้นรอบวงตอนแข็งตัว (Girth):</span>
-            <div style="background:rgba(216, 27, 96, 0.12); border:1px solid rgba(216, 27, 96, 0.3); color:var(--pink); font-family:'Outfit',monospace; font-weight:900; font-size:1.15rem; padding:3px 14px; border-radius:8px;" id="qcGirthDisplay">154.0 mm</div>
+            <div style="background:rgba(216, 27, 96, 0.12); border:1px solid rgba(216, 27, 96, 0.3); color:var(--pink); font-family:'Outfit',monospace; font-weight:900; font-size:1.15rem; padding:3px 14px; border-radius:8px;" id="qcGirthDisplay">15.4 cm</div>
           </div>
           <input type="range" id="qcGirthSlider" min="70" max="200" step="0.5" value="154" style="width:100%; height:8px; border-radius:50px; cursor:pointer; accent-color:var(--pink);" oninput="syncCondomSlider(this.value)">
         </div>
 
         <!-- RESULT HERO CARD -->
         <div style="background:linear-gradient(135deg, rgba(217,119,6,0.1), rgba(216,27,96,0.08)); border:2px solid var(--gold); border-radius:var(--radius-xl); padding:22px; text-align:center; margin-bottom:18px; box-shadow:0 8px 30px rgba(217,119,6,0.15);">
-          <div style="font-size:0.75rem; font-weight:800; color:var(--gold); letter-spacing:1.5px; text-transform:uppercase;">RECOMMENDED CONDOM SIZE</div>
-          <div id="qcResultSize" style="font-family:'Outfit',monospace; font-size:3.6rem; font-weight:900; color:var(--gold); line-height:1.1; margin:8px 0; text-shadow:0 0 20px rgba(217,119,6,0.3);">69 mm</div>
-          <div id="qcResultFit" style="font-size:0.9rem; font-weight:800; color:var(--text); margin-bottom:4px;">✨ สวมใส่กระชับ พอดีเป๊ะ (Fit)</div>
-          <div id="qcResultFormula" style="font-size:0.76rem; color:var(--muted);">สูตรมาตรฐาน: รอบวง 154.0 มม. ÷ 2.3 = 66.9 มม.</div>
+          <div style="font-size:0.75rem; font-weight:800; color:var(--gold); letter-spacing:1.5px; text-transform:uppercase;">CONDOM SIZE ESTIMATE</div>
+          <div id="qcResultSize" style="font-family:'Outfit',monospace; font-size:3.6rem; font-weight:900; color:var(--gold); line-height:1.1; margin:8px 0; text-shadow:0 0 20px rgba(217,119,6,0.3);">69 มม.</div>
+          <div id="qcResultFit" style="font-size:0.9rem; font-weight:800; color:var(--text); margin-bottom:4px;">ไซส์ใกล้เคียงจากรอบวง</div>
+          <div id="qcResultFormula" style="font-size:0.76rem; color:var(--muted);">ค่าประมาณ: รอบวง 154 มม. ÷ 2.3 = 67 มม.</div>
 
           <!-- BRAND TAGS -->
           <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
-            <div style="font-size:0.74rem; color:var(--muted); font-weight:700; margin-bottom:8px;">🏷️ ตัวอย่างแบรนด์และรุ่นที่รองรับไซส์นี้:</div>
+            <div id="qcBrandLabel" style="font-size:0.74rem; color:var(--muted); font-weight:700; margin-bottom:8px;">🏷️ ตัวอย่างแบรนด์และรุ่นในไซส์นี้:</div>
             <div id="qcBrandList" style="display:flex; flex-wrap:wrap; justify-content:center; gap:6px;"></div>
           </div>
         </div>
@@ -1709,7 +2373,7 @@
     </div>
 
     <!-- STEP 1 VIEW: FLACCID STATE (CENTERED) -->
-    <div id="step1View" class="step-view" style="width:100%;">
+    <div id="step1View" class="step-view" role="tabpanel" aria-labelledby="stepTab1" style="width:100%;">
       <div class="card">
         <div class="card-title">
           <div class="card-title-text">💤 สเต็ปที่ 1: กรอกสภาวะอ่อนตัว (Flaccid State)</div>
@@ -1717,8 +2381,7 @@
 
         <!-- UNIT TOGGLE -->
         <div class="unit-toggle">
-          <button class="unit-btn active" id="u_mm" onclick="setUnit('mm')">มิลลิเมตร (mm)</button>
-          <button class="unit-btn" id="u_cm" onclick="setUnit('cm')">เซนติเมตร (cm)</button>
+          <button class="unit-btn active" id="u_cm" onclick="setUnit('cm')">เซนติเมตร (cm)</button>
           <button class="unit-btn" id="u_in" onclick="setUnit('in')">นิ้ว (inch)</button>
         </div>
 
@@ -1729,16 +2392,22 @@
             <div>
               <div class="field-sublabel">📐 ความยาวอ่อนตัว (Length)</div>
               <div class="input-wrapper">
-                <input type="number" id="l_flaccid" class="form-input" value="135" step="0.1" oninput="calculate()">
-                <span class="input-unit" id="unit_l1">mm</span>
+                <input type="number" id="l_flaccid" class="form-input" value="13.5" min="0.1" max="50" step="any"
+                  required autocomplete="off" aria-label="ความยาวตอนอ่อนตัว" aria-describedby="unit_l1 l_flaccid_error"
+                  oninput="handleMeasurementInput('l_flaccid')" onblur="validateMeasurementField('l_flaccid')">
+                <span class="input-unit" id="unit_l1">cm</span>
               </div>
+              <div class="field-error" id="l_flaccid_error" aria-live="polite"></div>
             </div>
             <div>
               <div class="field-sublabel">⭕ รอบวงอ่อนตัว (Girth)</div>
               <div class="input-wrapper">
-                <input type="number" id="g_flaccid" class="form-input" value="127" step="0.1" oninput="calculate()">
-                <span class="input-unit" id="unit_g1">mm</span>
+                <input type="number" id="g_flaccid" class="form-input" value="12.7" min="0.1" max="50" step="any"
+                  required autocomplete="off" aria-label="เส้นรอบวงตอนอ่อนตัว" aria-describedby="unit_g1 g_flaccid_error"
+                  oninput="handleMeasurementInput('g_flaccid')" onblur="validateMeasurementField('g_flaccid')">
+                <span class="input-unit" id="unit_g1">cm</span>
               </div>
+              <div class="field-error" id="g_flaccid_error" aria-live="polite"></div>
             </div>
           </div>
         </div>
@@ -1753,7 +2422,7 @@
     </div>
 
     <!-- STEP 2 VIEW: ERECT STATE & FAT LAYER (CENTERED) -->
-    <div id="step2View" class="step-view" style="display:none; width:100%;">
+    <div id="step2View" class="step-view" role="tabpanel" aria-labelledby="stepTab2" style="display:none; width:100%;">
       <div class="card">
         <div class="card-title">
           <div class="card-title-text">🍆 สเต็ปที่ 2: กรอกสภาวะแข็งตัว & ชั้นไขมัน</div>
@@ -1766,16 +2435,22 @@
             <div>
               <div class="field-sublabel">📐 ความยาวแข็งตัว (Length)</div>
               <div class="input-wrapper">
-                <input type="number" id="l_erect" class="form-input" value="162" step="0.1" oninput="calculate()">
-                <span class="input-unit" id="unit_l2">mm</span>
+                <input type="number" id="l_erect" class="form-input" value="16.2" min="0.1" max="50" step="any"
+                  required autocomplete="off" aria-label="ความยาวตอนแข็งตัว" aria-describedby="unit_l2 l_erect_error"
+                  oninput="handleMeasurementInput('l_erect')" onblur="validateMeasurementField('l_erect')">
+                <span class="input-unit" id="unit_l2">cm</span>
               </div>
+              <div class="field-error" id="l_erect_error" aria-live="polite"></div>
             </div>
             <div>
               <div class="field-sublabel">⭕ รอบวงแข็งตัว (Girth)</div>
               <div class="input-wrapper">
-                <input type="number" id="g_erect" class="form-input" value="154" step="0.1" oninput="calculate()">
-                <span class="input-unit" id="unit_g2">mm</span>
+                <input type="number" id="g_erect" class="form-input" value="15.4" min="0.1" max="50" step="any"
+                  required autocomplete="off" aria-label="เส้นรอบวงตอนแข็งตัว" aria-describedby="unit_g2 g_erect_error"
+                  oninput="handleMeasurementInput('g_erect')" onblur="validateMeasurementField('g_erect')">
+                <span class="input-unit" id="unit_g2">cm</span>
               </div>
+              <div class="field-error" id="g_erect_error" aria-live="polite"></div>
             </div>
           </div>
         </div>
@@ -1784,9 +2459,16 @@
         <div class="form-group">
           <div class="form-label"><span>🔹 ชั้นไขมันโคนควย/เนินหัวหน่าว (T<sub>fat</sub>)</span></div>
           <div class="input-wrapper">
-            <input type="number" id="t_fat" class="form-input" value="15" step="0.1" oninput="calculate()">
-            <span class="input-unit" id="unit_tfat">mm</span>
+            <input type="number" id="t_fat" class="form-input" value="1.5" min="0" max="20" step="any"
+              required autocomplete="off" aria-label="ชั้นไขมันบริเวณโคน" aria-describedby="unit_tfat t_fat_error"
+              oninput="handleMeasurementInput('t_fat')" onblur="validateMeasurementField('t_fat')">
+            <span class="input-unit" id="unit_tfat">cm</span>
           </div>
+          <div class="field-error" id="t_fat_error" aria-live="polite"></div>
+        </div>
+
+        <div class="measurement-warning" id="measurementWarning" role="status" hidden>
+          ⚠️ ค่าตอนแข็งตัวต่ำกว่าตอนอ่อนตัวอย่างน้อยหนึ่งรายการ กรุณาตรวจหน่วยและวิธีวัดอีกครั้ง ระบบยังคำนวณต่อได้
         </div>
 
         <div style="display:flex; gap:10px; margin-top:16px;">
@@ -1802,22 +2484,50 @@
     </div>
 
     <!-- STEP 3 VIEW: GRAND REVEAL & LIVE LAB (FULL DASHBOARD 960PX) -->
-    <div id="step3View" class="step-view" style="display:none; width:100%;">
-      <div
+    <div id="step3View" class="step-view" role="tabpanel" aria-labelledby="stepTab3" style="display:none; width:100%;">
+      <div class="results-header"
         style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; background:var(--card); backdrop-filter:blur(16px); padding:12px 18px; border-radius:var(--radius-lg); border:1px solid var(--border); box-shadow:var(--shadow);">
         <div>
           <div style="font-weight:900; color:var(--text); font-size:1.05rem;">
             🏆 แดชบอร์ดวิเคราะห์สรีระเต็มรูปแบบ (The Grand Reveal & Live Lab)
+            <span
+              style="display:inline-flex; margin-left:8px; padding:2px 7px; border-radius:999px; background:rgba(123,31,162,0.12); color:var(--purple); font-size:0.62rem; letter-spacing:0.8px; vertical-align:middle;">MYSEX MODEL</span>
           </div>
           <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">
             วิเคราะห์ยศสรีระ · ถุงยางที่แนะนำ · แผนภาพ 2D มาตราส่วน · สถิติประชากร
           </div>
         </div>
         <button type="button" class="btn-preset" onclick="goToStep(1)" style="font-size:0.8rem; padding:6px 14px;">
-          🔄 เริ่มคำนวณใหม่
+          ✏️ กลับไปแก้ข้อมูล
         </button>
       </div>
 
+      <section class="result-next-panel" aria-labelledby="resultNextHeading">
+        <div class="result-next-heading" id="resultNextHeading">
+          ผลของคุณยังมีต่อ
+          <span>Explore more</span>
+        </div>
+        <div class="result-next-actions">
+          <button type="button" class="result-next-card" onclick="openPassportModal()">
+            <span class="result-next-icon" aria-hidden="true">🪪</span>
+            <span>
+              <span class="result-next-title">สร้าง Spec Passport</span>
+              <span class="result-next-desc">เปลี่ยนผลลัพธ์เป็นการ์ดสเปกส่วนตัว พร้อมแชร์หรือบันทึก</span>
+            </span>
+            <span class="result-next-arrow" aria-hidden="true">→</span>
+          </button>
+          <button type="button" class="result-next-card analysis" onclick="openMedicalModal()">
+            <span class="result-next-icon" aria-hidden="true">🔬</span>
+            <span>
+              <span class="result-next-title">เปิด Deep Analysis</span>
+              <span class="result-next-desc">เจาะรายละเอียดสัดส่วน การเปลี่ยนแปลง และข้อมูลเปรียบเทียบ</span>
+            </span>
+            <span class="result-next-arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+      </section>
+
+      <div class="measurement-warning" id="measurementWarningResult" role="status" style="margin:0 0 14px;" hidden></div>
       <div style="display:flex; flex-direction:column;">
 
         <!-- CARD 1: CONDOM SPEC & VOLUME CARD -->
@@ -1827,25 +2537,26 @@
           </div>
 
           <div class="metrics-grid">
-            <div class="metric-card" id="cardCondom"
+            <div class="metric-card" id="cardCondom" role="button" tabindex="0" aria-expanded="false" aria-controls="condomTooltip"
               style="border-color:rgba(0,131,143,0.3); cursor:pointer; position:relative;"
-              onclick="toggleCondomTooltip(event)">
+              onclick="toggleCondomTooltip(event)"
+              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleCondomTooltip(event)}">
               <div class="metric-title" style="display:flex; justify-content:space-between; align-items:center;">
-                <span>ไซส์ถุงยางที่แนะนำ</span>
+                <span>ไซส์ถุงยาง</span>
                 <span
                   style="background:rgba(0,131,143,0.2); color:var(--cyan); border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:bold;">ⓘ</span>
               </div>
               <div class="metric-val" id="resCondom" style="color:var(--cyan); font-size:1.4rem;">69 มม.</div>
-              <div class="metric-sub" id="resCondomSub">สูตร: 66.9 มม. (Fit พอดี)</div>
+              <div class="metric-sub" id="resCondomSub">ใกล้เคียงจากรอบวง</div>
 
-              <div class="condom-tooltip" id="condomTooltip">
+              <div class="condom-tooltip" id="condomTooltip" role="tooltip">
                 <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">🧮
-                  วิธีคำนวณและสูตรหาไซส์ถุงยางอนามัย:</div>
+                  วิธีประมาณและเทียบไซส์ถุงยางอนามัย:</div>
                 <div style="font-size:0.74rem; line-height:1.4;">
-                  <strong>1. สูตรคำนวณหน้ากว้างแบบราบ (Nominal Width):</strong><br>
+                  <strong>1. ประมาณหน้ากว้างแบบราบ (Nominal Width):</strong><br>
                   <code style="color:var(--pink);">หน้ากว้าง = รอบวง (G<sub>erect</sub>) ÷ 2.3</code><br>
                   <span id="condomCalcStep" style="color:var(--gold);">154.0 มม. ÷ 2.3 = 66.9 มม.</span><br><br>
-                  <strong>2. แมตช์ไซส์มาตรฐานสากล:</strong><br>
+                  <strong>2. เทียบไซส์ในฐานข้อมูล:</strong><br>
                   <span>[49, 52, 54, 56, 58, 60, 64, 69, 72 มม.]</span>
                 </div>
               </div>
@@ -1853,14 +2564,14 @@
 
             <div class="metric-card" id="cardDiameter">
               <div class="metric-title">เส้นผ่านศูนย์กลาง (D<sub>m</sub>)</div>
-              <div class="metric-val" id="resDiameter" style="color:var(--text);">49.0 mm</div>
+              <div class="metric-val" id="resDiameter" style="color:var(--text);">49 มม.</div>
               <div class="metric-sub">หน้ากว้างลำควยแข็ง</div>
             </div>
 
             <div class="metric-card" id="cardVolume">
-              <div class="metric-title">ปริมาตรรวม (V<sub>erect</sub>)</div>
+              <div class="metric-title">ปริมาตรขณะแข็งโดยประมาณ (V<sub>erect</sub>)</div>
               <div class="metric-val" id="resVolume" style="color:var(--purple);">305.7 cc</div>
-              <div class="metric-sub">ทรงกระบอกเรขาคณิต</div>
+              <div class="metric-sub">คำนวณจากแบบจำลองทรงกระบอก</div>
             </div>
           </div>
         </div>
@@ -1874,7 +2585,7 @@
           <div
             style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
             <div>
-              <span style="font-size:0.8rem; color:var(--muted);">BFPI Index: </span>
+              <span style="font-size:0.8rem; color:var(--muted);">BFPI: </span>
               <strong id="resBfpi" style="font-family:'Outfit'; font-size:1.3rem; color:var(--gold);">1.45</strong>
             </div>
             <span id="resBadgeType" class="badge badge-flesh">🥩 ควยเนื้อ (Flesh Shower)</span>
@@ -1896,8 +2607,7 @@
           <div
             style="margin-top:10px; padding:12px 14px; background:rgba(216,27,96,0.06); border:1px solid rgba(216,27,96,0.25); border-radius:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
             <div>
-              <div style="font-size:0.75rem; color:var(--muted); font-weight:700;">👑 ฉายาตัวตนสรีระ (Thai Penis
-                Archetype):</div>
+              <div style="font-size:0.75rem; color:var(--muted); font-weight:700;">👑 ฉายาสรีระ:</div>
               <div id="resArchetypeTitle"
                 style="font-weight:900; font-size:1.25rem; color:var(--pink); margin-top:2px; letter-spacing:-0.2px;">🥖
                 สายปังตอ อวบสะท้านตับ</div>
@@ -1911,33 +2621,40 @@
             <div class="metric-card" id="cardDeltaL">
               <div class="metric-title">อัตรายืดความยาว (ΔL%)</div>
               <div class="metric-val" id="resDeltaL" style="color:var(--pink);">+19.3%</div>
-              <div class="metric-sub" id="resSubDeltaL">อ่อน 135 → แข็ง 161 mm</div>
+              <div class="metric-sub" id="resSubDeltaL">อ่อน 135 → แข็ง 162 มม.</div>
             </div>
             <div class="metric-card" id="cardDeltaG">
               <div class="metric-title">อัตราขยายรอบวง (ΔG%)</div>
               <div class="metric-val" id="resDeltaG" style="color:var(--cyan);">+21.3%</div>
-              <div class="metric-sub" id="resSubDeltaG">อ่อน 127 → แข็ง 154 mm</div>
+              <div class="metric-sub" id="resSubDeltaG">อ่อน 127 → แข็ง 154 มม.</div>
             </div>
             <div class="metric-card" id="cardBloodVol">
-              <div class="metric-title">เลือดสูบฉีด (ΔV)</div>
-              <div class="metric-val" id="resBloodVol" style="color:var(--gold);">+134.8 cc</div>
-              <div class="metric-sub" id="resSubBloodVol">ขยายตัว 1.79x</div>
+              <div class="metric-title">ปริมาตรเพิ่มจากตอนอ่อน (ΔV)</div>
+              <div class="metric-val" id="resBloodVol" style="color:var(--gold);">+132.5 cc</div>
+              <div class="metric-sub" id="resSubBloodVol">ผลต่างระหว่างปริมาตรแข็งและอ่อน</div>
             </div>
           </div>
         </div>
+        <section class="result-insights" aria-labelledby="resultInsightsHeading">
+          <div class="result-insights-heading" id="resultInsightsHeading">✨ ผลเด่นของคุณ <span>สรุปจากค่าที่คำนวณ</span></div>
+          <div class="result-insights-grid">
+            <article class="result-insight"><div class="result-insight-top">🎯 จุดเด่นที่สุด</div><div class="result-insight-text" id="insightStrongest">กำลังวิเคราะห์สัดส่วนที่โดดเด่น</div></article>
+            <article class="result-insight"><div class="result-insight-top">⚡ รูปแบบการเปลี่ยนแปลง</div><div class="result-insight-text" id="insightGrowth">กำลังวิเคราะห์การเปลี่ยนแปลง</div></article>
+            <article class="result-insight"><div class="result-insight-top">🛡️ ใช้งานจริง</div><div class="result-insight-text" id="insightPractical">กำลังประเมินไซส์ใกล้เคียง</div></article>
+          </div>
+        </section>
 
         <!-- CARD 3: REGIONAL & GLOBAL PERCENTILE CARD (BOX 4, 5, 6 — FULLY DYNAMIC) -->
         <div class="card">
           <div class="card-title" style="flex-wrap:wrap; gap:8px;">
             <div>
               <div class="card-title-text">🌐 สถิติเปรียบเทียบสเกลประชากร</div>
-              <div style="font-size:0.72rem; color:var(--muted); font-weight:600;" id="regionSubText">🇹🇭
-                เปรียบเทียบกับเกณฑ์ประชากรชายไทย</div>
+              <div style="font-size:0.72rem; color:var(--muted); font-weight:600;" id="regionSubText">🌐 ข้อมูลรวมหลายประเทศ · Veale 2015</div>
             </div>
             <div class="region-toggle-group">
-              <button class="region-btn active" id="regThai" onclick="switchRegion('thai')">🇹🇭 ไทย</button>
-              <button class="region-btn" id="regAsia" onclick="switchRegion('asia')">🌏 เอเชีย</button>
-              <button class="region-btn" id="regGlobal" onclick="switchRegion('global')">🌐 ทั่วโลก</button>
+              <button class="region-btn active" id="regGlobal" onclick="switchRegion('global')">🌐 โลก</button>
+              <button class="region-btn" id="regChina" onclick="switchRegion('china')">🇨🇳 จีน</button>
+              <button class="region-btn" id="regThai" onclick="switchRegion('thai')">🇹🇭 ไทย · BETA</button>
             </div>
           </div>
 
@@ -1956,7 +2673,7 @@
             <div class="metric-card" id="cardFatPercent">
               <div class="metric-title">ไขมันบดบังความยาว</div>
               <div class="metric-val" id="resFatPercent" style="color:var(--gold);">8.5%</div>
-              <div class="metric-sub" id="resSubBPEL">ชิดกระดูก: 176 mm</div>
+              <div class="metric-sub" id="resSubBPEL">ชิดกระดูก: 177 มม.</div>
             </div>
           </div>
         </div>
@@ -1965,32 +2682,47 @@
         <div class="card">
           <div class="card-title">
             <div class="card-title-text">📊 แผนภาพเปรียบเทียบสภาวะยืดพองตัว (Anatomical Scaled Visualizer)</div>
+            <div class="foreskin-toggle" role="group" aria-label="รูปแบบหนังหุ้มปลาย">
+              <button type="button" class="foreskin-option active" id="foreskinCut" aria-pressed="true" onclick="setForeskinMode('cut')">ขลิบ</button>
+              <button type="button" class="foreskin-option" id="foreskinUncut" aria-pressed="false" onclick="setForeskinMode('uncut')">ไม่ขลิบ</button>
+            </div>
           </div>
           <div
             style="background:var(--metric-bg); border:1px solid var(--border); border-radius:var(--radius-md); padding:8px; text-align:center;">
             <svg id="anatomySvg" width="100%" height="220" viewBox="0 0 760 300"></svg>
+          </div>
+          <div class="growth-explorer">
+            <button type="button" class="growth-play" aria-label="เล่นการเปลี่ยนแปลง" title="เล่นการเปลี่ยนแปลง" onclick="playGrowthAnimation()">▶</button>
+            <div class="growth-range-wrap">
+              <input class="growth-slider" id="growthSlider" type="range" min="0" max="100" value="0" step="1" aria-label="ดูการเปลี่ยนแปลงจากตอนอ่อนไปตอนแข็ง" oninput="cancelGrowthAnimation(); renderGrowthStage(this.value)">
+              <div class="growth-scale"><span>อ่อน</span><span>แข็ง</span></div>
+            </div>
+            <div class="growth-explorer-head">
+              <div class="growth-state"><span class="growth-state-dot" aria-hidden="true"></span><span id="growthStageLabel">ตอนอ่อน · 0%</span></div>
+              <div class="growth-live-values" id="growthStageValues">—</div>
+            </div>
           </div>
         </div>
 
         <!-- CARD: ANATOMICAL POSITION MATCHER CARD -->
         <div class="card">
           <div class="card-title">
-            <div class="card-title-text">📐 ท่าร่วมรักที่เหมาะสมตามสรีระ (Anatomical Position Matcher)</div>
+            <div class="card-title-text">📐 แนวทางท่าตามสรีระ</div>
           </div>
           <div style="font-size:0.75rem; color:var(--muted); margin-bottom:10px;">
-            วิเคราะห์มุมสอดใส่ ความแน่น และระยะความลึกที่เหมาะสมสำหรับสเปกสรีระของคุณ:
+            สำรวจมุม จังหวะ และระยะจากค่าที่กรอก ผลจริงขึ้นกับคู่และความสบาย:
           </div>
 
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="position-guide-grid">
             <div
               style="background:rgba(22,163,74,0.06); border:1px solid rgba(22,163,74,0.25); border-radius:var(--radius-md); padding:10px 12px;">
               <div
                 style="font-weight:800; font-size:0.82rem; color:var(--green); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
-                <span>⭐ ท่าแนะนำติดดาว (Best Match)</span>
+                <span>⭐ ท่าที่น่าลอง (Try First)</span>
               </div>
               <ul style="font-size:0.75rem; list-style:none; padding-left:0; line-height:1.6;" id="posBestList">
                 <li>🛋️ <strong>Spooning (ตะแคงซ้อน):</strong> กระชับแนบแน่น คุมลึกดีเยี่ยม</li>
-                <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> แน่นเต็มสัมผัส ปุ่มคลิตอริสฟินสุด</li>
+                <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> เพิ่มการแนบชิดและการเสียดสี</li>
                 <li>📐 <strong>CAT Technique:</strong> เสียดสีเต็มพื้นที่ โดยไม่ต้องแทงลึก</li>
               </ul>
             </div>
@@ -2002,41 +2734,32 @@
                 <span>⚠️ ท่าที่ควรระวัง (Caution Positions)</span>
               </div>
               <ul style="font-size:0.75rem; list-style:none; padding-left:0; line-height:1.6;" id="posCautionList">
-                <li>🐕 <strong>Deep Doggy:</strong> สอดใส่ลึกสุดตัว เสี่ยงชนปากมดลูก</li>
+                <li>🐕 <strong>Deep Doggy:</strong> อาจลึกหรือกระแทกเกินสบาย ควรเริ่มช้า ๆ</li>
                 <li>🤠 <strong>Cowboy (ผู้หญิงคุม):</strong> คุมมุมยาก อาจพับโคนหากอวบใหญ่</li>
               </ul>
             </div>
           </div>
         </div>
-
-        <footer
+<footer
           style="margin-top:14px; padding:20px; background:var(--card); backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow); text-align:center;">
-          <div
+          <div class="results-footer-main"
             style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:14px;">
             <div style="text-align:left;">
               <div
                 style="font-weight:900; font-size:1.05rem; background:linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
-                ⚡ MALE ANATOMICAL & DIAGNOSTICS ENGINE</div>
+                ⚡ MYSEX ANALYSIS & DISCOVERY</div>
               <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">
-                เครื่องมือคำนวณและวิเคราะห์สรีระเพศชายเชิงกลศาสตร์การแพทย์</div>
-            </div>
-            <div style="display:flex; gap:8px;">
-              <button class="btn-preset" style="font-size:0.75rem; padding:4px 12px;" onclick="openPassportModal()">🪪
-                Spec Passport</button>
-              <button class="btn-preset"
-                style="font-size:0.75rem; padding:4px 12px; color:var(--cyan); border-color:rgba(0,131,143,0.3);"
-                onclick="openMedicalModal()">🩺 Medical Report</button>
+                คำนวณ เปรียบเทียบ และสำรวจสรีระจากค่าที่คุณกรอก</div>
             </div>
           </div>
 
-          <div
+          <div class="results-footer-info"
             style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:14px; text-align:left; font-size:0.76rem; color:var(--dim); margin-bottom:14px;">
             <div
               style="background:var(--metric-bg); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
-              <strong style="color:var(--text); display:block; margin-bottom:3px;">🔬 อ้างอิงมาตรฐานการแพทย์ (Clinical
-                Sources):</strong>
-              <span>ข้อมูลเปอร์เซ็นต์ไทล์สากลอ้างอิงจาก Veale et al. (2015) BJU International, Herbenick et al. (2014)
-                Journal of Sexual Medicine และเกณฑ์มาตรฐานสมาคมยูโรวิทยาไทย</span>
+              <strong style="color:var(--text); display:block; margin-bottom:3px;">📚 แหล่งข้อมูลและสถานะโมเดล:</strong>
+              <span style="display:block;">ข้อมูลวิจัย: โลก — Veale et al. (2015) · จีน — Wang et al. (2025)</span>
+              <span id="regionSourceText" style="display:block; margin-top:3px;">กำลังใช้ข้อมูลโลก · Veale 2015</span>
             </div>
             <div
               style="background:var(--metric-bg); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
@@ -2048,7 +2771,7 @@
           </div>
 
           <div style="font-size:0.72rem; color:var(--dim); opacity:0.85;">
-            © 2026 Male Anatomical Diagnostics Engine • Designed with Precision & Clinical Excellence
+            © 2026 MySex Analysis & Discovery • Explore Your Specs
           </div>
         </footer>
       </div>
@@ -2059,34 +2782,53 @@
 
 
   <!-- PASSPORT MODAL OVERLAY -->
-  <div class="modal-overlay" id="passportModalOverlay" onclick="if(event.target===this) closePassportModal()">
-    <div class="passport-card-box" id="passportCard">
+  <div class="modal-overlay" id="passportModalOverlay" role="dialog" aria-modal="true" aria-labelledby="passportDialogTitle" onclick="if(event.target===this) closePassportModal()">
+    <div class="passport-card-box" id="passportCard" tabindex="-1">
 
       <!-- TOP GRADIENT STRIPE -->
       <div class="passport-stripe"></div>
 
-      <!-- HEADER: Badge + Certified + Close -->
+      <!-- HEADER: Badge + Unlock status + Close -->
       <div class="passport-header-row">
-        <div class="passport-badge-title">⚕ SPEC PASSPORT</div>
-        <div style="font-size:0.68rem; font-weight:800; color:var(--gold); letter-spacing:1px;">★ CERTIFIED ★</div>
-        <button onclick="closePassportModal()"
+        <div class="passport-badge-title" id="passportDialogTitle">⚕ SPEC PASSPORT</div>
+        <div class="passport-certified" style="font-size:0.68rem; font-weight:800; color:var(--gold); letter-spacing:1px;">★ SPEC UNLOCKED ★</div>
+        <button type="button" id="passportCloseButton" aria-label="ปิด Spec Passport" onclick="closePassportModal()"
           style="background:transparent; border:none; color:var(--muted); font-size:1rem; cursor:pointer; line-height:1; padding:0 2px;">✕</button>
       </div>
 
       <!-- HERO PHOTO AREA: full width, click to upload -->
-      <div class="passport-photo-hero" onclick="document.getElementById('passportFileUploader').click()"
-        title="คลิกเพื่ออัปโหลดรูป">
+      <div class="passport-photo-hero" id="passportPhotoHero" role="button" tabindex="0" aria-label="อัปโหลดหรือจัดตำแหน่งรูปภาพ"
+        onclick="handlePassportPhotoFrameClick(event)"
+        onkeydown="handlePassportPhotoFrameKeydown(event)"
+        onpointerdown="startPassportPhotoDrag(event)"
+        onpointermove="movePassportPhotoDrag(event)"
+        onpointerup="endPassportPhotoDrag(event)"
+        onpointercancel="endPassportPhotoDrag(event)"
+        title="คลิกเพื่ออัปโหลดหรือจัดตำแหน่งรูป">
         <img id="passportImgView"
           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 260' width='380' height='260'><defs><radialGradient id='bg' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='rgba(216,27,96,0.06)'/><stop offset='100%25' stop-color='rgba(123,31,162,0.04)'/></radialGradient></defs><rect width='380' height='260' fill='url(%23bg)'/><g transform='translate(190,130)'><ellipse cx='0' cy='-55' rx='28' ry='28' fill='rgba(216,27,96,0.18)' stroke='rgba(216,27,96,0.5)' stroke-width='1.5'/><rect x='-18' y='-36' width='36' height='85' rx='18' fill='rgba(216,27,96,0.15)' stroke='rgba(216,27,96,0.45)' stroke-width='1.5'/><ellipse cx='-22' cy='58' rx='12' ry='8' fill='rgba(180,77,255,0.12)' stroke='rgba(180,77,255,0.3)' stroke-width='1'/><ellipse cx='22' cy='58' rx='12' ry='8' fill='rgba(180,77,255,0.12)' stroke='rgba(180,77,255,0.3)' stroke-width='1'/></g><text x='190' y='230' text-anchor='middle' font-family='Outfit,sans-serif' font-size='11' fill='rgba(216,27,96,0.45)' letter-spacing='2'>📷 TAP TO UPLOAD YOUR PHOTO</text></svg>"
           alt="รูปภาพ">
         <!-- HOVER OVERLAY -->
         <div class="photo-hover-overlay">
-          <span>📷</span>
-          <small>อัปโหลดรูปภาพ</small>
+          <span id="passportPhotoOverlayIcon">📷</span>
+          <small id="passportPhotoOverlayText">อัปโหลดรูปภาพ</small>
         </div>
       </div>
       <input type="file" id="passportFileUploader" accept="image/*" style="display:none;"
         onchange="loadPassportPhoto(this)">
+      <div class="passport-photo-editor" id="passportPhotoEditor" hidden>
+        <div class="passport-photo-editor-top">
+          <label class="passport-photo-editor-label" for="passportPhotoZoom">🔎 ซูม</label>
+          <input class="passport-photo-zoom" id="passportPhotoZoom" type="range" min="1" max="3" step="0.01" value="1"
+            oninput="setPassportPhotoZoom(this.value)">
+          <output class="passport-photo-zoom-value" id="passportPhotoZoomValue" for="passportPhotoZoom">100%</output>
+        </div>
+        <div class="passport-photo-editor-actions">
+          <button type="button" class="passport-photo-tool" onclick="chooseNewPassportPhoto()">เปลี่ยนรูป</button>
+          <button type="button" class="passport-photo-tool" onclick="resetPassportPhotoCrop()">รีเซ็ต</button>
+          <button type="button" class="passport-photo-tool done" onclick="finishPassportPhotoCrop()">จัดภาพเสร็จ</button>
+        </div>
+      </div>
       <input type="hidden" id="passName" value="">
 
       <!-- SPECS GRID: 2-column -->
@@ -2097,22 +2839,22 @@
         </div>
         <div class="passport-spec-cell">
           <div class="passport-spec-label">📏 ยาว × รอบวง</div>
-          <div class="passport-spec-value" id="passSize">16.1 × 15.4 cm</div>
+          <div class="passport-spec-value" id="passSize">16.2 × 15.4 ซม.</div>
         </div>
         <div class="passport-spec-cell">
-          <div class="passport-spec-label">🛡️ ถุงยางที่พอดี</div>
-          <div class="passport-spec-value" style="color:var(--gold);" id="passCondom">69 mm Fit</div>
+          <div class="passport-spec-label">🛡️ ไซส์ถุงยาง</div>
+          <div class="passport-spec-value" style="color:var(--gold);" id="passCondom">69 มม.</div>
         </div>
         <div class="passport-spec-cell">
-          <div class="passport-spec-label">🩸 เลือดสูบฉีด</div>
-          <div class="passport-spec-value" style="color:var(--cyan);" id="passBloodVol">+134.8 cc</div>
+          <div class="passport-spec-label">📐 ปริมาตรเพิ่มโดยประมาณ</div>
+          <div class="passport-spec-value" style="color:var(--cyan);" id="passBloodVol">+132.5 cc</div>
         </div>
         <div class="passport-spec-cell" style="border-bottom:none;">
-          <div class="passport-spec-label">🌐 เปอร์เซ็นต์ไทล์โลก</div>
+          <div class="passport-spec-label" id="passPercentileLabel">🌐 เปอร์เซ็นต์ไทล์โลก</div>
           <div class="passport-spec-value" style="color:var(--purple);" id="passPercentile">Top 0.5%</div>
         </div>
         <div class="passport-spec-cell" style="border-bottom:none;">
-          <div class="passport-spec-label">🩸 BFPI Index</div>
+          <div class="passport-spec-label">🩸 BFPI</div>
           <div class="passport-spec-value" style="color:var(--gold);" id="passBfpi">1.45</div>
         </div>
       </div>
@@ -2126,7 +2868,7 @@
       <div class="passport-footer">
         <div class="passport-watermark">
           <span>⚕ male calculator</span>
-          <span class="passport-watermark-url" id="passportSiteUrl">localhost:3100/male_calculator.html</span>
+          <span class="passport-watermark-url" id="passportSiteUrl">—</span>
         </div>
         <button class="btn-action" style="padding:5px 14px; font-size:0.78rem;" onclick="exportPassportCard()">
           <span class="export-btn-text">📲 แชร์ / บันทึก</span>
@@ -2140,7 +2882,7 @@
     <div class="ec-stripe"></div>
     <div class="ec-header">
       <div class="ec-badge">⚕ SPEC PASSPORT</div>
-      <div class="ec-certified">★ CERTIFIED ★</div>
+      <div class="ec-certified">★ SPEC UNLOCKED ★</div>
     </div>
 
     <!-- รูปภาพ — Hero -->
@@ -2151,18 +2893,18 @@
     <!-- ถุงยาง — เด่นบนสุด เข้าใจง่ายที่สุด -->
     <div class="ec-condom-hero">
       <div class="ec-condom-num" id="exportCondom">64</div>
-      <div class="ec-condom-label">mm · ไซส์ถุงยางอนามัยที่พอดี</div>
+      <div class="ec-condom-label">มม. · ไซส์ถุงยางโดยประมาณ</div>
     </div>
 
     <!-- ยาว | รอบวง -->
     <div class="ec-dims">
       <div class="ec-dim-cell">
-        <div class="ec-dim-num" id="exportLength" style="color:#d81b60;">11.0</div>
-        <div class="ec-dim-unit">cm · ความยาว</div>
+        <div class="ec-dim-num" id="exportLength" style="color:#d81b60;">11</div>
+        <div class="ec-dim-unit">ซม. · ความยาว</div>
       </div>
       <div class="ec-dim-cell">
         <div class="ec-dim-num" id="exportGirth" style="color:#7b1fa2;">14.5</div>
-        <div class="ec-dim-unit">cm · รอบวง</div>
+        <div class="ec-dim-unit">ซม. · รอบวง</div>
       </div>
     </div>
 
@@ -2175,28 +2917,67 @@
     <!-- Footer CTA + URL -->
     <div class="ec-footer">
       <div class="ec-cta">🍆 อยากรู้สเปกตัวเอง? → ลองคำนวณดูที่:</div>
-      <div class="ec-url" id="exportSiteUrl">localhost:3100/male_calculator.html</div>
+      <div class="ec-url" id="exportSiteUrl">—</div>
     </div>
   </div>
 
   <!-- MEDICAL REPORT MODAL OVERLAY -->
-  <div class="modal-overlay" id="medicalModalOverlay" onclick="if(event.target===this) closeMedicalModal()">
-    <div class="med-report-box" id="medReportCard">
+  <div class="modal-overlay" id="medicalModalOverlay" role="dialog" aria-modal="true" aria-labelledby="medicalDialogTitle" onclick="if(event.target===this) closeMedicalModal()">
+    <div class="med-report-box" id="medReportCard" tabindex="-1">
       <div class="med-header">
         <div>
-          <div class="med-title-main">🩺 MALE UROLOGICAL & ANATOMICAL EVALUATION REPORT</div>
-          <div class="med-subtitle">รายงานสรุปผลวิเคราะห์สรีระเพศชายและระบบหลอดเลือดสำหรับการปรึกษาแพทย์</div>
+          <div class="med-title-main" id="medicalDialogTitle">🔬 MALE ANATOMICAL DEEP ANALYSIS</div>
+          <div class="med-subtitle">รายงานวิเคราะห์สรีระและการเปลี่ยนแปลงจากค่าที่คุณกรอก · <span id="medDate">10/08/2026</span></div>
         </div>
-        <button onclick="closeMedicalModal()"
+        <button type="button" id="medicalCloseButton" aria-label="ปิด Deep Analysis" onclick="closeMedicalModal()"
           style="background:transparent; border:none; color:#64748b; font-size:1.4rem; cursor:pointer;">✕</button>
       </div>
 
-      <!-- MEDICAL REPORT BODY -->
-      <div style="font-size:0.82rem; margin-bottom:12px; color:#334155; display:flex; justify-content:space-between;">
-        <span><strong>ชื่อผู้รับการประเมิน:</strong> <span id="medPatientName">พี่โด Master Specs</span></span>
-        <span><strong>วันที่ประเมิน:</strong> <span id="medDate">10/08/2026</span></span>
-      </div>
+      <!-- MEDICAL REPORT BODY — compact summary -->
+      <section class="med-analysis-summary" aria-labelledby="medSummaryTitle">
+        <div class="med-summary-head">
+          <div>
+            <span class="med-summary-kicker" id="medSummaryTitle">สรุปผลวิเคราะห์ประเภทสรีระ</span>
+            <div class="med-summary-profile" id="medSummaryProfile">🥩 Pure Flesh Shower</div>
+          </div>
+          <div class="med-summary-bfpi">
+            <span>BFPI</span>
+            <strong id="medSummaryBfpi">1.45</strong>
+          </div>
+        </div>
 
+        <div class="med-summary-grid">
+          <div class="med-summary-item">
+            <span class="med-summary-label">การขยายเมื่อแข็ง</span>
+            <strong class="med-summary-value" id="medSummaryLengthGrowth">ยาว +19.3%</strong>
+            <span class="med-summary-detail" id="medSummaryGirthGrowth">รอบวง +21.3%</span>
+          </div>
+          <div class="med-summary-item">
+            <span class="med-summary-label">ขนาดตอนแข็ง</span>
+            <strong class="med-summary-value" id="medSummaryErectSize">16.2 × 15.4 ซม.</strong>
+            <span class="med-summary-detail">ความยาว × รอบวง</span>
+          </div>
+          <div class="med-summary-item">
+            <span class="med-summary-label">ไซส์ถุงยางใกล้เคียง</span>
+            <strong class="med-summary-value" id="medSummaryCondom">69 มม.</strong>
+            <span class="med-summary-detail" id="medSummaryCondomDetail">ค่าประมาณจากรอบวง</span>
+          </div>
+          <div class="med-summary-item">
+            <span class="med-summary-label">อันดับประชากร</span>
+            <strong class="med-summary-value" id="medSummaryLengthRank">ยาว Top 0.5%</strong>
+            <span class="med-summary-detail" id="medSummaryGirthRank">รอบวง Top 0.01% · โลก</span>
+          </div>
+        </div>
+
+        <p class="med-summary-note">สรุปจากค่าที่กรอกและแบบจำลองเดียวกับตารางด้านล่าง ไม่ใช่การวินิจฉัยทางการแพทย์</p>
+      </section>
+
+      <button class="med-details-toggle" id="medicalDetailsToggle" type="button" aria-expanded="false" aria-controls="medicalDetailsPanel" onclick="toggleMedicalDetails()">
+        <span id="medicalDetailsToggleText">ดูรายละเอียดและตารางทั้งหมด 3 หมวด</span>
+        <span class="med-details-toggle-icon" aria-hidden="true">⌄</span>
+      </button>
+
+      <div class="med-details-panel" id="medicalDetailsPanel" hidden>
       <div class="med-sec-header">📌 1. Anatomical Measurement Summary (ค่าสรีระทางกายวิภาค)</div>
       <table class="med-table">
         <thead>
@@ -2204,90 +2985,383 @@
             <th>รายการประเมิน (Parameter)</th>
             <th>สภาวะอ่อนตัว (Flaccid)</th>
             <th>สภาวะแข็งตัวเต็มที่ (Erect)</th>
-            <th>หน่วย (Unit)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>ความยาวสรีระ (Length)</td>
-            <td id="medLenFlaccid">135.0</td>
-            <td id="medLenErect">161.0</td>
-            <td>มิลลิเมตร (mm)</td>
+            <td id="medLenFlaccid">135 มม.</td>
+            <td id="medLenErect">162 มม.</td>
           </tr>
           <tr>
             <td>เส้นรอบวง (Girth)</td>
-            <td id="medGirthFlaccid">127.0</td>
-            <td id="medGirthErect">154.0</td>
-            <td>มิลลิเมตร (mm)</td>
+            <td id="medGirthFlaccid">127 มม.</td>
+            <td id="medGirthErect">154 มม.</td>
           </tr>
           <tr>
             <td>ความยาวชิดกระดูก (BPEL)</td>
-            <td colspan="2" id="medBPEL" style="text-align:center; font-weight:700;">176.0 mm (ชั้นไขมันโคน
-              T<sub>fat</sub> = 15 mm)</td>
-            <td>มิลลิเมตร (mm)</td>
+            <td colspan="2" id="medBPEL" style="text-align:center; font-weight:700;">177 มม. (ชั้นไขมันโคน
+              T<sub>fat</sub> = 15)</td>
           </tr>
           <tr>
             <td>เส้นผ่านศูนย์กลางลำควย (Mid-Shaft D<sub>m</sub>)</td>
-            <td colspan="2" id="medDiameter" style="text-align:center; font-weight:700;">49.0 mm</td>
-            <td>มิลลิเมตร (mm)</td>
+            <td colspan="2" id="medDiameter" style="text-align:center; font-weight:700;">49 มม.</td>
           </tr>
         </tbody>
       </table>
 
-      <div class="med-sec-header">📌 2. Penile Hemodynamics & Elasticity (ระบบหลอดเลือดและการขยายตัว)</div>
+      <div class="med-sec-header">📌 2. Expansion Model (แบบจำลองการขยายตัว)</div>
       <table class="med-table">
         <tbody>
           <tr>
-            <td style="width:45%;"><strong>ดัชนีควยเลือด vs ควยเนื้อ (BFPI Ratio):</strong></td>
+            <td style="width:45%;"><strong>ควยเลือด vs ควยเนื้อ (BFPI):</strong></td>
             <td id="medBFPI" style="font-weight:700; color:#d97706;">1.45 (🥩 Pure Flesh Shower)</td>
           </tr>
           <tr>
-            <td><strong>ปริมาตรเลือดสูบฉีดเข้าถ้ำ (Erect Blood Volume ΔV):</strong></td>
-            <td id="medBloodVol" style="font-weight:700; color:#00838f;">+134.8 cc (อัตราขยายตัว 1.79 เท่า)</td>
+            <td><strong>ปริมาตรเพิ่มโดยประมาณ (Estimated Volume Change ΔV):</strong></td>
+            <td id="medBloodVol" style="font-weight:700; color:#00838f;">+132.5 cc (แบบจำลองทรงกระบอก · 1.76×)</td>
           </tr>
           <tr>
             <td><strong>อัตราการยืดขยายตัว (Axial & Radial Ratio):</strong></td>
             <td id="medExpandRatios">ความยาว +19.3% | รอบวง +21.3%</td>
           </tr>
           <tr>
-            <td><strong>ขนาดถุงยางอนามัยที่พอดี (Nominal Width Fit):</strong></td>
-            <td id="medCondomSize" style="font-weight:700; color:#d97706;">69 mm Nominal Width</td>
+            <td><strong>ไซส์ถุงยางใกล้เคียง (Nominal Width Estimate):</strong></td>
+            <td id="medCondomSize" style="font-weight:700; color:#d97706;">69 มม. (ค่าประมาณ)</td>
           </tr>
         </tbody>
       </table>
 
-      <div class="med-sec-header">📌 3. Clinical Normative Scale (สถิติเปรียบเทียบประชากรการแพทย์)</div>
+      <div class="med-sec-header">📌 3. Population Comparison (สถิติเปรียบเทียบประชากร)</div>
       <table class="med-table">
         <tbody>
           <tr>
-            <td style="width:45%;"><strong>Length Percentile Rank (Veale et al. Norms):</strong></td>
+            <td style="width:45%;"><strong>Length Percentile Rank:</strong></td>
             <td id="medLenPercentile">Top 0.5% (ยาวกว่า 99.5% ของประชากร)</td>
           </tr>
           <tr>
-            <td><strong>Girth Percentile Rank (Veale et al. Norms):</strong></td>
+            <td><strong>Girth Percentile Rank:</strong></td>
             <td id="medGirthPercentile">Top 0.01% (ใหญ่กว่า 99.99% ของประชากร)</td>
           </tr>
         </tbody>
       </table>
-
-      <!-- FOOTER ACTIONS -->
-      <div
-        style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:2px solid #0284c7; padding-top:12px;">
-        <div style="font-size:0.7rem; color:#64748b;">OFFICIAL UROLOGICAL CLINICAL EVALUATION REPORT • VERIFIED
-          LOCALHOST</div>
-        <button class="btn-action-med" style="padding:8px 20px;" onclick="downloadMedicalReport()">💾
-          ดาวน์โหลดรายงานทางการแพทย์ (PNG/PDF)</button>
       </div>
 
+      <!-- FOOTER ACTIONS -->
+      <div class="med-footer-actions"
+        style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:2px solid #0284c7; padding-top:12px;">
+        <div style="font-size:0.7rem; color:#64748b;">PERSONAL SPEC ANALYSIS • MYSEX</div>
+        <button class="btn-action-med" style="padding:8px 20px;" onclick="downloadMedicalReport()">💾
+          ดาวน์โหลด Deep Analysis (PNG)</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="passport-save-overlay" id="passportSaveOverlay" role="dialog" aria-modal="true"
+    aria-labelledby="passportSaveTitle" onclick="if(event.target===this) closePassportSavePreview()">
+    <div class="passport-save-dialog">
+      <div class="passport-save-header">
+        <div class="passport-save-title" id="passportSaveTitle">บันทึก Spec Passport</div>
+        <button type="button" class="passport-save-close" id="passportSaveCloseButton"
+          aria-label="ปิดหน้าพรีวิว" onclick="closePassportSavePreview()">✕</button>
+      </div>
+      <div class="passport-save-body">
+        <img class="passport-save-image" id="passportSaveImage" alt="รูป Spec Passport พร้อมบันทึก">
+        <p class="passport-save-hint" id="passportSaveHint">
+          กดค้างที่รูป แล้วเลือก “บันทึกรูปภาพ” หรือ “เพิ่มไปยังรูปภาพ”
+        </p>
+        <div class="passport-save-actions">
+          <button type="button" class="passport-save-share" id="passportNativeShareButton"
+            onclick="sharePreparedPassport()">📲 เปิดเมนูแชร์ / บันทึก</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="toast" id="toast">บันทึกรูปภาพเรียบร้อยแล้ว!</div>
 
   <script>
-    let currentUnit = 'mm';
-    let currentRegion = 'thai';
+    let currentUnit = 'cm';
+    let currentRegion = 'global';
     let currentTheme = 'light';
+
+    const REGION_DATASETS = Object.freeze({
+      global: Object.freeze({
+        buttonId: 'regGlobal',
+        meanLengthMm: 131.2,
+        sdLengthMm: 16.6,
+        meanGirthMm: 116.6,
+        sdGirthMm: 11.0,
+        regionName: 'ชายทั่วโลก',
+        subText: '🌐 ข้อมูลรวมหลายประเทศ · Veale 2015',
+        sourceText: 'กำลังใช้ข้อมูลโลก · Veale 2015',
+        passportLabel: '🌐 เปอร์เซ็นต์ไทล์โลก',
+        exportIcon: '🌐'
+      }),
+      china: Object.freeze({
+        buttonId: 'regChina',
+        meanLengthMm: 124.2,
+        sdLengthMm: 16.3,
+        meanGirthMm: 107.5,
+        sdGirthMm: 13.4,
+        regionName: 'ชายจีน',
+        subText: '🇨🇳 ข้อมูลประชากรจีน · Wang 2025',
+        sourceText: 'กำลังใช้ข้อมูลจีน · Wang 2025',
+        passportLabel: '🇨🇳 เปอร์เซ็นต์ไทล์จีน',
+        exportIcon: '🇨🇳'
+      }),
+      thai: Object.freeze({
+        buttonId: 'regThai',
+        meanLengthMm: 125.0,
+        sdLengthMm: 14.0,
+        meanGirthMm: 112.0,
+        sdGirthMm: 10.0,
+        regionName: 'โมเดลไทย · BETA',
+        subText: '🇹🇭 ค่าประมาณภายใน · MYSEX BETA',
+        sourceText: 'กำลังใช้ค่าประมาณภายใน · MYSEX BETA',
+        passportLabel: '🇹🇭 เปอร์เซ็นต์ไทล์ไทย · BETA',
+        exportIcon: '🇹🇭'
+      })
+    });
+
+    const MEASUREMENT_IDS = ['l_flaccid', 'g_flaccid', 'l_erect', 'g_erect', 't_fat'];
+    const MEASUREMENT_RULES_MM = Object.freeze({
+      l_flaccid: { min: 1, max: 500, label: 'ความยาวตอนอ่อนตัว' },
+      g_flaccid: { min: 1, max: 500, label: 'รอบวงตอนอ่อนตัว' },
+      l_erect: { min: 1, max: 500, label: 'ความยาวตอนแข็งตัว' },
+      g_erect: { min: 1, max: 500, label: 'รอบวงตอนแข็งตัว' },
+      t_fat: { min: 0, max: 200, label: 'ชั้นไขมันบริเวณโคน' }
+    });
+    const VALIDATION_EPSILON_MM = 1e-9;
+    const DEFAULT_MEASUREMENTS_MM = Object.freeze({
+      l_flaccid: 135,
+      g_flaccid: 127,
+      l_erect: 162,
+      g_erect: 154,
+      t_fat: 15
+    });
+    const canonicalMeasurementsMm = { ...DEFAULT_MEASUREMENTS_MM };
+    const lastRenderedInputValues = Object.create(null);
+    let latestMetricsSnapshot = null;
+
+    function getScaleToMmForUnit(unit) {
+      return unit === 'cm' ? 10 : (unit === 'in' ? 25.4 : 1);
+    }
+
+    function getScaleToMm() {
+      return getScaleToMmForUnit(currentUnit);
+    }
+
+    function getUnitDecimals(unit = currentUnit) {
+      return unit === 'in' ? 4 : (unit === 'cm' ? 2 : 1);
+    }
+
+    function formatLimitFromMm(valueMm, edge = 'nearest') {
+      const decimals = getUnitDecimals();
+      const factor = 10 ** decimals;
+      const converted = valueMm / getScaleToMm();
+      const rounded = edge === 'min'
+        ? Math.ceil(converted * factor) / factor
+        : (edge === 'max' ? Math.floor(converted * factor) / factor : converted);
+      return rounded.toFixed(decimals);
+    }
+
+    function formatMetricNumber(value, maxDecimals = 1) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      const roundedValue = Number(numericValue.toFixed(maxDecimals));
+      return String(Object.is(roundedValue, -0) ? 0 : roundedValue);
+    }
+
+    function formatMm(value, maxDecimals = 1) {
+      return `${formatMetricNumber(value, maxDecimals)} มม.`;
+    }
+
+    function formatSignedMm(value, maxDecimals = 1) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      const sign = numericValue > 0 ? '+' : '';
+      return `${sign}${formatMetricNumber(numericValue, maxDecimals)} มม.`;
+    }
+
+    const CONDOM_STANDARD_SIZES_MM = Object.freeze([49, 52, 54, 56, 58, 60, 64, 69, 72]);
+
+    function getCondomSizeMatch(girthMm) {
+      const nominalWidthMm = Number(girthMm) / 2.3;
+      const minSizeMm = CONDOM_STANDARD_SIZES_MM[0];
+      const maxSizeMm = CONDOM_STANDARD_SIZES_MM[CONDOM_STANDARD_SIZES_MM.length - 1];
+      const withinRange = nominalWidthMm >= minSizeMm && nominalWidthMm <= maxSizeMm;
+      const closestSizeMm = withinRange
+        ? CONDOM_STANDARD_SIZES_MM.reduce((previous, current) =>
+          Math.abs(current - nominalWidthMm) < Math.abs(previous - nominalWidthMm) ? current : previous)
+        : null;
+
+      return {
+        nominalWidthMm,
+        minSizeMm,
+        maxSizeMm,
+        withinRange,
+        closestSizeMm,
+        displaySizeMm: withinRange ? closestSizeMm : nominalWidthMm
+      };
+    }
+
+    function getCanonicalMeasurements(ids = MEASUREMENT_IDS) {
+      return ids.reduce((values, id) => {
+        values[id] = canonicalMeasurementsMm[id];
+        return values;
+      }, {});
+    }
+
+    function syncChangedMeasurementsFromInputs(result, ids = MEASUREMENT_IDS) {
+      if (!result?.valid) return false;
+      ids.forEach((id) => {
+        const input = document.getElementById(id);
+        if (!input || !Object.prototype.hasOwnProperty.call(result.values, id)) return;
+        const raw = input.value.trim();
+        if (lastRenderedInputValues[id] !== raw) {
+          canonicalMeasurementsMm[id] = result.values[id];
+          lastRenderedInputValues[id] = raw;
+        }
+      });
+      return true;
+    }
+
+    function formatMeasurementForDisplay(id, unit = currentUnit) {
+      const valueMm = canonicalMeasurementsMm[id];
+      const rule = MEASUREMENT_RULES_MM[id];
+      const scaleToMm = getScaleToMmForUnit(unit);
+      const converted = valueMm / scaleToMm;
+      const roundedValue = Number(converted.toFixed(1));
+      const roundedMm = roundedValue * scaleToMm;
+      const roundedWouldBeInvalid = roundedMm < rule.min - VALIDATION_EPSILON_MM
+        || roundedMm > rule.max + VALIDATION_EPSILON_MM;
+      return roundedWouldBeInvalid
+        ? converted.toFixed(getUnitDecimals(unit))
+        : converted.toFixed(1);
+    }
+
+    function renderMeasurementInputsFromCanonical(ids = MEASUREMENT_IDS) {
+      ids.forEach((id) => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        input.value = formatMeasurementForDisplay(id);
+        lastRenderedInputValues[id] = input.value.trim();
+        if (input.hasAttribute('aria-invalid')) setFieldValidity(id);
+      });
+    }
+
+    function setFieldValidity(id, message = '') {
+      const input = document.getElementById(id);
+      const error = document.getElementById(`${id}_error`);
+      const invalid = Boolean(message);
+      if (input) {
+        input.classList.toggle('is-invalid', invalid);
+        input.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+      }
+      if (error) error.textContent = message;
+    }
+
+    function readAndValidateMeasurements({ ids = MEASUREMENT_IDS, showErrors = false } = {}) {
+      const scaleToMm = getScaleToMm();
+      const values = {};
+      let valid = true;
+      let firstInvalid = null;
+
+      ids.forEach((id) => {
+        const input = document.getElementById(id);
+        const rule = MEASUREMENT_RULES_MM[id];
+        const raw = input ? input.value.trim() : '';
+        const numeric = raw === '' ? NaN : Number(raw);
+        const valueMm = numeric * scaleToMm;
+        let message = '';
+
+        if (!Number.isFinite(numeric) || !Number.isFinite(valueMm)) {
+          message = `กรุณากรอก${rule.label}เป็นตัวเลข`;
+        } else if (valueMm < rule.min - VALIDATION_EPSILON_MM || valueMm > rule.max + VALIDATION_EPSILON_MM) {
+          message = `กรอกได้ตั้งแต่ ${formatLimitFromMm(rule.min, 'min')}–${formatLimitFromMm(rule.max, 'max')} ${currentUnit}`;
+        } else {
+          values[id] = valueMm;
+        }
+
+        if (message) {
+          valid = false;
+          if (!firstInvalid) firstInvalid = id;
+        }
+
+        if (showErrors || input?.getAttribute('aria-invalid') === 'true') {
+          setFieldValidity(id, message);
+        }
+      });
+
+      return { valid, firstInvalid, values };
+    }
+
+    function updateMeasurementWarning(values = null) {
+      const issues = [];
+      if (values?.l_erect < values?.l_flaccid) issues.push('ความยาวตอนแข็งตัวต่ำกว่าตอนอ่อนตัว');
+      if (values?.g_erect < values?.g_flaccid) issues.push('รอบวงตอนแข็งตัวต่ำกว่าตอนอ่อนตัว');
+      const message = issues.length
+        ? `⚠️ ${issues.join(' และ ')} กรุณาตรวจหน่วยและวิธีวัดอีกครั้ง ระบบยังคำนวณต่อได้`
+        : '';
+
+      ['measurementWarning', 'measurementWarningResult'].forEach((id) => {
+        const warning = document.getElementById(id);
+        if (!warning) return;
+        warning.textContent = message;
+        warning.hidden = !message;
+      });
+    }
+
+    function validateMeasurementField(id) {
+      const fieldResult = readAndValidateMeasurements({ ids: [id], showErrors: true });
+      if (fieldResult.valid) syncChangedMeasurementsFromInputs(fieldResult, [id]);
+      const allMeasurements = readAndValidateMeasurements();
+      updateMeasurementWarning(allMeasurements.valid ? getCanonicalMeasurements() : null);
+    }
+
+    function handleMeasurementInput(id) {
+      const fieldResult = readAndValidateMeasurements({ ids: [id] });
+      if (fieldResult.valid) syncChangedMeasurementsFromInputs(fieldResult, [id]);
+
+      const allMeasurements = readAndValidateMeasurements();
+      updateMeasurementWarning(allMeasurements.valid ? getCanonicalMeasurements() : null);
+      if (!allMeasurements.valid) return false;
+
+      calculate(false, false);
+      if (id === 'g_erect') updateCondomMatchView();
+      return true;
+    }
+
+    function focusInvalidMeasurement(id) {
+      if (!id) return;
+      const targetStep = id === 'l_flaccid' || id === 'g_flaccid' ? 1 : 2;
+      goToStep(targetStep, false);
+      document.getElementById(id)?.focus();
+    }
+
+    function validateMeasurementsForAction({ onInvalid = null } = {}) {
+      const result = readAndValidateMeasurements({ showErrors: true });
+      if (result.valid) syncChangedMeasurementsFromInputs(result);
+      updateMeasurementWarning(result.valid ? getCanonicalMeasurements() : null);
+      if (!result.valid) {
+        if (typeof onInvalid === 'function') onInvalid();
+        focusInvalidMeasurement(result.firstInvalid);
+      }
+      return result;
+    }
+
+    function updateValidationConstraints() {
+      MEASUREMENT_IDS.forEach((id) => {
+        const input = document.getElementById(id);
+        const rule = MEASUREMENT_RULES_MM[id];
+        if (!input) return;
+        input.min = String(rule.min / getScaleToMm());
+        input.max = String(rule.max / getScaleToMm());
+        input.step = 'any';
+      });
+    }
 
     // ============================================================
     // ANONYMOUS ANALYTICS WEBHOOK INTEGRATION (SESSION UPSERT)
@@ -2302,16 +3376,18 @@
       clearTimeout(_analyticsTimer);
       _analyticsTimer = setTimeout(() => {
         try {
-          let scaleToMm = currentUnit === 'cm' ? 10 : (currentUnit === 'in' ? 25.4 : 1);
-          let l_flaccid = (parseFloat(document.getElementById('l_flaccid')?.value) || 1) * scaleToMm;
-          let g_flaccid = (parseFloat(document.getElementById('g_flaccid')?.value) || 1) * scaleToMm;
-          let l_erect = (parseFloat(document.getElementById('l_erect')?.value) || 1) * scaleToMm;
-          let g_erect = (parseFloat(document.getElementById('g_erect')?.value) || 1) * scaleToMm;
-          let t_fat = (parseFloat(document.getElementById('t_fat')?.value) || 0) * scaleToMm;
+          const measurementResult = readAndValidateMeasurements();
+          if (!measurementResult.valid) {
+            updateMeasurementWarning(null);
+            return;
+          }
+          syncChangedMeasurementsFromInputs(measurementResult);
+          const { l_flaccid, g_flaccid, l_erect, g_erect, t_fat } = getCanonicalMeasurements();
+          updateMeasurementWarning({ l_flaccid, g_flaccid, l_erect, g_erect, t_fat });
 
-          let w_condom = g_erect / 2.3;
-          let standardSizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
-          let bestSize = standardSizes.reduce((prev, curr) => Math.abs(curr - w_condom) < Math.abs(prev - w_condom) ? curr : prev);
+          let condomMatch = getCondomSizeMatch(g_erect);
+          let w_condom = condomMatch.nominalWidthMm;
+          let bestSize = condomMatch.displaySizeMm;
 
           let r_erect = g_erect / (2 * Math.PI);
           let v_erect = Math.PI * r_erect * r_erect * l_erect / 1000;
@@ -2349,21 +3425,18 @@
           const now = Date.now();
           const signature = `male_${l_erect.toFixed(1)}_${g_erect.toFixed(1)}_${l_flaccid.toFixed(1)}_${g_flaccid.toFixed(1)}_${t_fat.toFixed(1)}_${Boolean(photoBase64)}_${photoBase64 ? photoBase64.length : 0}`;
           if (_lastSentSignature === signature && (now - _lastSentTime) < 60000) {
-            console.log('⏳ Duplicate signature detected within 60s, skipping sync.');
             return;
           }
           _lastSentSignature = signature;
           _lastSentTime = now;
 
-          fetch(ANALYTICS_URL, {
+          void fetch(ANALYTICS_URL, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
-          }).then(() => console.log('✅ Male Analytics logged to Google Sheet')).catch(e => console.warn('Analytics log notice:', e));
-        } catch(e) {
-          console.warn('sendAnonymousAnalytics error:', e);
-        }
+          }).catch(() => {});
+        } catch {}
       }, force ? (delay || 100) : 3500);
     }
 
@@ -2392,62 +3465,65 @@
       document.documentElement.setAttribute('data-theme', currentTheme);
       document.getElementById('themeIcon').innerText = currentTheme === 'light' ? '☀️' : '🌙';
       document.getElementById('themeText').innerText = currentTheme === 'light' ? 'ธีมสว่าง' : 'ธีมมืด';
-      calculate();
+      calculate(false, false);
     }
 
     function setUnit(unit) {
-      if (unit === currentUnit) return;
-      let oldUnit = currentUnit;
+      if (!['cm', 'in'].includes(unit)) return false;
+      if (unit === currentUnit) return true;
+
+      const currentValidation = readAndValidateMeasurements({ showErrors: true });
+      if (!currentValidation.valid) {
+        focusInvalidMeasurement(currentValidation.firstInvalid);
+        return false;
+      }
+      syncChangedMeasurementsFromInputs(currentValidation);
+
       currentUnit = unit;
-
       document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(`u_${unit}`).classList.add('active');
-
-      let conversion = 1;
-      if (oldUnit === 'mm' && unit === 'cm') conversion = 0.1;
-      else if (oldUnit === 'mm' && unit === 'in') conversion = 1 / 25.4;
-      else if (oldUnit === 'cm' && unit === 'mm') conversion = 10;
-      else if (oldUnit === 'cm' && unit === 'in') conversion = 1 / 2.54;
-      else if (oldUnit === 'in' && unit === 'mm') conversion = 25.4;
-      else if (oldUnit === 'in' && unit === 'cm') conversion = 2.54;
-
-      ['l_flaccid', 'g_flaccid', 'l_erect', 'g_erect', 't_fat'].forEach(id => {
-        let val = parseFloat(document.getElementById(id).value) || 0;
-        document.getElementById(id).value = (val * conversion).toFixed(1);
-      });
+      document.getElementById(`u_${unit}`)?.classList.add('active');
+      renderMeasurementInputsFromCanonical();
 
       ['unit_l1', 'unit_g1', 'unit_l2', 'unit_g2', 'unit_tfat'].forEach(id => {
         document.getElementById(id).innerText = unit;
       });
 
-      calculate();
+      updateValidationConstraints();
+      calculate(false, false);
       updateCondomMatchView();
       triggerPulseAnimation();
+      return true;
     }
 
     function switchRegion(region) {
+      const dataset = REGION_DATASETS[region];
+      if (!dataset) return false;
+
       currentRegion = region;
-      document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
-      let btnId = region === 'thai' ? 'regThai' : (region === 'asia' ? 'regAsia' : 'regGlobal');
-      let btnElem = document.getElementById(btnId);
-      if (btnElem) btnElem.classList.add('active');
+      document.querySelectorAll('.region-btn').forEach(button => button.classList.remove('active'));
+      document.getElementById(dataset.buttonId)?.classList.add('active');
 
-      let subText = document.getElementById('regionSubText');
-      if (region === 'thai') subText.innerText = '🇹🇭 เปรียบเทียบกับเกณฑ์ประชากรชายไทย';
-      else if (region === 'asia') subText.innerText = '🌏 เปรียบเทียบกับเกณฑ์ประชากรชายเอเชีย';
-      else subText.innerText = '🌐 เปรียบเทียบกับเกณฑ์ประชากรชายทั่วโลก';
+      const subText = document.getElementById('regionSubText');
+      const sourceText = document.getElementById('regionSourceText');
+      if (subText) subText.innerText = dataset.subText;
+      if (sourceText) sourceText.innerText = dataset.sourceText;
 
-      calculate();
+      calculate(false, false);
       triggerPulseAnimation();
+      return true;
     }
 
     function toggleCondomTooltip(e) {
       if (e) e.stopPropagation();
-      document.getElementById('condomTooltip').classList.toggle('show');
+      const tooltip = document.getElementById('condomTooltip');
+      const trigger = document.getElementById('cardCondom');
+      const isOpen = tooltip.classList.toggle('show');
+      trigger?.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     }
 
     document.addEventListener('click', () => {
       document.getElementById('condomTooltip').classList.remove('show');
+      document.getElementById('cardCondom')?.setAttribute('aria-expanded', 'false');
     });
 
 
@@ -2493,20 +3569,35 @@
     }
 
     function syncCondomSlider(val) {
-      let gMm = parseFloat(val) || 154;
-      let scale = currentUnit === 'cm' ? 0.1 : (currentUnit === 'in' ? 1 / 25.4 : 1);
-      const gInput = document.getElementById('g_erect');
-      if (gInput) gInput.value = (gMm * scale).toFixed(1);
-
-      calculate();
+      const gMm = Number(val);
+      if (!Number.isFinite(gMm)) return false;
+      canonicalMeasurementsMm.g_erect = gMm;
+      renderMeasurementInputsFromCanonical(['g_erect']);
+      calculate(false, false);
       updateCondomMatchView();
+      return true;
     }
 
     function updateCondomMatchView() {
-      let scaleToMm = currentUnit === 'cm' ? 10 : (currentUnit === 'in' ? 25.4 : 1);
-      let g_erect = (parseFloat(document.getElementById('g_erect').value) || 154) * scaleToMm;
-      let scale = currentUnit === 'cm' ? 0.1 : (currentUnit === 'in' ? 1 / 25.4 : 1);
-      let displayVal = (g_erect * scale).toFixed(1);
+      const girthResult = readAndValidateMeasurements({ ids: ['g_erect'] });
+      if (!girthResult.valid) {
+        const qcGirthDisplay = document.getElementById('qcGirthDisplay');
+        const qcResultSize = document.getElementById('qcResultSize');
+        const qcResultFormula = document.getElementById('qcResultFormula');
+        const qcResultFit = document.getElementById('qcResultFit');
+        const qcBrandList = document.getElementById('qcBrandList');
+        if (qcGirthDisplay) qcGirthDisplay.innerText = `— ${currentUnit}`;
+        if (qcResultSize) qcResultSize.innerText = '—';
+        if (qcResultFormula) qcResultFormula.innerText = 'กรุณากรอกรอบวงตอนแข็งตัวให้ถูกต้อง';
+        if (qcResultFit) qcResultFit.innerText = 'ยังไม่สามารถคำนวณได้';
+        if (qcBrandList) qcBrandList.innerHTML = '';
+        syncCondomUnitButtons();
+        return false;
+      }
+
+      syncChangedMeasurementsFromInputs(girthResult, ['g_erect']);
+      let g_erect = canonicalMeasurementsMm.g_erect;
+      let displayVal = formatMeasurementForDisplay('g_erect');
 
       const qcGirthDisplay = document.getElementById('qcGirthDisplay');
       if (qcGirthDisplay) qcGirthDisplay.innerText = `${displayVal} ${currentUnit}`;
@@ -2516,34 +3607,44 @@
         qcGirthSlider.value = g_erect;
       }
 
-      let w_condom = g_erect / 2.3;
-      let standardSizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
-      let bestSize = standardSizes.reduce((prev, curr) => Math.abs(curr - w_condom) < Math.abs(prev - w_condom) ? curr : prev);
+      let condomMatch = getCondomSizeMatch(g_erect);
+      let w_condom = condomMatch.nominalWidthMm;
+      let bestSize = condomMatch.displaySizeMm;
 
       const qcResultSize = document.getElementById('qcResultSize');
-      if (qcResultSize) qcResultSize.innerText = `${bestSize} mm`;
+      if (qcResultSize) qcResultSize.innerText = formatMm(bestSize);
 
       const qcResultFormula = document.getElementById('qcResultFormula');
       if (qcResultFormula) {
-        qcResultFormula.innerText = `สูตรมาตรฐาน: รอบวง ${g_erect.toFixed(1)} มม. ÷ 2.3 = ${w_condom.toFixed(1)} มม.`;
+        qcResultFormula.innerText = `ค่าประมาณ: รอบวง ${formatMm(g_erect)} ÷ 2.3 = ${formatMm(w_condom)}`;
       }
 
       const qcResultFit = document.getElementById('qcResultFit');
       if (qcResultFit) {
-        let diff = Math.abs(bestSize - w_condom);
-        if (diff <= 1.0) qcResultFit.innerText = '✨ สวมใส่กระชับ พอดีเป๊ะ (Perfect Fit)';
-        else if (w_condom > bestSize) qcResultFit.innerText = '🔒 แน่นกระชับ มั่นใจ ไม่เลื่อนหลุด';
-        else qcResultFit.innerText = 'สวมใส่สบาย ไม่อึดอัด';
+        qcResultFit.innerText = condomMatch.withinRange
+          ? 'ไซส์ใกล้เคียงจากรอบวง'
+          : `อยู่นอกช่วง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ตรวจตารางผู้ผลิต`;
       }
 
+      const qcBrandLabel = document.getElementById('qcBrandLabel');
       const qcBrandList = document.getElementById('qcBrandList');
       if (qcBrandList) {
-        let brands = CONDOM_BRANDS_DB[bestSize] || [`ไซส์มาตรฐาน ${bestSize} mm`];
-        qcBrandList.innerHTML = brands.map(b => `<span class="brand-chip">${b}</span>`).join('');
+        if (condomMatch.withinRange) {
+          const brands = CONDOM_BRANDS_DB[bestSize] || [`ไซส์ ${formatMm(bestSize)}`];
+          if (qcBrandLabel) qcBrandLabel.innerText = '🏷️ ตัวอย่างแบรนด์และรุ่นในไซส์นี้:';
+          qcBrandList.innerHTML = brands.map(b => `<span class="brand-chip">${b}</span>`).join('');
+        } else {
+          if (qcBrandLabel) qcBrandLabel.innerText = 'ค่านี้อยู่นอกช่วงฐานข้อมูลแบรนด์';
+          qcBrandList.innerHTML = '<span class="brand-chip">ตรวจตารางไซส์ของผู้ผลิต</span>';
+        }
       }
 
-      // Sync unit buttons in condom view
-      ['qc_u_mm', 'qc_u_cm', 'qc_u_in'].forEach(id => {
+      syncCondomUnitButtons();
+      return true;
+    }
+
+    function syncCondomUnitButtons() {
+      ['qc_u_cm', 'qc_u_in'].forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
           if (id === `qc_u_${currentUnit}`) btn.classList.add('active');
@@ -2556,7 +3657,10 @@
     let _currentWizardStep = 1;
 
     function selectTab(tabKey) {
-      document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.wizard-step').forEach(s => {
+        s.classList.remove('active');
+        s.setAttribute('aria-selected', 'false');
+      });
       const step1View = document.getElementById('step1View');
       const step2View = document.getElementById('step2View');
       const step3View = document.getElementById('step3View');
@@ -2564,7 +3668,10 @@
 
       if (tabKey === 'condom') {
         const condomTab = document.getElementById('stepTabCondom');
-        if (condomTab) condomTab.classList.add('active');
+        if (condomTab) {
+          condomTab.classList.add('active');
+          condomTab.setAttribute('aria-selected', 'true');
+        }
         if (step1View) step1View.style.display = 'none';
         if (step2View) step2View.style.display = 'none';
         if (step3View) step3View.style.display = 'none';
@@ -2578,17 +3685,37 @@
     }
 
     function goToStep(stepNum, triggerCalculate = false) {
+      if (stepNum === 2 && _currentWizardStep === 1) {
+        const stepOneValidation = readAndValidateMeasurements({
+          ids: ['l_flaccid', 'g_flaccid'],
+          showErrors: true
+        });
+        if (!stepOneValidation.valid) {
+          focusInvalidMeasurement(stepOneValidation.firstInvalid);
+          return false;
+        }
+      }
+
+      if (stepNum === 3) {
+        const validation = validateMeasurementsForAction();
+        if (!validation.valid) return false;
+      }
+
       _currentWizardStep = stepNum;
 
       for (let i = 1; i <= 3; i++) {
         const tab = document.getElementById('stepTab' + i);
         if (tab) {
-          if (i === stepNum) tab.classList.add('active');
-          else tab.classList.remove('active');
+          const isActive = i === stepNum;
+          tab.classList.toggle('active', isActive);
+          tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
         }
       }
       const condomTab = document.getElementById('stepTabCondom');
-      if (condomTab) condomTab.classList.remove('active');
+      if (condomTab) {
+        condomTab.classList.remove('active');
+        condomTab.setAttribute('aria-selected', 'false');
+      }
 
       const step1View = document.getElementById('step1View');
       const step2View = document.getElementById('step2View');
@@ -2614,7 +3741,7 @@
       }
 
       if (triggerCalculate) {
-        calculate();
+        if (!calculate(true, false)) return false;
         triggerPulseAnimation();
         if (typeof sendAnonymousAnalytics === 'function') {
           sendAnonymousAnalytics(true, 500);
@@ -2622,32 +3749,54 @@
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      return true;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      renderMeasurementInputsFromCanonical();
+      updateValidationConstraints();
       goToStep(1);
       updateCondomMatchView();
     });
 
 
-    function calculate() {
-      let scaleToMm = currentUnit === 'cm' ? 10 : (currentUnit === 'in' ? 25.4 : 1);
-      let l_flaccid = (parseFloat(document.getElementById('l_flaccid').value) || 1) * scaleToMm;
-      let g_flaccid = (parseFloat(document.getElementById('g_flaccid').value) || 1) * scaleToMm;
-      let l_erect = (parseFloat(document.getElementById('l_erect').value) || 1) * scaleToMm;
-      let g_erect = (parseFloat(document.getElementById('g_erect').value) || 1) * scaleToMm;
-      let t_fat = (parseFloat(document.getElementById('t_fat').value) || 0) * scaleToMm;
+    function updateResultInsights({ pctL, pctG, growthType, dL, dG, bestSize, condomMatch, regionName }) {
+      const strongest = document.getElementById('insightStrongest');
+      const growth = document.getElementById('insightGrowth');
+      const practical = document.getElementById('insightPractical');
+      if (!strongest || !growth || !practical) return;
+      const percentileGap = Math.abs(pctL - pctG);
+      if (percentileGap < 5) strongest.textContent = `ความยาวและรอบวงเด่นใกล้กันเมื่อเทียบกับ${regionName} จึงให้ภาพรวมค่อนข้างสมดุล`;
+      else if (pctG > pctL) strongest.textContent = `รอบวงเป็นมิติที่โดดเด่นกว่าความยาวเมื่อเทียบกับ${regionName}`;
+      else strongest.textContent = `ความยาวเป็นมิติที่โดดเด่นกว่ารอบวงเมื่อเทียบกับ${regionName}`;
+      const labels = { shower:'Shower · ขนาดก่อนและหลังแข็งเปลี่ยนไม่มาก', hybrid:'Hybrid · การเปลี่ยนแปลงอยู่กึ่งกลาง', grower:'Grower · การเปลี่ยนแปลงหลังแข็งเห็นได้ชัด' };
+      growth.textContent = `${labels[growthType]} (ยาว ${Number(dL)>=0?'+':''}${dL}% · รอบวง ${Number(dG)>=0?'+':''}${dG}%)`;
+      practical.textContent = condomMatch.withinRange ? `ไซส์ใกล้เคียง ${formatMm(bestSize)} · ควรเทียบตารางของผู้ผลิตก่อนเลือกจริง` : `ค่าประมาณ ${formatMm(bestSize)} อยู่นอกช่วงอ้างอิง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ควรตรวจตารางผู้ผลิต`;
+    }
+    function calculate(showErrors = false, syncFromInputs = true) {
+      if (syncFromInputs) {
+        const measurementResult = readAndValidateMeasurements({ showErrors });
+        if (!measurementResult.valid) {
+          updateMeasurementWarning(null);
+          return false;
+        }
+        syncChangedMeasurementsFromInputs(measurementResult);
+      }
+
+      const measurements = getCanonicalMeasurements();
+      updateMeasurementWarning(measurements);
+      const { l_flaccid, g_flaccid, l_erect, g_erect, t_fat } = measurements;
 
       // 1. CONDOM FIT & DIAMETER
-      let w_condom = g_erect / 2.3;
-      let standardSizes = [49, 52, 54, 56, 58, 60, 64, 69, 72];
-      let bestSize = standardSizes.reduce((prev, curr) => Math.abs(curr - w_condom) < Math.abs(prev - w_condom) ? curr : prev);
+      let condomMatch = getCondomSizeMatch(g_erect);
+      let w_condom = condomMatch.nominalWidthMm;
+      let bestSize = condomMatch.displaySizeMm;
       let diameter = g_erect / Math.PI;
 
-      document.getElementById('resCondom').innerText = `${bestSize} มม.`;
-      document.getElementById('resCondomSub').innerText = `สูตร: ${w_condom.toFixed(1)} มม. (Fit พอดี)`;
-      document.getElementById('condomCalcStep').innerText = `${g_erect.toFixed(1)} มม. ÷ 2.3 = ${w_condom.toFixed(1)} มม.`;
-      document.getElementById('resDiameter').innerText = `${diameter.toFixed(1)} mm`;
+      document.getElementById('resCondom').innerText = formatMm(bestSize);
+      document.getElementById('resCondomSub').innerText = condomMatch.withinRange ? 'ใกล้เคียงจากรอบวง' : `นอกช่วง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ตรวจตารางผู้ผลิต`;
+      document.getElementById('condomCalcStep').innerText = `${formatMm(g_erect)} ÷ 2.3 = ${formatMm(w_condom)}`;
+      document.getElementById('resDiameter').innerText = formatMm(diameter);
 
       // 2. VOLUME & HEMODYNAMICS
       let r_erect = g_erect / (2 * Math.PI);
@@ -2723,25 +3872,18 @@
       let fatRatio = ((t_fat / l_bpel) * 100).toFixed(1);
 
       document.getElementById('resDeltaL').innerText = (dL >= 0 ? `+${dL}%` : `${dL}%`);
-      document.getElementById('resSubDeltaL').innerText = `อ่อน ${l_flaccid.toFixed(0)} → แข็ง ${l_erect.toFixed(0)} mm`;
+      document.getElementById('resSubDeltaL').innerText = `อ่อน ${formatMetricNumber(l_flaccid)} → แข็ง ${formatMm(l_erect)}`;
       document.getElementById('resDeltaG').innerText = (dG >= 0 ? `+${dG}%` : `${dG}%`);
-      document.getElementById('resSubDeltaG').innerText = `อ่อน ${g_flaccid.toFixed(0)} → แข็ง ${g_erect.toFixed(0)} mm`;
-      document.getElementById('resSubBloodVol').innerText = `ขยายตัว ${volRatio.toFixed(2)}x`;
+      document.getElementById('resSubDeltaG').innerText = `อ่อน ${formatMetricNumber(g_flaccid)} → แข็ง ${formatMm(g_erect)}`;
+      document.getElementById('resSubBloodVol').innerText = 'ผลต่างระหว่างปริมาตรแข็งและอ่อน';
 
       // 5. REGIONAL PERCENTILES (BOX 4, 5, 6 — DYNAMICALLY DEPENDENT ON REGION TOGGLE)
-      let meanLen = 131.2, sdLen = 16.6;
-      let meanGirth = 116.6, sdGirth = 11.0;
-      let regionName = 'ชายทั่วโลก';
-
-      if (currentRegion === 'thai') {
-        meanLen = 125.0; sdLen = 14.0;
-        meanGirth = 112.0; sdGirth = 10.0;
-        regionName = 'ชายไทย';
-      } else if (currentRegion === 'asia') {
-        meanLen = 128.0; sdLen = 15.0;
-        meanGirth = 114.0; sdGirth = 10.5;
-        regionName = 'ชายเอเชีย';
-      }
+      const regionDataset = REGION_DATASETS[currentRegion] || REGION_DATASETS.global;
+      const meanLen = regionDataset.meanLengthMm;
+      const sdLen = regionDataset.sdLengthMm;
+      const meanGirth = regionDataset.meanGirthMm;
+      const sdGirth = regionDataset.sdGirthMm;
+      const regionName = regionDataset.regionName;
 
       let zL = (l_erect - meanLen) / sdLen;
       let zG = (g_erect - meanGirth) / sdGirth;
@@ -2752,7 +3894,7 @@
       let topG = (100 - pctG);
 
       let diffGirth = g_erect - meanGirth;
-      let diffGirthText = diffGirth >= 0 ? `+${diffGirth.toFixed(1)} มม.` : `${diffGirth.toFixed(1)} มม.`;
+      let diffGirthText = formatSignedMm(diffGirth);
 
       document.getElementById('resLenRank').innerText = topL < 0.1 ? 'Top 0.01%' : `Top ${topL.toFixed(1)}%`;
       document.getElementById('resSubLenRank').innerText = `ยาวกว่า ${pctL.toFixed(1)}% (เทียบ${regionName})`;
@@ -2761,40 +3903,55 @@
       document.getElementById('resSubGirthRank').innerText = `ใหญ่กว่า ${pctG.toFixed(2)}% (${diffGirthText})`;
 
       document.getElementById('resFatPercent').innerText = `${fatRatio}%`;
-      document.getElementById('resSubBPEL').innerText = `ชิดกระดูก: ${l_bpel.toFixed(0)} mm`;
+      document.getElementById('resSubBPEL').innerText = `ชิดกระดูก: ${formatMm(l_bpel)}`;
+
+      updateResultInsights({ pctL, pctG, growthType, dL, dG, bestSize, condomMatch, regionName });
 
       document.getElementById('resVolume').innerText = `${v_erect.toFixed(1)} cc`;
       document.getElementById('resBloodVol').innerText = (bloodVol >= 0 ? `+${bloodVol.toFixed(1)} cc` : `${bloodVol.toFixed(1)} cc`);
 
-      document.getElementById('passSize').innerText = `${(l_erect / 10).toFixed(1)} x ${(g_erect / 10).toFixed(1)} cm`;
+      document.getElementById('passSize').innerText = `${formatMetricNumber(l_erect / 10)} × ${formatMetricNumber(g_erect / 10)} ซม.`;
       document.getElementById('passBloodVol').innerText = (bloodVol >= 0 ? `+${bloodVol.toFixed(1)} cc` : `${bloodVol.toFixed(1)} cc`);
-      document.getElementById('passCondom').innerText = `${bestSize} มม. Fit`;
+      document.getElementById('passCondom').innerText = condomMatch.withinRange ? formatMm(bestSize) : `${formatMm(bestSize)} · นอกช่วง`;
+      document.getElementById('passPercentileLabel').innerText = regionDataset.passportLabel;
       document.getElementById('passPercentile').innerText = topL < 0.1 ? 'Top 0.01%' : `Top ${topL.toFixed(1)}%`;
 
       // SYNC TO EXPORT CARD
-      document.getElementById('exportLength').innerText = (l_erect / 10).toFixed(1);
-      document.getElementById('exportGirth').innerText = (g_erect / 10).toFixed(1);
-      document.getElementById('exportCondom').innerText = `${bestSize}`;
-      document.getElementById('exportPercentile').innerText = topL < 0.1 ? 'Top 0.01% 🌎' : `Top ${topL.toFixed(1)}% 🌎`;
+      document.getElementById('exportLength').innerText = formatMetricNumber(l_erect / 10);
+      document.getElementById('exportGirth').innerText = formatMetricNumber(g_erect / 10);
+      document.getElementById('exportCondom').innerText = formatMetricNumber(bestSize);
+      document.getElementById('exportPercentile').innerText = `${topL < 0.1 ? 'Top 0.01%' : `Top ${topL.toFixed(1)}%`} ${regionDataset.exportIcon}`;
 
       // UPDATE MEDICAL REPORT DATA
-      document.getElementById('medPatientName').innerText = document.getElementById('passName').value || 'พี่โด Master Specs';
       let now = new Date();
       document.getElementById('medDate').innerText = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
-      document.getElementById('medLenFlaccid').innerText = l_flaccid.toFixed(1);
-      document.getElementById('medLenErect').innerText = l_erect.toFixed(1);
-      document.getElementById('medGirthFlaccid').innerText = g_flaccid.toFixed(1);
-      document.getElementById('medGirthErect').innerText = g_erect.toFixed(1);
-      document.getElementById('medBPEL').innerHTML = `${l_bpel.toFixed(1)} mm (ชั้นไขมันโคน T<sub>fat</sub> = ${t_fat.toFixed(1)} mm)`;
-      document.getElementById('medDiameter').innerText = `${diameter.toFixed(1)} mm`;
+      document.getElementById('medLenFlaccid').innerText = formatMm(l_flaccid);
+      document.getElementById('medLenErect').innerText = formatMm(l_erect);
+      document.getElementById('medGirthFlaccid').innerText = formatMm(g_flaccid);
+      document.getElementById('medGirthErect').innerText = formatMm(g_erect);
+      document.getElementById('medBPEL').innerHTML = `${formatMm(l_bpel)} (ชั้นไขมันโคน T<sub>fat</sub> = ${formatMetricNumber(t_fat)})`;
+      document.getElementById('medDiameter').innerText = formatMm(diameter);
 
-      document.getElementById('medBFPI').innerText = `${bfpi.toFixed(2)} (${bfpi >= 2.5 ? '🩸 Pure Blood Grower' : (bfpi >= 1.8 ? '🟣 Hybrid' : '🥩 Pure Flesh Shower')})`;
-      document.getElementById('medBloodVol').innerText = `${bloodVol >= 0 ? '+' : ''}${bloodVol.toFixed(1)} cc (ขยายตัว ${volRatio.toFixed(2)} เท่า)`;
+      const medGrowthProfile = bfpi >= 2.5 ? '🩸 Pure Blood Grower' : (bfpi >= 1.8 ? '🟣 Hybrid' : '🥩 Pure Flesh Shower');
+      document.getElementById('medBFPI').innerText = `${bfpi.toFixed(2)} (${medGrowthProfile})`;
+      document.getElementById('medBloodVol').innerText = `${bloodVol >= 0 ? '+' : ''}${bloodVol.toFixed(1)} cc (แบบจำลองทรงกระบอก · ${volRatio.toFixed(2)}×)`;
       document.getElementById('medExpandRatios').innerText = `ความยาว ${dL >= 0 ? '+' : ''}${dL}% | รอบวง ${dG >= 0 ? '+' : ''}${dG}%`;
-      document.getElementById('medCondomSize').innerText = `${bestSize} mm Nominal Width`;
+      document.getElementById('medCondomSize').innerText = condomMatch.withinRange ? `${formatMm(bestSize)} (ค่าประมาณ)` : `${formatMm(bestSize)} (นอกช่วง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ตรวจตารางผู้ผลิต)`;
 
       document.getElementById('medLenPercentile').innerText = `Top ${(100 - pctL).toFixed(2)}% (ยาวกว่า ${pctL.toFixed(1)}% ของ${regionName})`;
       document.getElementById('medGirthPercentile').innerText = `Top ${(100 - pctG).toFixed(2)}% (ใหญ่กว่า ${pctG.toFixed(2)}% ของ${regionName})`;
+
+      const medTopLength = topL < 0.1 ? 'Top 0.01%' : `Top ${topL.toFixed(1)}%`;
+      const medTopGirth = topG < 0.1 ? 'Top 0.01%' : `Top ${topG.toFixed(1)}%`;
+      document.getElementById('medSummaryProfile').innerText = medGrowthProfile;
+      document.getElementById('medSummaryBfpi').innerText = bfpi.toFixed(2);
+      document.getElementById('medSummaryLengthGrowth').innerText = `ยาว ${dL >= 0 ? '+' : ''}${dL}%`;
+      document.getElementById('medSummaryGirthGrowth').innerText = `รอบวง ${dG >= 0 ? '+' : ''}${dG}%`;
+      document.getElementById('medSummaryErectSize').innerText = `${formatMetricNumber(l_erect / 10)} × ${formatMetricNumber(g_erect / 10)} ซม.`;
+      document.getElementById('medSummaryCondom').innerText = condomMatch.withinRange ? formatMm(bestSize) : `${formatMm(bestSize)} · นอกช่วง`;
+      document.getElementById('medSummaryCondomDetail').innerText = condomMatch.withinRange ? 'ค่าประมาณจากรอบวง' : 'ตรวจตารางขนาดของผู้ผลิต';
+      document.getElementById('medSummaryLengthRank').innerText = `ยาว ${medTopLength}`;
+      document.getElementById('medSummaryGirthRank').innerText = `รอบวง ${medTopGirth} · ${regionName}`;
 
       // DYNAMIC ANATOMICAL POSITION MATCHER (4-TIER EVALUATOR)
       let bestPos = '', cautionPos = '';
@@ -2802,26 +3959,26 @@
       if (dL >= 100) {
         // High Expansion Grower (ควยเลือด)
         bestPos = `<li>🩸 <strong>Grower Doggy Style:</strong> รองรับสภาวะพองตัวยืดขยายพุ่งสูงสุด</li>
-                   <li>🛏️ <strong>Elevated Missionary:</strong> หนุนหมอนยกสะโพก ส่งเสริมการยืดตัวเต็มพิกัด</li>
-                   <li>🛋️ <strong>Spooning:</strong> ผ่อนคลายกล้ามเนื้อ ให้เลือดสูบฉีดได้เต็มประสิทธิภาพ</li>`;
+                   <li>🛏️ <strong>Elevated Missionary:</strong> การหนุนสะโพกช่วยเปลี่ยนมุมและคุมระยะ</li>
+                   <li>🛋️ <strong>Spooning:</strong> จังหวะช้าและมุมตื้นช่วยคุมระยะ</li>`;
         cautionPos = `<li>🤠 <strong>Fast Cowboy:</strong> หากสลับจังหวะเร็วเกินไปขณะพองตัวอาจพับโคน</li>
                       <li>🤸 <strong>Standing Acrobatics:</strong> เสี่ยงหลุดจังหวะช่วงก่อนขยายเต็มที่</li>`;
       } else if (l_erect >= 155 || g_erect >= 140) {
         // Extra Large / Thick Girth (สายอวบยาวพิเศษ / พี่โด Master)
         bestPos = `<li>🛋️ <strong>Spooning (ตะแคงซ้อน):</strong> กระชับแนบแน่น คุมลึกดีเยี่ยมไม่ชนจุก</li>
-                   <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> แน่นเต็มสัมผัส บดถูจุดคลิตอริสฟินสูงสุด</li>
+                   <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> เพิ่มการแนบชิดและการเสียดสี</li>
                    <li>📐 <strong>CAT Technique:</strong> เสียดสีเต็มพื้นที่แนบชิด โดยไม่ต้องแทงลึก</li>`;
-        cautionPos = `<li>🐕 <strong>Deep Doggy:</strong> สอดใส่ลึกสุดตัว เสี่ยงชนจุกปากมดลูกสำหรับควยยาว 16+ ซม.</li>
+        cautionPos = `<li>🐕 <strong>Deep Doggy:</strong> อาจลึกหรือกระแทกเกินสบาย ควรเริ่มช้า ๆ</li>
                       <li>🤠 <strong>Cowboy (ผู้หญิงคุม):</strong> คุมมุมยาก อาจพับโคนหรือจุกแรงหากอวบใหญ่</li>`;
       } else if (l_erect < 130 || g_erect < 112) {
         // Compact Specs
-        bestPos = `<li>🐕 <strong>Doggy Style (เน้นเข้าลึก):</strong> สอดใส่ลึกสุดตัว สัมผัสคลื่นผนัง G-Spot ชัดเจน</li>
-                   <li>🛏️ <strong>Pillow Missionary:</strong> สอดหมอนหน่าว ยกสะโพกเพิ่มความลึก 20-30%</li>
+        bestPos = `<li>🐕 <strong>Doggy Style (เน้นเข้าลึก):</strong> ช่วยปรับมุมสัมผัสผนังด้านหน้า</li>
+                   <li>🛏️ <strong>Pillow Missionary:</strong> ช่วยเปลี่ยนมุมให้เข้าลึกขึ้น</li>
                    <li>🤸 <strong>Standing Position:</strong> คุมจังหวะและทิศทางสอดใส่ได้อย่างคล่องแคล่ว</li>`;
         cautionPos = `<li>🧘 <strong>Lotus Position:</strong> เข้าไม่ลึกเท่าที่ควร หากช่องคลอดคู่รักยืดขยายกว้าง</li>`;
       } else {
         // Standard / Balanced Specs (ค่าเฉลี่ยมาตรฐาน)
-        bestPos = `<li>🛏️ <strong>Missionary (คลาสสิก):</strong> แนบชิด คุมจังหวะและแรงสอดใส่ได้สมดุล 100%</li>
+        bestPos = `<li>🛏️ <strong>Missionary (คลาสสิก):</strong> คุมจังหวะและแรงได้ง่าย</li>
                    <li>🐕 <strong>Doggy Style:</strong> ได้มิติสัมผัสผนังช่องคลอดและความลึกกำลังดี</li>
                    <li>🛋️ <strong>Spooning:</strong> ผ่อนคลายสบาย สัมผัสความแนบแน่นระดับมาตรฐาน</li>`;
         cautionPos = `<li>🤸 <strong>Standing Acrobatics:</strong> ใช้แรงอุ้มเยอะ เสี่ยงหลุดจังหวะ</li>`;
@@ -2830,50 +3987,141 @@
       if (document.getElementById('posBestList')) document.getElementById('posBestList').innerHTML = bestPos;
       if (document.getElementById('posCautionList')) document.getElementById('posCautionList').innerHTML = cautionPos;
 
-      renderSvg(l_flaccid, g_flaccid, l_erect, g_erect);
+      latestMetricsSnapshot = Object.freeze({
+        measurements: Object.freeze({ ...measurements }),
+        bestSize,
+        condomInRange: condomMatch.withinRange,
+        nominalWidthMm: w_condom,
+        diameterMm: diameter,
+        erectVolumeCc: v_erect,
+        flaccidVolumeCc: v_flaccid,
+        bloodVolumeCc: bloodVol,
+        volumeRatio: volRatio,
+        bfpi,
+        archetypeKey: archKey,
+        lengthGrowthPercent: Number(dL),
+        girthGrowthPercent: Number(dG),
+        bpelMm: l_bpel,
+        fatRatioPercent: Number(fatRatio),
+        lengthPercentile: pctL,
+        girthPercentile: pctG
+      });
+
+      latestGrowthVisual = Object.freeze({ l_f:l_flaccid, g_f:g_flaccid, l_e:l_erect, g_e:g_erect, t_fat });
+      renderGrowthStage(0);
+      return true;
     }
 
-    function renderSvg(l_f, g_f, l_e, g_e) {
+    let foreskinMode = 'cut';
+
+    function setForeskinMode(mode) {
+      if (mode !== 'cut' && mode !== 'uncut') return;
+      foreskinMode = mode;
+      const cut = document.getElementById('foreskinCut');
+      const uncut = document.getElementById('foreskinUncut');
+      if (cut) { cut.classList.toggle('active', mode === 'cut'); cut.setAttribute('aria-pressed', String(mode === 'cut')); }
+      if (uncut) { uncut.classList.toggle('active', mode === 'uncut'); uncut.setAttribute('aria-pressed', String(mode === 'uncut')); }
+      const slider = document.getElementById('growthSlider');
+      renderGrowthStage(slider ? slider.value : 100);
+    }
+    let latestGrowthVisual = null;
+    let growthAnimationFrame = null;
+
+    function cancelGrowthAnimation() {
+      if (growthAnimationFrame) cancelAnimationFrame(growthAnimationFrame);
+      growthAnimationFrame = null;
+    }
+
+    function renderGrowthStage(rawProgress) {
+      if (!latestGrowthVisual) return;
+      const progress = Math.max(0, Math.min(100, Number(rawProgress) || 0));
+      const ratio = progress / 100;
+      const lengthMm = latestGrowthVisual.l_f + ((latestGrowthVisual.l_e - latestGrowthVisual.l_f) * ratio);
+      const girthMm = latestGrowthVisual.g_f + ((latestGrowthVisual.g_e - latestGrowthVisual.g_f) * ratio);
+      const slider = document.getElementById('growthSlider');
+      if (slider) slider.value = String(progress);
+      const label = document.getElementById('growthStageLabel');
+      if (label) label.textContent = progress === 0 ? 'ตอนอ่อน · 0%' : progress === 100 ? 'แข็งเต็มที่ · 100%' : `กำลังเปลี่ยนแปลง · ${Math.round(progress)}%`;
+      const values = document.getElementById('growthStageValues');
+      if (values) values.textContent = `ยาว ${formatMm(lengthMm)} · รอบวง ${formatMm(girthMm)}`;
+      renderSvg(latestGrowthVisual.l_f, latestGrowthVisual.g_f, latestGrowthVisual.l_e, latestGrowthVisual.g_e, latestGrowthVisual.t_fat, progress);
+    }
+
+    function playGrowthAnimation() {
+      if (!latestGrowthVisual) return;
+      cancelGrowthAnimation();
+      const slider = document.getElementById('growthSlider');
+      const from = slider ? Math.max(0, Math.min(100, Number(slider.value) || 0)) : 0;
+      const target = from >= 50 ? 0 : 100;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { renderGrowthStage(target); return; }
+      const distance = Math.abs(target - from);
+      if (distance < 0.1) return;
+      const start = performance.now();
+      const duration = Math.max(320, 1100 * (distance / 100));
+      const tick = now => {
+        const elapsed = Math.min(1, (now - start) / duration);
+        const eased = 0.5 - (Math.cos(Math.PI * elapsed) / 2);
+        renderGrowthStage(from + ((target - from) * eased));
+        if (elapsed < 1) growthAnimationFrame = requestAnimationFrame(tick);
+        else growthAnimationFrame = null;
+      };
+      growthAnimationFrame = requestAnimationFrame(tick);
+    }
+    function renderSvg(l_f, g_f, l_e, g_e, t_fat, growthProgress = 100) {
       const svg = document.getElementById('anatomySvg');
       if (!svg) return;
 
-      const t_fat = parseFloat(document.getElementById('t_fat')?.value) || 0;
-      const bpel = l_e + t_fat;
+      const progressRatio = Math.max(0, Math.min(100, Number(growthProgress) || 0)) / 100;
+      const foreskinLerp = (from, to, amount) => from + ((to - from) * amount);
+      const foreskinPhase = progressRatio <= 0.5 ? progressRatio * 2 : (progressRatio - 0.5) * 2;
+      const foreskinMix = (at0, at50, at100) => progressRatio <= 0.5
+        ? foreskinLerp(at0, at50, foreskinPhase)
+        : foreskinLerp(at50, at100, foreskinPhase);
+      const targetLength = l_e;
+      const targetGirth = g_e;
+      const currentLength = l_f + ((targetLength - l_f) * progressRatio);
+      const currentGirth = g_f + ((targetGirth - g_f) * progressRatio);
+      const currentFat = t_fat;
+      l_e = currentLength;
+      g_e = currentGirth;
+      const bpel = currentLength + currentFat;
 
       const cy = 145;
-      const x0 = 65; // Datum 0 mm โคนกระดูกหัวหน่าว
-
-      // Dynamic scale: fit cleanly in 760px viewBox
-      const maxSpan = Math.max(bpel, 190);
+      const x0 = 65;
+      const maxSpan = Math.max(targetLength + t_fat, 190);
       const scale = 500 / maxSpan;
+      const targetFatW = Math.max(16, t_fat * scale);
+      const fat_w = t_fat > 0 ? targetFatW : 0;
+      const visible_x = x0 + fat_w;
 
-      const fat_w = Math.max(16, t_fat * scale);
-      const visible_x = x0 + (t_fat > 0 ? fat_w : 0);
+      const target_total_len = targetLength * scale;
+      const target_dia = (targetGirth / Math.PI) * scale * 1.35;
+      const target_h = Math.max(48, Math.min(target_dia, 105));
+      const target_glans_h = target_h + 8;
+      const target_glans_len = Math.max(42, Math.min(target_total_len * 0.265, target_glans_h * 0.86));
+      const target_shaft_len = Math.max(20, target_total_len - target_glans_len);
 
-      // Erect dimensions (Compact, Natural Acorn Dome proportions)
-      const e_total_len = l_e * scale;
-      const shaft_x = x0;
-      const e_dia = (g_e / Math.PI) * scale * 1.35;
-      const e_h = Math.max(48, Math.min(e_dia, 105));
-      const e_glans_h = e_h + 8; // Plump balanced corona
-      const e_glans_len = Math.max(42, Math.min(e_total_len * 0.265, e_glans_h * 0.86)); // Compact ratio (not bullet)
-      const e_shaft_len = Math.max(20, (visible_x - x0) + e_total_len - e_glans_len);
-      const glans_x = x0 + e_shaft_len;
-      const glans_tip_x = glans_x + e_glans_len;
-      const shaft_y = cy - (e_h / 2);
-
-      // Flaccid dimensions (Starts at x0 pubic bone)
       const f_total_len = l_f * scale;
-      const f_dia = (g_f / Math.PI) * scale * 1.35;
-      const f_h = Math.max(32, Math.min(f_dia, e_h - 12));
+      const girthRatio = targetGirth > 0 ? Math.min(1, g_f / targetGirth) : 1;
+      const f_h = Math.max(32, target_h * girthRatio);
       const f_glans_h = f_h + 6;
       const f_glans_len = Math.max(32, Math.min(f_total_len * 0.265, f_glans_h * 0.86));
       const f_shaft_len = Math.max(15, f_total_len - f_glans_len);
-      const f_shaft_x = x0;
+      const f_shaft_x = visible_x;
       const f_shaft_y = cy - (f_h / 2);
-      const f_glans_x = x0 + f_shaft_len;
-      const f_tip_x = x0 + f_total_len;
-
+      const f_glans_x = visible_x + f_shaft_len;
+      const f_tip_x = visible_x + f_total_len;
+      const e_total_len = currentLength * scale;
+      const e_h = f_h + ((target_h - f_h) * progressRatio);
+      const e_glans_h = f_glans_h + ((target_glans_h - f_glans_h) * progressRatio);
+      const e_glans_len = f_glans_len + ((target_glans_len - f_glans_len) * progressRatio);
+      const e_shaft_len = f_shaft_len + ((target_shaft_len - f_shaft_len) * progressRatio);
+      const shaft_x = visible_x;
+      const glans_x = visible_x + e_shaft_len;
+      const glans_tip_x = glans_x + e_glans_len;
+      const shaft_y = cy - (e_h / 2);
+      const foreskinCoverage = foreskinMode === 'uncut' ? (progressRatio >= 0.999 ? 0 : 0.12 + (0.88 * (1 - progressRatio))) : 0;
+      const foreskinTipX = Math.min(glans_tip_x, glans_x + (e_glans_len * foreskinCoverage));
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const mutedColor = isLight ? '#475569' : '#94a3b8';
       const rulerLineColor = isLight ? '#d81b60' : '#ff2a85';
@@ -2896,6 +4144,11 @@
             <stop offset="100%" stop-color="#6d3219"/>
           </linearGradient>
 
+          <linearGradient id="foreskin3D" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#efbd99"/>
+            <stop offset="50%" stop-color="#c98762"/>
+            <stop offset="100%" stop-color="#8e4b30"/>
+          </linearGradient>
           <!-- Natural Rosy Glans Radial Gradient (DO-PHY-01.jpg) -->
           <radialGradient id="erectGlans3D" cx="38%" cy="30%" r="72%">
             <stop offset="0%"   stop-color="#ffb8cd"/>
@@ -2946,12 +4199,65 @@
           <path d="M ${visible_x},${cy - e_h * 0.25} C ${shaft_x + e_shaft_len * 0.4},${cy - e_h * 0.32} ${shaft_x + e_shaft_len * 0.7},${cy - e_h * 0.2} ${glans_x - 4},${cy - e_h * 0.28}"
                 fill="none" stroke="rgba(140, 50, 70, 0.45)" stroke-width="2.5" stroke-linecap="round"/>
 
+          ${foreskinMode === 'uncut' && progressRatio >= 0.999 ? `
+            <g aria-label="หนังหุ้มปลายร่นแนบปลายลำที่ 100%">
+              <defs>
+                <linearGradient id="retractedForeskinFadeA37" x1="${glans_x - 38}" y1="0" x2="${glans_x - 20}" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="white" stop-opacity="0"/>
+                  <stop offset="100%" stop-color="white" stop-opacity="1"/>
+                </linearGradient>
+                <mask id="retractedForeskinMaskA37" maskUnits="userSpaceOnUse" x="${glans_x - 38}" y="${shaft_y}" width="38" height="${e_h}">
+                  <rect x="${glans_x - 38}" y="${shaft_y}" width="38" height="${e_h}" fill="url(#retractedForeskinFadeA37)"/>
+                </mask>
+                <clipPath id="retractedForeskinShaftClipA37">
+                  <rect x="${shaft_x}" y="${shaft_y}" width="${e_shaft_len}" height="${e_h}" rx="12"/>
+                </clipPath>
+              </defs>
+              <path d="M ${glans_x - 60},${shaft_y}
+                       C ${glans_x - 63},${shaft_y + (e_h * 0.09)} ${glans_x - 68},${shaft_y + (e_h * 0.17)} ${glans_x - 69},${shaft_y + (e_h * 0.26)}
+                       C ${glans_x - 68},${shaft_y + (e_h * 0.33)} ${glans_x - 73},${shaft_y + (e_h * 0.41)} ${glans_x - 72},${shaft_y + (e_h * 0.50)}
+                       C ${glans_x - 73},${shaft_y + (e_h * 0.59)} ${glans_x - 69},${shaft_y + (e_h * 0.67)} ${glans_x - 70},${shaft_y + (e_h * 0.75)}
+                       C ${glans_x - 68},${shaft_y + (e_h * 0.84)} ${glans_x - 63},${shaft_y + (e_h * 0.92)} ${glans_x - 60},${shaft_y + e_h}
+                       L ${glans_x},${shaft_y + e_h}
+                       L ${glans_x},${shaft_y} Z"
+                    fill="#b86749" opacity="0.99"
+                    clip-path="url(#retractedForeskinShaftClipA37)"/>
+              <path d="M ${glans_x - 60},${shaft_y}
+                       C ${glans_x - 63},${shaft_y + (e_h * 0.09)} ${glans_x - 68},${shaft_y + (e_h * 0.17)} ${glans_x - 69},${shaft_y + (e_h * 0.26)}
+                       C ${glans_x - 68},${shaft_y + (e_h * 0.33)} ${glans_x - 73},${shaft_y + (e_h * 0.41)} ${glans_x - 72},${shaft_y + (e_h * 0.50)}
+                       C ${glans_x - 73},${shaft_y + (e_h * 0.59)} ${glans_x - 69},${shaft_y + (e_h * 0.67)} ${glans_x - 70},${shaft_y + (e_h * 0.75)}
+                       C ${glans_x - 68},${shaft_y + (e_h * 0.84)} ${glans_x - 63},${shaft_y + (e_h * 0.92)} ${glans_x - 60},${shaft_y + e_h}"
+                    fill="none" stroke="rgba(70,29,23,.62)" stroke-width="1.25" stroke-linecap="round"
+                    clip-path="url(#retractedForeskinShaftClipA37)"/>
+              <path d="M ${glans_x - 53},${shaft_y + 3}
+                       C ${glans_x - 56},${shaft_y + (e_h * 0.09)} ${glans_x - 61},${shaft_y + (e_h * 0.17)} ${glans_x - 62},${shaft_y + (e_h * 0.26)}
+                       C ${glans_x - 61},${shaft_y + (e_h * 0.33)} ${glans_x - 66},${shaft_y + (e_h * 0.41)} ${glans_x - 65},${shaft_y + (e_h * 0.50)}
+                       C ${glans_x - 66},${shaft_y + (e_h * 0.59)} ${glans_x - 62},${shaft_y + (e_h * 0.67)} ${glans_x - 63},${shaft_y + (e_h * 0.75)}
+                       C ${glans_x - 61},${shaft_y + (e_h * 0.84)} ${glans_x - 56},${shaft_y + (e_h * 0.92)} ${glans_x - 53},${shaft_y + e_h - 3}"
+                    fill="none" stroke="rgba(76,36,30,.42)" stroke-width="1" stroke-linecap="round"
+                    clip-path="url(#retractedForeskinShaftClipA37)"/>
+              <path d="M ${glans_x - 42},${shaft_y + 18}
+                       C ${glans_x - 44},${shaft_y + (e_h * 0.24)} ${glans_x - 48},${shaft_y + (e_h * 0.27)} ${glans_x - 47},${shaft_y + (e_h * 0.33)}
+                       C ${glans_x - 46},${shaft_y + (e_h * 0.38)} ${glans_x - 50},${shaft_y + (e_h * 0.42)} ${glans_x - 49},${shaft_y + (e_h * 0.48)}
+                       C ${glans_x - 48},${shaft_y + (e_h * 0.53)} ${glans_x - 50},${shaft_y + (e_h * 0.58)} ${glans_x - 49},${shaft_y + (e_h * 0.64)}
+                       C ${glans_x - 48},${shaft_y + (e_h * 0.69)} ${glans_x - 45},${shaft_y + (e_h * 0.74)} ${glans_x - 46},${shaft_y + (e_h * 0.79)}
+                       C ${glans_x - 47},${shaft_y + (e_h * 0.84)} ${glans_x - 46},${shaft_y + (e_h * 0.87)} ${glans_x - 45},${shaft_y + e_h - 18}"
+                    fill="none" stroke="rgba(76,36,30,.32)" stroke-width="0.9" stroke-linecap="round"
+                    clip-path="url(#retractedForeskinShaftClipA37)"/>
+              <path d="M ${glans_x - 20},${shaft_y + 12}
+                       C ${glans_x - 24},${cy - (e_h * 0.22)} ${glans_x - 28},${cy - (e_h * 0.08)} ${glans_x - 26},${cy}
+                       C ${glans_x - 29},${cy + (e_h * 0.14)} ${glans_x - 24},${cy + (e_h * 0.27)} ${glans_x - 20},${shaft_y + e_h - 12}"
+                    fill="none" stroke="rgba(92,44,34,.40)" stroke-width="1.1" stroke-linecap="round"
+                    clip-path="url(#retractedForeskinShaftClipA37)"/>
+            </g>
+          ` : ''}
+
           <!-- Compact Smooth Acorn Dome (DO-PHY-01.jpg Natural Glans) -->
           <path id="svgGlansErect" d="M ${glans_x},${cy - (e_glans_h / 2)}
                     C ${glans_x + (e_glans_len * 0.45)},${cy - (e_glans_h / 2) - 0.5} ${glans_tip_x - (e_glans_len * 0.15)},${cy - (e_glans_h * 0.35)} ${glans_tip_x - 1.5},${cy - (e_glans_h * 0.16)}
                     C ${glans_tip_x + 3.5},${cy - (e_glans_h * 0.08)} ${glans_tip_x + 3.5},${cy + (e_glans_h * 0.08)} ${glans_tip_x - 1.5},${cy + (e_glans_h * 0.16)}
                     C ${glans_tip_x - (e_glans_len * 0.15)},${cy + (e_glans_h * 0.35)} ${glans_x + (e_glans_len * 0.45)},${cy + (e_glans_h / 2) + 0.5} ${glans_x},${cy + (e_glans_h / 2)}
-                    C ${glans_x - 3.5},${cy + (e_h * 0.35)} ${glans_x - 3.5},${cy - (e_h * 0.35)} ${glans_x},${cy - (e_glans_h / 2)} Z"
+                    C ${glans_x - (e_glans_len * 0.18)},${cy + (e_glans_h * 0.38)} ${glans_x - (e_glans_len * 0.18)},${cy - (e_glans_h * 0.38)} ${glans_x},${cy - (e_glans_h / 2)} Z"
                 fill="url(#erectGlans3D)" stroke="#922339" stroke-width="1.6"/>
 
           <!-- Glossy Specular Highlight Reflection on Compact Dome -->
@@ -2963,15 +4269,130 @@
                    fill="url(#glossHighlight)"/>
 
           <!-- Corona Ridge Rolled Lip Rim (ขอบสันหยักคอ) -->
-          <path d="M ${glans_x + 1},${cy - (e_glans_h / 2) + 1} C ${glans_x - 3},${cy - (e_h * 0.25)} ${glans_x - 3},${cy + (e_h * 0.25)} ${glans_x + 1},${cy + (e_glans_h / 2) - 1}"
-                fill="none" stroke="rgba(255, 215, 230, 0.65)" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M ${glans_x + 1},${cy - (e_glans_h / 2) + 3} C ${glans_x - 6},${cy - (e_h * 0.22)} ${glans_x - 6},${cy + (e_h * 0.22)} ${glans_x + 1},${cy + (e_glans_h / 2) - 3}"
+                fill="none" stroke="rgba(214, 92, 122, 0.68)" stroke-width="1.1" stroke-linecap="round"/>
 
 
         </g>
 
+        ${foreskinMode === 'uncut' && progressRatio < 0.999 ? (() => {
+          const unifiedFreeEdgeX = foreskinMix(glans_tip_x - 2, glans_x + (e_glans_len * 0.50), glans_x - 60);
+          const unifiedLeftPull = foreskinMix(0, 12, 0);
+          const unifiedShaftBlendWidth = foreskinMix(18, 36, 16);
+          const unifiedShaftBlendEndX = Math.min(glans_x - unifiedLeftPull, unifiedFreeEdgeX);
+          const unifiedShaftBlendStartX = unifiedShaftBlendEndX - unifiedShaftBlendWidth;
+          const unifiedSurfaceRightX = Math.max(glans_x, unifiedFreeEdgeX);
+          const unifiedFreeEdgeTop = foreskinMix(cy - (e_glans_h * 0.18), cy - (e_glans_h * 0.50), shaft_y);
+          const unifiedFreeEdgeBottom = foreskinMix(cy + (e_glans_h * 0.18), cy + (e_glans_h * 0.50), shaft_y + e_h);
+          const unifiedFreeEdgeSpan = unifiedFreeEdgeBottom - unifiedFreeEdgeTop;
+          const unifiedWrinkleLengthPhase = Math.min(1, progressRatio * 2);
+          const unifiedGlansHeightAt50 = f_glans_h + ((target_glans_h - f_glans_h) * 0.50);
+          const unifiedWrinkleHalfSpanAt0 = f_glans_h * 0.32;
+          const unifiedWrinkleHalfSpanAt50 = unifiedGlansHeightAt50 * 0.50;
+          const unifiedWrinkleHalfSpan = progressRatio < 0.5
+            ? foreskinLerp(unifiedWrinkleHalfSpanAt0, unifiedWrinkleHalfSpanAt50, unifiedWrinkleLengthPhase)
+            : unifiedFreeEdgeSpan / 2;
+          const unifiedWrinkleTop = progressRatio < 0.5 ? cy - unifiedWrinkleHalfSpan : unifiedFreeEdgeTop;
+          const unifiedWrinkleBottom = progressRatio < 0.5 ? cy + unifiedWrinkleHalfSpan : unifiedFreeEdgeBottom;
+          const unifiedWrinkleSpan = unifiedWrinkleBottom - unifiedWrinkleTop;
+          const unifiedWrinkleInsetAt0 = Math.min(18, unifiedWrinkleHalfSpanAt0 * 0.40);
+          const unifiedWrinkleInsetAt50 = Math.min(18, unifiedWrinkleHalfSpanAt50 * 0.40);
+          const unifiedWrinkleVisibleHalfAt0 = unifiedWrinkleHalfSpanAt0 - unifiedWrinkleInsetAt0;
+          const unifiedWrinkleVisibleHalfAt50 = unifiedWrinkleHalfSpanAt50 - unifiedWrinkleInsetAt50;
+          const unifiedWrinkleVisibleHalf = progressRatio < 0.5
+            ? foreskinLerp(unifiedWrinkleVisibleHalfAt0, unifiedWrinkleVisibleHalfAt50, unifiedWrinkleLengthPhase)
+            : unifiedWrinkleHalfSpan - Math.min(18, unifiedWrinkleSpan * 0.20);
+          const unifiedSurfaceCurve = foreskinMix(0, 5, 0);
+          const unifiedSurfaceCounterCurve = foreskinMix(0, 2, 0);
+          const unifiedEdgeOffset = (at0, at50, at100) => foreskinMix(at0, at50, at100);
+          const unifiedMovingWrinkleX = unifiedFreeEdgeX + foreskinMix(-7, -14, 7);
+          const unifiedSecondWrinkleRawX = foreskinMix(unifiedFreeEdgeX - 11, unifiedFreeEdgeX - 28, glans_x - 20);
+          const unifiedWrinkleLaneMinX = Math.min(glans_x - 4, unifiedFreeEdgeX);
+          const unifiedWrinkleLaneMaxX = Math.max(glans_x - 4, unifiedFreeEdgeX);
+          const unifiedWrinkleLaneInset = Math.min(4, (unifiedWrinkleLaneMaxX - unifiedWrinkleLaneMinX) * 0.25);
+          const unifiedSecondWrinkleX = Math.max(
+            unifiedWrinkleLaneMinX + unifiedWrinkleLaneInset,
+            Math.min(unifiedWrinkleLaneMaxX - unifiedWrinkleLaneInset, unifiedSecondWrinkleRawX)
+          );
+          const unifiedWrinkleInset = unifiedWrinkleHalfSpan - unifiedWrinkleVisibleHalf;
+          const unifiedMovingWrinkleInset = unifiedWrinkleInset + foreskinMix(4, 0, 0);
+          const unifiedWrinkleOpacity = foreskinMix(0.18, 0.28, 0.34);
+          const unifiedCoveredOutlineOpacity = foreskinMix(1, 0, 0);
+          return `
+          <g aria-label="ผืนหนังหุ้มปลายแบบต่อเนื่อง">
+            <defs>
+              <clipPath id="unifiedForeskinAnatomyClip">
+                <rect x="${shaft_x}" y="${shaft_y}" width="${e_shaft_len}" height="${e_h}" rx="12"/>
+                <path id="unifiedForeskinGlansShape" d="M ${glans_x},${cy - (e_glans_h / 2)}
+                         C ${glans_x + (e_glans_len * 0.45)},${cy - (e_glans_h / 2) - 0.5} ${glans_tip_x - (e_glans_len * 0.15)},${cy - (e_glans_h * 0.35)} ${glans_tip_x - 1.5},${cy - (e_glans_h * 0.16)}
+                         C ${glans_tip_x + 3.5},${cy - (e_glans_h * 0.08)} ${glans_tip_x + 3.5},${cy + (e_glans_h * 0.08)} ${glans_tip_x - 1.5},${cy + (e_glans_h * 0.16)}
+                         C ${glans_tip_x - (e_glans_len * 0.15)},${cy + (e_glans_h * 0.35)} ${glans_x + (e_glans_len * 0.45)},${cy + (e_glans_h / 2) + 0.5} ${glans_x},${cy + (e_glans_h / 2)}
+                         C ${glans_x - (e_glans_len * 0.18)},${cy + (e_glans_h * 0.38)} ${glans_x - (e_glans_len * 0.18)},${cy - (e_glans_h * 0.38)} ${glans_x},${cy - (e_glans_h / 2)} Z"/>
+              </clipPath>
+              <linearGradient id="unifiedForeskinShaftFade"
+                              x1="${unifiedShaftBlendStartX}" y1="0"
+                              x2="${unifiedShaftBlendEndX}" y2="0"
+                              gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="black"/>
+                <stop offset="100%" stop-color="white"/>
+              </linearGradient>
+              <mask id="unifiedForeskinShaftBlend" maskUnits="userSpaceOnUse"
+                    x="${shaft_x}" y="${shaft_y - 10}"
+                    width="${glans_tip_x - shaft_x + 10}" height="${e_h + 20}">
+                <rect x="${shaft_x}" y="${shaft_y - 10}"
+                      width="${glans_tip_x - shaft_x + 10}" height="${e_h + 20}"
+                      fill="url(#unifiedForeskinShaftFade)"/>
+                <use href="#unifiedForeskinGlansShape" fill="white"/>
+              </mask>
+            </defs>
+            <path d="M ${unifiedShaftBlendStartX},${shaft_y - 8}
+                     L ${unifiedSurfaceRightX},${shaft_y - 8}
+                     L ${unifiedSurfaceRightX},${unifiedFreeEdgeTop}
+                     C ${unifiedSurfaceRightX + unifiedEdgeOffset(-1, -2, -3)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.09)} ${unifiedSurfaceRightX + unifiedEdgeOffset(1, 2, -8)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.17)} ${unifiedSurfaceRightX + unifiedEdgeOffset(0, -1, -9)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.26)}
+                     C ${unifiedSurfaceRightX + unifiedEdgeOffset(1, 1, -8)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.33)} ${unifiedSurfaceRightX + unifiedEdgeOffset(-1, -3, -13)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.41)} ${unifiedSurfaceRightX + unifiedEdgeOffset(0, 0, -12)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.50)}
+                     C ${unifiedSurfaceRightX + unifiedEdgeOffset(-1, -3, -13)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.59)} ${unifiedSurfaceRightX + unifiedEdgeOffset(1, 1, -9)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.67)} ${unifiedSurfaceRightX + unifiedEdgeOffset(0, -1, -10)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.75)}
+                     C ${unifiedSurfaceRightX + unifiedEdgeOffset(1, 2, -8)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.84)} ${unifiedSurfaceRightX + unifiedEdgeOffset(-1, -2, -3)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.92)} ${unifiedSurfaceRightX},${unifiedFreeEdgeBottom}
+                     L ${unifiedSurfaceRightX},${shaft_y + e_h + 8}
+                     L ${unifiedShaftBlendStartX},${shaft_y + e_h + 8}
+                     C ${unifiedShaftBlendStartX - foreskinMix(0, 4, 0)},${shaft_y + (e_h * 0.76)} ${unifiedShaftBlendStartX - foreskinMix(0, 4, 0)},${shaft_y + (e_h * 0.24)} ${unifiedShaftBlendStartX},${shaft_y - 8} Z"
+                  fill="#b86749" stroke="none" opacity="0.99"
+                  clip-path="url(#unifiedForeskinAnatomyClip)"
+                  mask="url(#unifiedForeskinShaftBlend)"/>
+            <path d="M ${glans_x},${cy - (e_glans_h / 2)}
+                     C ${glans_x + (e_glans_len * 0.45)},${cy - (e_glans_h / 2) - 0.5} ${glans_tip_x - (e_glans_len * 0.15)},${cy - (e_glans_h * 0.35)} ${glans_tip_x - 1.5},${cy - (e_glans_h * 0.16)}
+                     C ${glans_tip_x + 3.5},${cy - (e_glans_h * 0.08)} ${glans_tip_x + 3.5},${cy + (e_glans_h * 0.08)} ${glans_tip_x - 1.5},${cy + (e_glans_h * 0.16)}
+                     C ${glans_tip_x - (e_glans_len * 0.15)},${cy + (e_glans_h * 0.35)} ${glans_x + (e_glans_len * 0.45)},${cy + (e_glans_h / 2) + 0.5} ${glans_x},${cy + (e_glans_h / 2)}
+                     C ${glans_x - (e_glans_len * 0.18)},${cy + (e_glans_h * 0.38)} ${glans_x - (e_glans_len * 0.18)},${cy - (e_glans_h * 0.38)} ${glans_x},${cy - (e_glans_h / 2)} Z"
+                  fill="none" stroke="#7b402d" stroke-width="2.2" stroke-linejoin="round"
+                  opacity="${unifiedCoveredOutlineOpacity}" pointer-events="none"/>
+            <path d="M ${glans_x},${cy + (e_glans_h / 2)}
+                     C ${glans_x - (e_glans_len * 0.18)},${cy + (e_glans_h * 0.38)} ${glans_x - (e_glans_len * 0.18)},${cy - (e_glans_h * 0.38)} ${glans_x},${cy - (e_glans_h / 2)}"
+                  fill="none" stroke="#b86749" stroke-width="3.4" stroke-linecap="round"
+                  opacity="${unifiedCoveredOutlineOpacity}" pointer-events="none"/>
+            <path d="M ${unifiedFreeEdgeX},${unifiedFreeEdgeTop}
+                     C ${unifiedFreeEdgeX + unifiedEdgeOffset(-1, -2, -3)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.09)} ${unifiedFreeEdgeX + unifiedEdgeOffset(1, 2, -8)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.17)} ${unifiedFreeEdgeX + unifiedEdgeOffset(0, -1, -9)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.26)}
+                     C ${unifiedFreeEdgeX + unifiedEdgeOffset(1, 1, -8)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.33)} ${unifiedFreeEdgeX + unifiedEdgeOffset(-1, -3, -13)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.41)} ${unifiedFreeEdgeX + unifiedEdgeOffset(0, 0, -12)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.50)}
+                     C ${unifiedFreeEdgeX + unifiedEdgeOffset(-1, -3, -13)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.59)} ${unifiedFreeEdgeX + unifiedEdgeOffset(1, 1, -9)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.67)} ${unifiedFreeEdgeX + unifiedEdgeOffset(0, -1, -10)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.75)}
+                     C ${unifiedFreeEdgeX + unifiedEdgeOffset(1, 2, -8)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.84)} ${unifiedFreeEdgeX + unifiedEdgeOffset(-1, -2, -3)},${unifiedFreeEdgeTop + (unifiedFreeEdgeSpan * 0.92)} ${unifiedFreeEdgeX},${unifiedFreeEdgeBottom}"
+                  fill="none" stroke="rgba(70,29,23,.62)" stroke-width="1.15" stroke-linecap="round"
+                   clip-path="url(#unifiedForeskinAnatomyClip)"/>
+            <path d="M ${glans_x - 4},${cy - (e_glans_h / 2) + 8}
+                     C ${glans_x - 11},${cy - (e_h * 0.22)} ${glans_x - 11},${cy + (e_h * 0.22)} ${glans_x - 4},${cy + (e_glans_h / 2) - 8}"
+                  fill="none" stroke="rgba(92,44,34,.48)" stroke-width="1.05"
+                  stroke-linecap="round" clip-path="url(#unifiedForeskinAnatomyClip)"/>
+            <path d="M ${unifiedMovingWrinkleX},${unifiedWrinkleTop + unifiedMovingWrinkleInset}
+                     C ${unifiedMovingWrinkleX + unifiedEdgeOffset(-2, -2, -3)},${unifiedWrinkleTop + (unifiedWrinkleSpan * 0.20)} ${unifiedMovingWrinkleX + unifiedEdgeOffset(2, -3, -5)},${unifiedWrinkleTop + (unifiedWrinkleSpan * 0.34)} ${unifiedMovingWrinkleX + unifiedEdgeOffset(-1, -1, -4)},${cy}
+                     C ${unifiedMovingWrinkleX + unifiedEdgeOffset(-2, -3, -5)},${unifiedWrinkleTop + (unifiedWrinkleSpan * 0.66)} ${unifiedMovingWrinkleX + unifiedEdgeOffset(2, 1, -2)},${unifiedWrinkleTop + (unifiedWrinkleSpan * 0.80)} ${unifiedMovingWrinkleX},${unifiedWrinkleBottom - unifiedMovingWrinkleInset}
+                     M ${unifiedSecondWrinkleX},${unifiedWrinkleTop + unifiedWrinkleInset}
+                     C ${unifiedSecondWrinkleX - unifiedEdgeOffset(3, 3, 5)},${cy - (unifiedWrinkleSpan * 0.22)} ${unifiedSecondWrinkleX - unifiedEdgeOffset(4, 4, 6)},${cy - (unifiedWrinkleSpan * 0.08)} ${unifiedSecondWrinkleX - unifiedEdgeOffset(2, 2, 4)},${cy}
+                     C ${unifiedSecondWrinkleX - unifiedEdgeOffset(4, 4, 6)},${cy + (unifiedWrinkleSpan * 0.14)} ${unifiedSecondWrinkleX + unifiedEdgeOffset(1, 1, -2)},${cy + (unifiedWrinkleSpan * 0.27)} ${unifiedSecondWrinkleX},${unifiedWrinkleBottom - unifiedWrinkleInset}"
+                  fill="none" stroke="rgba(76,36,30,${unifiedWrinkleOpacity})" stroke-width="1" stroke-linecap="round"/>
+          </g>`;
+        })() : ''}
+
         <!-- Pubic Fat Pad Layer -->
         ${t_fat > 0 ? `
-          <text x="${x0 + (fat_w / 2)}" y="${cy - (e_h / 2) - 18}" fill="${fatTextColor}" font-size="11.5" font-weight="800" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif">ชั้นไขมัน T_fat: ${t_fat.toFixed(0)} mm</text>
+          <text x="${x0 + (fat_w / 2)}" y="${cy - (e_h / 2) - 18}" fill="${fatTextColor}" font-size="11.5" font-weight="800" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif">ชั้นไขมัน T_fat: ${formatMm(currentFat)}</text>
           <rect x="${x0}" y="${cy - (e_h / 2) - 10}" width="${fat_w}" height="${e_h + 20}" rx="8"
                 fill="url(#fatGrad)" stroke="${fatBorderColor}" stroke-width="1.5" stroke-dasharray="4 3"/>
           <line x1="${visible_x}" y1="${cy - (e_h / 2) - 14}" x2="${visible_x}" y2="${cy + (e_h / 2) + 14}" stroke="${fatBorderColor}" stroke-width="1.5" stroke-dasharray="3 3"/>
@@ -2981,36 +4402,40 @@
         <line x1="${x0}" y1="46" x2="${glans_tip_x}" y2="46" stroke="${rulerLineColor}" stroke-width="2.5"/>
         <line x1="${x0}" y1="38" x2="${x0}" y2="54" stroke="${rulerLineColor}" stroke-width="2.5"/>
         <line x1="${glans_tip_x}" y1="38" x2="${glans_tip_x}" y2="54" stroke="${rulerLineColor}" stroke-width="2.5"/>
-        <text x="${(x0 + glans_tip_x) / 2}" y="34" fill="${rulerLineColor}" font-size="13.5" font-weight="900" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif" letter-spacing="0.3px">ยาวกดถึงกระดูก (BPEL): ${bpel.toFixed(1)} mm</text>
+        <text x="${(x0 + glans_tip_x) / 2}" y="34" fill="${rulerLineColor}" font-size="13.5" font-weight="900" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif" letter-spacing="0.3px">ยาวกดถึงกระดูก (BPEL): ${formatMm(bpel)}</text>
 
         <!-- VISIBLE ERECT RULER LINE (Bottom - From Fat Boundary to Glans Tip) -->
         <line x1="${visible_x}" y1="244" x2="${glans_tip_x}" y2="244" stroke="${visibleColor}" stroke-width="2" stroke-dasharray="4 2"/>
         <line x1="${visible_x}" y1="237" x2="${visible_x}" y2="251" stroke="${visibleColor}" stroke-width="2"/>
         <line x1="${glans_tip_x}" y1="237" x2="${glans_tip_x}" y2="251" stroke="${visibleColor}" stroke-width="2"/>
-        <text x="${(visible_x + glans_tip_x) / 2}" y="266" fill="${visibleColor}" font-size="12.5" font-weight="800" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif">ยาวมองเห็นพ้นไขมัน (NBPEL): ${l_e.toFixed(1)} mm</text>
+        <text x="${(visible_x + glans_tip_x) / 2}" y="266" fill="${visibleColor}" font-size="12.5" font-weight="800" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif">ยาวมองเห็นพ้นไขมัน (NBPEL): ${formatMm(l_e)}</text>
 
-        <!-- FLACCID SHAPE OVERLAY (Cyan Dashed Contour starting at x0) -->
-        <rect id="svgShaftFlaccid" x="${f_shaft_x}" y="${f_shaft_y}" width="${f_shaft_len}" height="${f_h}" rx="8"
-              fill="url(#flaccidGrad)" stroke="var(--cyan)" stroke-width="1.6" stroke-dasharray="5 3"/>
-
-        <path id="svgGlansFlaccid" d="M ${f_glans_x},${cy - (f_glans_h / 2)}
-                  C ${f_glans_x + (f_glans_len * 0.45)},${cy - (f_glans_h / 2) - 0.5} ${f_tip_x - (f_glans_len * 0.15)},${cy - (f_glans_h * 0.35)} ${f_tip_x - 1.5},${cy - (f_glans_h * 0.16)}
-                  C ${f_tip_x + 3},${cy - (f_glans_h * 0.08)} ${f_tip_x + 3},${cy + (f_glans_h * 0.08)} ${f_tip_x - 1.5},${cy + (f_glans_h * 0.16)}
-                  C ${f_tip_x - (f_glans_len * 0.15)},${cy + (f_glans_h * 0.35)} ${f_glans_x + (f_glans_len * 0.45)},${cy + (f_glans_h / 2) + 0.5} ${f_glans_x},${cy + (f_glans_h / 2)}
-                  C ${f_glans_x - 3},${cy + (f_h * 0.35)} ${f_glans_x - 3},${cy - (f_h * 0.35)} ${f_glans_x},${cy - (f_glans_h / 2)} Z"
-              fill="rgba(0,229,255,0.22)" stroke="var(--cyan)" stroke-width="1.6" stroke-dasharray="5 3"/>
-
-        <text x="${(x0 + f_tip_x) / 2}" y="${cy + 4}" fill="#ffffff" font-size="12" font-weight="900" text-anchor="middle" font-family="'Prompt', 'Outfit', sans-serif" style="text-shadow:0 1px 4px rgba(0,0,0,0.85);">Flaccid: ${l_f.toFixed(1)} mm</text>
       `;
     }
 
+    let _passportReturnFocus = null;
+    let _medicalReturnFocus = null;
+
+    function restoreModalFocus(target) {
+      if (target instanceof HTMLElement && document.contains(target)) target.focus();
+    }
+
     function openPassportModal() {
+      const validation = validateMeasurementsForAction();
+      if (!validation.valid || !calculate(true, false)) return false;
       // inject URL config ลง watermark อัตโนมัติ
       const urlEl = document.getElementById('passportSiteUrl');
       if (urlEl) urlEl.textContent = SITE_URL;
+      _passportReturnFocus = document.activeElement;
       document.getElementById('passportModalOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('passportCloseButton')?.focus());
+      return true;
     }
-    function closePassportModal() { document.getElementById('passportModalOverlay').style.display = 'none'; }
+    function closePassportModal() {
+      document.getElementById('passportModalOverlay').style.display = 'none';
+      restoreModalFocus(_passportReturnFocus);
+      _passportReturnFocus = null;
+    }
 
     // Name Edit Toggle — double-click to edit, blur/Enter to save
     function startEditName() {
@@ -3032,34 +4457,224 @@
       display.style.display = '';
     }
 
-    function openMedicalModal() { document.getElementById('medicalModalOverlay').style.display = 'flex'; }
-    function closeMedicalModal() { document.getElementById('medicalModalOverlay').style.display = 'none'; }
-
-    let _userPhotoUploaded = false; // flag: มีรูปจริงแล้วหรือยัง
-
-    function loadPassportPhoto(input) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const modalImg = document.getElementById('passportImgView');
-          const exportImg = document.getElementById('exportImgView');
-          modalImg.src = e.target.result;
-          exportImg.src = e.target.result;
-          _userPhotoUploaded = true;
-          showToast('📸 อัปโหลดรูปภาพเรียบร้อย!');
-          if (typeof sendAnonymousAnalytics === 'function') {
-            sendAnonymousAnalytics(true, 300);
-          }
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
+    function setMedicalDetailsExpanded(expanded) {
+      const toggle = document.getElementById('medicalDetailsToggle');
+      const label = document.getElementById('medicalDetailsToggleText');
+      const panel = document.getElementById('medicalDetailsPanel');
+      if (!toggle || !label || !panel) return;
+      toggle.setAttribute('aria-expanded', String(expanded));
+      panel.hidden = !expanded;
+      label.textContent = expanded ? 'ซ่อนรายละเอียดและกลับไปดูสรุป' : 'ดูรายละเอียดและตารางทั้งหมด 3 หมวด';
     }
 
-    // ===== CONFIG: เปลี่ยน URL ตรงนี้เมื่อ Deploy =====
-    const SITE_URL = 'localhost:3100/male_calculator.html';
+    function toggleMedicalDetails() {
+      const toggle = document.getElementById('medicalDetailsToggle');
+      setMedicalDetailsExpanded(toggle?.getAttribute('aria-expanded') !== 'true');
+    }
+
+    function openMedicalModal() {
+      const validation = validateMeasurementsForAction();
+      if (!validation.valid || !calculate(true, false)) return false;
+      setMedicalDetailsExpanded(false);
+      _medicalReturnFocus = document.activeElement;
+      document.getElementById('medicalModalOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('medicalCloseButton')?.focus());
+      return true;
+    }
+    function closeMedicalModal() {
+      document.getElementById('medicalModalOverlay').style.display = 'none';
+      restoreModalFocus(_medicalReturnFocus);
+      _medicalReturnFocus = null;
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      const saveOverlay = document.getElementById('passportSaveOverlay');
+      if (saveOverlay?.classList.contains('open')) {
+        closePassportSavePreview();
+        return;
+      }
+      const medicalModal = document.getElementById('medicalModalOverlay');
+      const passportModal = document.getElementById('passportModalOverlay');
+      if (medicalModal?.style.display === 'flex') {
+        closeMedicalModal();
+      } else if (passportModal?.style.display === 'flex') {
+        closePassportModal();
+      }
+    });
+
+    let _userPhotoUploaded = false; // flag: มีรูปจริงแล้วหรือยัง
+    const _passportPhotoCrop = {
+      naturalWidth: 0, naturalHeight: 0, zoom: 1, panX: 0, panY: 0,
+      editing: false, dragging: false, moved: false, suppressClick: false,
+      startClientX: 0, startClientY: 0, startPanX: 0, startPanY: 0
+    };
+
+    function clampPassportCrop(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function getPassportCropGeometry() {
+      const hero = document.getElementById('passportPhotoHero');
+      if (!hero || !_passportPhotoCrop.naturalWidth || !_passportPhotoCrop.naturalHeight) return null;
+      const frameWidth = hero.clientWidth;
+      const frameHeight = hero.clientHeight;
+      const coverScale = Math.max(frameWidth / _passportPhotoCrop.naturalWidth, frameHeight / _passportPhotoCrop.naturalHeight);
+      const scale = coverScale * _passportPhotoCrop.zoom;
+      const imageWidth = _passportPhotoCrop.naturalWidth * scale;
+      const imageHeight = _passportPhotoCrop.naturalHeight * scale;
+      return {
+        imageWidth: imageWidth, imageHeight: imageHeight,
+        maxX: Math.max(0, (imageWidth - frameWidth) / 2),
+        maxY: Math.max(0, (imageHeight - frameHeight) / 2)
+      };
+    }
+
+    function applyPassportPhotoCrop() {
+      const img = document.getElementById('passportImgView');
+      const geometry = getPassportCropGeometry();
+      if (!img || !geometry) return;
+      const offsetX = _passportPhotoCrop.panX * geometry.maxX;
+      const offsetY = _passportPhotoCrop.panY * geometry.maxY;
+      img.style.position = 'absolute';
+      img.style.left = '50%';
+      img.style.top = '50%';
+      img.style.width = geometry.imageWidth + 'px';
+      img.style.height = geometry.imageHeight + 'px';
+      img.style.maxWidth = 'none';
+      img.style.objectFit = 'fill';
+      img.style.transform = 'translate(-50%, -50%) translate(' + offsetX + 'px, ' + offsetY + 'px)';
+    }
+
+    function setPassportPhotoEditor(open) {
+      const hero = document.getElementById('passportPhotoHero');
+      const editor = document.getElementById('passportPhotoEditor');
+      _passportPhotoCrop.editing = Boolean(open && _userPhotoUploaded);
+      if (hero) hero.classList.toggle('is-editing', _passportPhotoCrop.editing);
+      if (editor) editor.hidden = !_passportPhotoCrop.editing;
+    }
+
+    function updatePassportPhotoOverlay() {
+      const icon = document.getElementById('passportPhotoOverlayIcon');
+      const label = document.getElementById('passportPhotoOverlayText');
+      if (icon) icon.textContent = _userPhotoUploaded ? '✥' : '📷';
+      if (label) label.textContent = _userPhotoUploaded ? 'คลิกเพื่อจัดภาพ' : 'อัปโหลดรูปภาพ';
+    }
+
+    function handlePassportPhotoFrameClick() {
+      if (_passportPhotoCrop.suppressClick) {
+        _passportPhotoCrop.suppressClick = false;
+        return;
+      }
+      if (!_userPhotoUploaded) document.getElementById('passportFileUploader').click();
+      else if (!_passportPhotoCrop.editing) setPassportPhotoEditor(true);
+    }
+
+    function handlePassportPhotoFrameKeydown(event) {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      handlePassportPhotoFrameClick();
+    }
+
+    function startPassportPhotoDrag(event) {
+      if (!_userPhotoUploaded) return;
+      if (!_passportPhotoCrop.editing) setPassportPhotoEditor(true);
+      if (!getPassportCropGeometry()) return;
+      _passportPhotoCrop.dragging = true;
+      _passportPhotoCrop.moved = false;
+      _passportPhotoCrop.startClientX = event.clientX;
+      _passportPhotoCrop.startClientY = event.clientY;
+      _passportPhotoCrop.startPanX = _passportPhotoCrop.panX;
+      _passportPhotoCrop.startPanY = _passportPhotoCrop.panY;
+      event.currentTarget.classList.add('is-dragging');
+      event.currentTarget.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    }
+
+    function movePassportPhotoDrag(event) {
+      if (!_passportPhotoCrop.dragging) return;
+      const geometry = getPassportCropGeometry();
+      if (!geometry) return;
+      const deltaX = event.clientX - _passportPhotoCrop.startClientX;
+      const deltaY = event.clientY - _passportPhotoCrop.startClientY;
+      if (Math.abs(deltaX) + Math.abs(deltaY) > 3) _passportPhotoCrop.moved = true;
+      const startOffsetX = _passportPhotoCrop.startPanX * geometry.maxX;
+      const startOffsetY = _passportPhotoCrop.startPanY * geometry.maxY;
+      _passportPhotoCrop.panX = geometry.maxX ? clampPassportCrop((startOffsetX + deltaX) / geometry.maxX, -1, 1) : 0;
+      _passportPhotoCrop.panY = geometry.maxY ? clampPassportCrop((startOffsetY + deltaY) / geometry.maxY, -1, 1) : 0;
+      applyPassportPhotoCrop();
+      event.preventDefault();
+    }
+
+    function endPassportPhotoDrag(event) {
+      if (!_passportPhotoCrop.dragging) return;
+      _passportPhotoCrop.dragging = false;
+      _passportPhotoCrop.suppressClick = _passportPhotoCrop.moved;
+      event.currentTarget.classList.remove('is-dragging');
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    function setPassportPhotoZoom(value) {
+      _passportPhotoCrop.zoom = clampPassportCrop(Number(value) || 1, 1, 3);
+      const output = document.getElementById('passportPhotoZoomValue');
+      if (output) output.textContent = Math.round(_passportPhotoCrop.zoom * 100) + '%';
+      applyPassportPhotoCrop();
+    }
+
+    function resetPassportPhotoCrop() {
+      _passportPhotoCrop.zoom = 1;
+      _passportPhotoCrop.panX = 0;
+      _passportPhotoCrop.panY = 0;
+      const slider = document.getElementById('passportPhotoZoom');
+      if (slider) slider.value = '1';
+      setPassportPhotoZoom(1);
+    }
+
+    function finishPassportPhotoCrop() {
+      setPassportPhotoEditor(false);
+      showToast('✓ บันทึกตำแหน่งรูปแล้ว');
+    }
+
+    function chooseNewPassportPhoto() {
+      document.getElementById('passportFileUploader').click();
+    }
+
+    function loadPassportPhoto(input) {
+      if (!input.files || !input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const modalImg = document.getElementById('passportImgView');
+        const exportImg = document.getElementById('exportImgView');
+        const photoSource = e.target.result;
+        modalImg.onload = function () {
+          _passportPhotoCrop.naturalWidth = modalImg.naturalWidth;
+          _passportPhotoCrop.naturalHeight = modalImg.naturalHeight;
+          _userPhotoUploaded = true;
+          resetPassportPhotoCrop();
+          setPassportPhotoEditor(true);
+          updatePassportPhotoOverlay();
+          modalImg.onload = null;
+          showToast('📸 ลากรูปเพื่อจัดตำแหน่ง แล้วปรับซูมได้');
+          if (typeof sendAnonymousAnalytics === 'function') sendAnonymousAnalytics(true, 300);
+        };
+        modalImg.src = photoSource;
+        exportImg.src = photoSource;
+      };
+      reader.readAsDataURL(input.files[0]);
+      input.value = '';
+    }
+
+    window.addEventListener('resize', function () {
+      if (_userPhotoUploaded) applyPassportPhotoCrop();
+    });
+
+    // ใช้ canonical production domain บน Passport Preview และ Passport PNG เสมอ
+    const SITE_URL = 'www.mysex.dev';
     // ===================================================
 
     async function exportPassportCard() {
+      const validation = validateMeasurementsForAction({ onInvalid: closePassportModal });
+      if (!validation.valid || !calculate(true, false)) return false;
       const card = document.getElementById('passportExportCard');
       if (!card) return;
 
@@ -3071,7 +4686,7 @@
       const modalImg = document.getElementById('passportImgView');
       const exportImg = document.getElementById('exportImgView');
       if (_userPhotoUploaded && modalImg && exportImg) {
-        const croppedUrl = await _preCropImage(modalImg.src, 400, 420);
+        const croppedUrl = await _preCropImage(modalImg.src, 400, 420, _passportPhotoCrop);
         exportImg.src = croppedUrl;
         exportImg.style.objectFit = 'fill'; // รูป crop แล้ว แค่ fill เต็ม container
         await new Promise((resolve) => {
@@ -3117,26 +4732,29 @@
 
     // Pre-crop รูปด้วย canvas → จำลอง object-fit:cover แบบ manual
     // html2canvas ไม่รองรับ object-fit:cover จึงต้อง crop เองก่อน
-    function _preCropImage(imgSrc, targetW, targetH) {
+    function _preCropImage(imgSrc, targetW, targetH, cropState) {
       return new Promise((resolve) => {
         const img = new Image();
         img.onload = function () {
           const c = document.createElement('canvas');
-          c.width = targetW * 2;   // 2x สำหรับ retina
+          c.width = targetW * 2;
           c.height = targetH * 2;
           const ctx = c.getContext('2d');
-
-          // คำนวณ cover crop: scale ให้เต็ม แล้ว center
-          const scale = Math.max((targetW * 2) / img.width, (targetH * 2) / img.height);
-          const sw = img.width * scale;
-          const sh = img.height * scale;
-          const ox = ((targetW * 2) - sw) / 2;
-          const oy = ((targetH * 2) - sh) / 2;
-
-          ctx.drawImage(img, ox, oy, sw, sh);
+          const zoom = cropState && cropState.zoom ? cropState.zoom : 1;
+          const panX = cropState && Number.isFinite(cropState.panX) ? cropState.panX : 0;
+          const panY = cropState && Number.isFinite(cropState.panY) ? cropState.panY : 0;
+          const coverScale = Math.max(c.width / img.width, c.height / img.height);
+          const scale = coverScale * zoom;
+          const drawWidth = img.width * scale;
+          const drawHeight = img.height * scale;
+          const maxX = Math.max(0, (drawWidth - c.width) / 2);
+          const maxY = Math.max(0, (drawHeight - c.height) / 2);
+          const offsetX = ((c.width - drawWidth) / 2) + (panX * maxX);
+          const offsetY = ((c.height - drawHeight) / 2) + (panY * maxY);
+          ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
           resolve(c.toDataURL('image/jpeg', 0.92));
         };
-        img.onerror = () => resolve(imgSrc); // fallback ใช้รูปเดิม
+        img.onerror = () => resolve(imgSrc);
         img.src = imgSrc;
       });
     }
@@ -3149,73 +4767,156 @@
       card.style.pointerEvents = '';
     }
 
-    function _downloadCanvas(canvas) {
-      // มือถือ: link.click() อาจไม่ download → เปิดรูปใน tab ใหม่ให้ long press save
-      const dataUrl = canvas.toDataURL('image/png');
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (isMobile) {
-        const w = window.open();
-        if (w) {
-          w.document.write(`<html><head><title>Spec Passport</title></head><body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#111;"><img src="${dataUrl}" style="max-width:100%;height:auto;"><br></body></html>`);
-          w.document.close();
-          showToast('📲 กดค้างที่รูปเพื่อบันทึก!');
-        } else {
-          // popup blocked → fallback download
-          const link = document.createElement('a');
-          link.download = 'spec_passport.png';
-          link.href = dataUrl;
-          link.click();
-          showToast('✅ บันทึกการ์ดเรียบร้อย!');
+    let _preparedPassportFile = null;
+    let _passportSaveObjectUrl = '';
+    let _passportSaveReturnFocus = null;
+    let _preparedShareTitle = 'MySex Spec Passport';
+
+    function openPassportSavePreview(blob, dataUrl, options = {}) {
+      const overlay = document.getElementById('passportSaveOverlay');
+      const image = document.getElementById('passportSaveImage');
+      const shareButton = document.getElementById('passportNativeShareButton');
+      const hint = document.getElementById('passportSaveHint');
+      const fileName = options.fileName || 'spec_passport.png';
+      const shareTitle = options.shareTitle || 'MySex Spec Passport';
+      const previewTitle = options.previewTitle || 'บันทึก Spec Passport';
+      const titleElement = document.getElementById('passportSaveTitle');
+      if (titleElement) titleElement.textContent = previewTitle;
+      _preparedShareTitle = shareTitle;
+      if (!overlay || !image) return;
+
+      if (_passportSaveObjectUrl) {
+        URL.revokeObjectURL(_passportSaveObjectUrl);
+        _passportSaveObjectUrl = '';
+      }
+
+      _preparedPassportFile = null;
+      if (blob) {
+        _passportSaveObjectUrl = URL.createObjectURL(blob);
+        image.src = _passportSaveObjectUrl;
+        try {
+          _preparedPassportFile = new File([blob], fileName, { type: 'image/png' });
+        } catch (_) {
+          _preparedPassportFile = null;
         }
       } else {
+        image.src = dataUrl;
+      }
+
+      let canNativeShare = false;
+      if (window.isSecureContext && _preparedPassportFile && navigator.share && navigator.canShare) {
+        try {
+          canNativeShare = navigator.canShare({ files: [_preparedPassportFile] });
+        } catch (_) {
+          canNativeShare = false;
+        }
+      }
+
+      if (shareButton) shareButton.classList.toggle('available', canNativeShare);
+      if (hint) {
+        hint.textContent = canNativeShare
+          ? 'กดปุ่มด้านล่างเพื่อเปิดเมนูแชร์ หรือกดค้างที่รูปเพื่อบันทึก'
+          : 'กดค้างที่รูป แล้วเลือก “บันทึกรูปภาพ” หรือ “เพิ่มไปยังรูปภาพ”';
+      }
+
+      _passportSaveReturnFocus = document.activeElement;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(() => document.getElementById('passportSaveCloseButton')?.focus());
+      showToast('📲 สร้างรูปแล้ว — กดค้างที่รูปเพื่อบันทึก');
+    }
+
+    function closePassportSavePreview() {
+      const overlay = document.getElementById('passportSaveOverlay');
+      if (overlay) overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      restoreModalFocus(_passportSaveReturnFocus);
+      _passportSaveReturnFocus = null;
+    }
+
+    async function sharePreparedPassport() {
+      if (!_preparedPassportFile || !navigator.share) return;
+      try {
+        await navigator.share({
+          files: [_preparedPassportFile],
+          title: _preparedShareTitle
+        });
+      } catch (error) {
+        if (error && error.name !== 'AbortError') {
+          showToast('กดค้างที่รูปเพื่อบันทึกแทนได้');
+        }
+      }
+    }
+
+    function _downloadCanvas(canvas, options = {}) {
+      const fileName = options.fileName || 'spec_passport.png';
+      const shareTitle = options.shareTitle || 'MySex Spec Passport';
+      const previewTitle = options.previewTitle || 'บันทึก Spec Passport';
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (!isMobile) {
         const link = document.createElement('a');
-        link.download = 'spec_passport.png';
-        link.href = dataUrl;
+        link.download = fileName;
+        link.href = canvas.toDataURL('image/png');
         link.click();
         showToast('✅ บันทึกการ์ดเรียบร้อย!');
+        return;
       }
+
+      const fallbackDataUrl = canvas.toDataURL('image/png');
+      if (typeof canvas.toBlob !== 'function') {
+        openPassportSavePreview(null, fallbackDataUrl, { fileName, shareTitle, previewTitle });
+        return;
+      }
+
+      canvas.toBlob(function (blob) {
+        openPassportSavePreview(blob, fallbackDataUrl, { fileName, shareTitle, previewTitle });
+      }, 'image/png');
     }
 
     function downloadPassportCard() { exportPassportCard(); }
 
     function downloadMedicalReport() {
+      const validation = validateMeasurementsForAction({ onInvalid: closeMedicalModal });
+      if (!validation.valid || !calculate(true, false)) return false;
+      const report = latestMetricsSnapshot;
+      if (!report) return false;
+      const { l_flaccid, g_flaccid, l_erect, g_erect, t_fat } = report.measurements;
       const canvas = document.createElement('canvas');
-      canvas.width = 700; canvas.height = 500;
+      canvas.width = 600; canvas.height = 440;
       const ctx = canvas.getContext('2d');
 
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 700, 500);
-      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 4; ctx.strokeRect(10, 10, 680, 480);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 600, 440);
+      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 4; ctx.strokeRect(10, 10, 580, 420);
 
       ctx.fillStyle = '#0369a1'; ctx.font = 'bold 20px Prompt, sans-serif';
-      ctx.fillText('🩺 MALE UROLOGICAL EVALUATION REPORT', 30, 45);
+      ctx.fillText('🔬 MALE ANATOMICAL DEEP ANALYSIS', 30, 45);
 
       ctx.fillStyle = '#64748b'; ctx.font = '14px Prompt, sans-serif';
-      let nameVal = document.getElementById('passName').value || 'พี่โด Master Specs';
       let now = new Date();
-      ctx.fillText(`ผู้รับการประเมิน: ${nameVal} | วันที่: ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`, 30, 75);
+      ctx.fillText(`วันที่คำนวณ: ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`, 30, 75);
 
       ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(30, 90); ctx.lineTo(670, 90); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(30, 90); ctx.lineTo(570, 90); ctx.stroke();
 
       ctx.fillStyle = '#0f172a'; ctx.font = '15px Prompt, sans-serif';
-      ctx.fillText(`🔹 สรีระอ่อนตัว (Flaccid): ${document.getElementById('medLenFlaccid').innerText} x ${document.getElementById('medGirthFlaccid').innerText} mm`, 30, 125);
-      ctx.fillText(`🔹 สรีระแข็งตัว (Erect): ${document.getElementById('medLenErect').innerText} x ${document.getElementById('medGirthErect').innerText} mm`, 30, 155);
-      ctx.fillText(`🔹 ความยาวชิดกระดูก (BPEL): ${document.getElementById('l_erect').value} + ${document.getElementById('t_fat').value} mm`, 30, 185);
-      ctx.fillText(`🔹 ดัชนีควยเลือด (BFPI): ${document.getElementById('resBfpi').innerText}`, 30, 215);
-      ctx.fillText(`🔹 เลือดสูบฉีดเข้าถ้ำ (Blood Vol): ${document.getElementById('resBloodVol').innerText}`, 30, 245);
-      ctx.fillText(`🔹 ไซส์ถุงยางอนามัย (Nominal Width): ${document.getElementById('resCondom').innerText}`, 30, 275);
-      ctx.fillText(`🔹 สถิติความยาวเปรียบเทียบ: ${document.getElementById('resLenRank').innerText}`, 30, 305);
-      ctx.fillText(`🔹 สถิติรอบวงเปรียบเทียบ: ${document.getElementById('resGirthRank').innerText}`, 30, 335);
+      ctx.fillText(`🔹 สรีระอ่อนตัว (Flaccid): ${formatMetricNumber(l_flaccid)} × ${formatMm(g_flaccid)}`, 30, 125);
+      ctx.fillText(`🔹 สรีระแข็งตัว (Erect): ${formatMetricNumber(l_erect)} × ${formatMm(g_erect)}`, 30, 155);
+      ctx.fillText(`🔹 ความยาวชิดกระดูก (BPEL): ${formatMetricNumber(l_erect)} + ${formatMetricNumber(t_fat)} = ${formatMm(report.bpelMm)}`, 30, 185);
+      ctx.fillText(`🔹 ดัชนีควยเลือด (BFPI): ${report.bfpi.toFixed(2)}`, 30, 215);
+      ctx.fillText(`🔹 ปริมาตรเพิ่มโดยประมาณ (ΔV): ${report.bloodVolumeCc >= 0 ? '+' : ''}${report.bloodVolumeCc.toFixed(1)} cc · แบบจำลองทรงกระบอก`, 30, 245);
+      ctx.fillText(`🔹 ไซส์ถุงยางโดยประมาณ: ${formatMm(report.bestSize)}${report.condomInRange ? ' · ใกล้เคียง' : ' · นอกช่วง 49–72 มม. ตรวจผู้ผลิต'}`, 30, 275);
+      ctx.fillText(`🔹 สถิติความยาวเปรียบเทียบ: Top ${(100 - report.lengthPercentile).toFixed(2)}%`, 30, 305);
+      ctx.fillText(`🔹 สถิติรอบวงเปรียบเทียบ: Top ${(100 - report.girthPercentile).toFixed(2)}%`, 30, 335);
 
-      ctx.strokeStyle = '#cbd5e1'; ctx.beginPath(); ctx.moveTo(30, 370); ctx.lineTo(670, 370); ctx.stroke();
+      ctx.strokeStyle = '#cbd5e1'; ctx.beginPath(); ctx.moveTo(30, 370); ctx.lineTo(570, 370); ctx.stroke();
       ctx.fillStyle = '#0369a1'; ctx.font = 'bold 12px Prompt, sans-serif';
-      ctx.fillText('OFFICIAL CLINICAL REPORT • VERIFIED BY MALE DIAGNOSTICS CALCULATOR', 30, 410);
+      ctx.fillText('PERSONAL SPEC ANALYSIS • MYSEX', 30, 410);
 
-      const link = document.createElement('a');
-      link.download = 'Urological_Medical_Report.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      showToast('💾 ดาวน์โหลดรายงานทางการแพทย์เรียบร้อย!');
+      _downloadCanvas(canvas, {
+        fileName: 'MySex_Deep_Analysis.png',
+        shareTitle: 'MySex Deep Analysis',
+        previewTitle: 'บันทึก Deep Analysis'
+      });
     }
 
     function showToast(msg) {
@@ -3225,7 +4926,7 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    window.onload = calculate;
+    window.onload = () => calculate(false, false);
   </script>
 </body>
 
