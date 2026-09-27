@@ -1,5 +1,13 @@
-# Fix scripts (temporary)
-*.js
+# Temporary files
+/.tmp/
+/tmp/
+*.tmp.js
+/debug.log
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
 
 # Personal photos (block by name)
 AYE-*.jpg
