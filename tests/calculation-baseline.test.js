@@ -34,11 +34,6 @@ class FakeElement {
 }
 
 function loadCurrentCalculator() {
-  const html = fs.readFileSync('index.html', 'utf8');
-  const scriptStart = html.indexOf('<script>', html.indexOf('html2canvas'));
-  const scriptEnd = html.indexOf('</script>', scriptStart);
-  if (scriptStart < 0 || scriptEnd < 0) throw new Error('Main inline script not found');
-
   const elements = new Map();
   const getElement = (id) => {
     if (!elements.has(id)) elements.set(id, new FakeElement());
@@ -94,7 +89,7 @@ function loadCurrentCalculator() {
 
   vm.createContext(context);
   vm.runInContext(fs.readFileSync('calculator-core.js', 'utf8'), context, { filename: 'calculator-core.js' });
-  vm.runInContext(html.slice(scriptStart + '<script>'.length, scriptEnd), context, { filename: 'index-inline.js' });
+  vm.runInContext(fs.readFileSync('app.js', 'utf8'), context, { filename: 'app.js' });
   return context;
 }
 

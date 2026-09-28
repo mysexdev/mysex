@@ -1,0 +1,2273 @@
+    /* ============================================================
+       CSS VARIABLES — LIGHT THEME (DEFAULT) & DARK THEME TOGGLE
+    ============================================================ */
+    :root,
+    [data-theme="light"] {
+      --bg: #f4f6fb;
+      --bg2: #e8ecf5;
+      --card: rgba(255, 255, 255, 0.92);
+      --card-hover: rgba(255, 255, 255, 0.98);
+      --border: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.16);
+
+      --pink: #d81b60;
+      --cyan: #00838f;
+      --purple: #7b1fa2;
+      --gold: #d97706;
+      --green: #16a34a;
+      --red: #dc2626;
+
+      --text: #0f172a;
+      --muted: #475569;
+      --dim: #64748b;
+
+      --input-bg: rgba(241, 245, 249, 0.95);
+      --input-border: rgba(0, 0, 0, 0.12);
+      --metric-bg: rgba(248, 250, 252, 0.8);
+
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --font: 'Prompt', 'Outfit', sans-serif;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    [data-theme="dark"] {
+      --bg: #07070f;
+      --bg2: #0d0d1a;
+      --card: rgba(15, 15, 28, 0.75);
+      --card-hover: rgba(22, 22, 42, 0.88);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.2);
+
+      --pink: #ff2a85;
+      --cyan: #00e5ff;
+      --purple: #b44dff;
+      --gold: #ffc600;
+      --green: #2ed573;
+      --red: #ff4757;
+
+      --text: #f1f2f6;
+      --muted: #8a8fa8;
+      --dim: #555872;
+
+      --input-bg: rgba(0, 0, 0, 0.4);
+      --input-border: rgba(255, 255, 255, 0.09);
+      --metric-bg: rgba(0, 0, 0, 0.25);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 15% 10%, rgba(216, 27, 96, 0.08) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 85%, rgba(0, 131, 143, 0.06) 0%, transparent 45%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.5;
+      padding: 16px 12px 60px;
+      min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    header {
+      position: relative;
+      text-align: center;
+      padding: 16px 20px 12px;
+      margin-bottom: 14px;
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    header h1 {
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 50%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.4px;
+      margin-bottom: 2px;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .header-top-right {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s;
+    }
+
+    .theme-toggle-btn:hover {
+      border-color: var(--pink);
+    }
+
+    .badge-phase {
+      display: inline-block;
+      background: rgba(216, 27, 96, 0.1);
+      border: 1px solid rgba(216, 27, 96, 0.25);
+      color: var(--pink);
+      padding: 2px 10px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    /* PRESETS */
+    .preset-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .btn-preset {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-preset:hover {
+      transform: translateY(-1px);
+      border-color: var(--pink);
+    }
+
+    .btn-preset.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(216, 27, 96, 0.3);
+    }
+
+    /* GRID LAYOUT */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .card-top-stack {
+      z-index: 100 !important;
+    }
+
+    .card-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title-text {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* FORM STYLES & LABELS */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .field-sublabel {
+      font-size: 0.73rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .unit-toggle {
+      display: flex;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-md);
+      padding: 2px;
+      gap: 2px;
+      margin-bottom: 12px;
+    }
+
+    .unit-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 5px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .unit-btn.active {
+      background: var(--pink);
+      color: #fff;
+    }
+
+    /* REGION TOGGLE BUTTONS */
+    .region-toggle-group {
+      display: flex;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 50px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .region-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .region-btn.active {
+      background: var(--pink);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(216, 27, 96, 0.3);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      padding: 8px 32px 8px 10px;
+      font-family: var(--font);
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--pink);
+    }
+
+    .form-input.is-invalid {
+      border-color: var(--red);
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+    }
+
+    .field-error {
+      min-height: 1.1em;
+      margin-top: 4px;
+      color: var(--red);
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    .measurement-warning {
+      margin-top: 10px;
+      padding: 9px 11px;
+      border: 1px solid rgba(217, 119, 6, 0.35);
+      border-radius: var(--radius-md);
+      background: rgba(217, 119, 6, 0.08);
+      color: var(--text);
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+
+    .input-unit {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.72rem;
+      color: var(--dim);
+      font-weight: 700;
+    }
+
+    /* METRICS CARDS & GAUGE BAR */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .metric-card {
+      background: var(--metric-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .metric-card.updated {
+      animation: pulseHighlight 0.4s ease-out;
+    }
+
+    @keyframes pulseHighlight {
+      0% {
+        transform: scale(0.97);
+        border-color: var(--pink);
+        box-shadow: 0 0 12px rgba(216, 27, 96, 0.3);
+      }
+
+      100% {
+        transform: scale(1);
+        border-color: var(--border);
+        box-shadow: none;
+      }
+    }
+
+    .metric-title {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+
+    .metric-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      font-family: 'Outfit', var(--font);
+      line-height: 1.2;
+      transition: color 0.3s;
+    }
+
+    .metric-sub {
+      font-size: 0.68rem;
+      color: var(--dim);
+      margin-top: 2px;
+      transition: color 0.3s;
+    }
+
+    .gauge-container {
+      position: relative;
+      margin: 10px 0 6px;
+    }
+
+    .gauge-bar {
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(90deg, #d97706 0%, #d97706 33.3%, #7b1fa2 33.3%, #7b1fa2 66.6%, #d81b60 66.6%, #d81b60 100%);
+      border-radius: 10px;
+      position: relative;
+      overflow: visible;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+    .gauge-pointer {
+      position: absolute;
+      top: -4px;
+      width: 16px;
+      height: 18px;
+      background: #ffffff;
+      border: 2.5px solid var(--text);
+      border-radius: 4px;
+      transform: translateX(-50%);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 5;
+    }
+
+    .gauge-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: var(--dim);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .badge-flesh {
+      background: rgba(217, 119, 6, 0.12);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+    }
+
+    .badge-hybrid {
+      background: rgba(123, 31, 162, 0.12);
+      border: 1px solid var(--purple);
+      color: var(--purple);
+    }
+
+    .badge-blood {
+      background: rgba(216, 27, 96, 0.12);
+      border: 1px solid var(--pink);
+      color: var(--pink);
+    }
+
+    /* TOOLTIP POPUP */
+    .condom-tooltip {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 280px;
+      background: var(--card);
+      border: 1.5px solid var(--cyan);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
+      z-index: 999999 !important;
+      margin-top: 6px;
+    }
+
+    .condom-tooltip.show {
+      display: block;
+    }
+
+    /* ACTION BUTTONS */
+    .btn-action {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border: none;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(216, 27, 96, 0.3);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(216, 27, 96, 0.45);
+    }
+
+    .btn-action-med {
+      background: linear-gradient(135deg, #0284c7, #0f766e);
+      border: none;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+    }
+
+    .btn-action-med:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
+    }
+
+    /* MODAL OVERLAYS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999999;
+      padding: 16px;
+    }
+
+    /* ============================
+       PASSPORT CARD — PORTRAIT REDESIGN
+    ============================ */
+    .passport-card-box {
+      border-radius: var(--radius-xl);
+      padding: 0;
+      max-width: 380px;
+      /* Portrait width */
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      color: var(--text);
+      transition: all 0.3s;
+    }
+
+    /* --- LIGHT THEME PASSPORT --- */
+    [data-theme="light"] .passport-card-box {
+      background: linear-gradient(180deg, #ffffff 0%, #fdf4ff 70%, #fff0f6 100%);
+      border: 1.5px solid rgba(216, 27, 96, 0.25);
+      box-shadow: 0 24px 64px rgba(216, 27, 96, 0.12), 0 4px 16px rgba(0, 0, 0, 0.07);
+    }
+
+    /* --- DARK THEME PASSPORT --- */
+    [data-theme="dark"] .passport-card-box {
+      background: linear-gradient(180deg, rgba(10, 5, 22, 0.98) 0%, rgba(22, 8, 40, 0.98) 70%, rgba(18, 6, 32, 0.98) 100%);
+      border: 1px solid rgba(255, 42, 133, 0.35);
+      box-shadow: 0 0 0 1px rgba(180, 77, 255, 0.15), 0 24px 70px rgba(180, 77, 255, 0.3), 0 0 50px rgba(255, 42, 133, 0.12);
+      backdrop-filter: blur(24px);
+    }
+
+    /* PASSPORT TOP STRIPE */
+    .passport-stripe {
+      height: 5px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--pink) 0%, var(--purple) 50%, var(--cyan) 100%);
+    }
+
+    /* PASSPORT HEADER (compact) */
+    .passport-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px 8px;
+      gap: 6px;
+    }
+
+    .passport-badge-title {
+      font-family: 'Outfit', monospace;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    [data-theme="light"] .passport-badge-title {
+      background: linear-gradient(135deg, #d81b60, #7b1fa2);
+      color: #fff;
+    }
+
+    [data-theme="dark"] .passport-badge-title {
+      background: linear-gradient(135deg, rgba(255, 42, 133, 0.2), rgba(180, 77, 255, 0.2));
+      border: 1px solid rgba(255, 42, 133, 0.5);
+      color: var(--pink);
+      text-shadow: 0 0 8px rgba(255, 42, 133, 0.6);
+    }
+
+    /* PHOTO AREA — portrait-friendly 420px */
+    .passport-photo-hero {
+      width: 100%;
+      height: 420px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      background: #1a1025;
+    }
+
+    [data-theme="light"] .passport-photo-hero {
+      background: #f0e6f6;
+    }
+
+    .passport-photo-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .passport-photo-hero.is-editing { cursor: grab; touch-action: none; }
+    .passport-photo-hero.is-dragging { cursor: grabbing; }
+    .passport-photo-hero.is-editing .photo-hover-overlay { opacity: 0; }
+
+    .passport-photo-editor {
+      padding: 10px 14px 12px;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--card) 92%, var(--purple) 8%);
+    }
+
+    .passport-photo-editor[hidden] { display: none; }
+
+    .passport-photo-editor-top,
+    .passport-photo-editor-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .passport-photo-editor-top { margin-bottom: 9px; }
+    .passport-photo-editor-label { flex: 0 0 auto; color: var(--text); font-size: 0.72rem; font-weight: 800; }
+    .passport-photo-zoom { width: 100%; accent-color: var(--pink); cursor: pointer; }
+    .passport-photo-zoom-value { min-width: 38px; color: var(--pink); font-size: 0.7rem; font-weight: 800; text-align: right; }
+    .passport-photo-editor-actions { justify-content: flex-end; flex-wrap: wrap; }
+
+    .passport-photo-tool {
+      min-height: 32px;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--text);
+      font: 700 0.68rem var(--font);
+      cursor: pointer;
+    }
+
+    .passport-photo-tool:hover,
+    .passport-photo-tool:focus-visible { border-color: var(--pink); outline: none; }
+
+    .passport-photo-tool.done {
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+    }
+    /* PHOTO HOVER OVERLAY */
+    .photo-hover-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .passport-photo-hero:hover .photo-hover-overlay {
+      opacity: 1;
+    }
+
+    .photo-hover-overlay span {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .photo-hover-overlay small {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* SPECS GRID inside card */
+    .passport-specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 12px 14px 0;
+    }
+
+    .passport-spec-cell {
+      padding: 7px 6px;
+      border-bottom: 1px solid;
+    }
+
+    .passport-spec-cell:nth-child(odd) {
+      border-right: 1px solid;
+    }
+
+    [data-theme="light"] .passport-spec-cell {
+      border-color: rgba(0, 0, 0, 0.07);
+    }
+
+    [data-theme="dark"] .passport-spec-cell {
+      border-color: rgba(255, 255, 255, 0.07);
+    }
+
+    .passport-spec-label {
+      font-size: 0.6rem;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .passport-spec-value {
+      font-family: 'Outfit', monospace;
+      font-size: 1.05rem;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    /* CTA TAGLINE — static, not interactive */
+    .passport-cta {
+      text-align: center;
+      padding: 8px 14px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    [data-theme="light"] .passport-cta {
+      color: var(--pink);
+    }
+
+    [data-theme="dark"] .passport-cta {
+      color: rgba(255, 42, 133, 0.8);
+    }
+
+    /* PASSPORT SHAREABLE WATERMARK */
+    .passport-watermark {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.6rem;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    [data-theme="light"] .passport-watermark {
+      color: rgba(120, 100, 140, 0.65);
+    }
+
+    [data-theme="dark"] .passport-watermark {
+      color: rgba(200, 170, 230, 0.4);
+    }
+
+    .passport-watermark-url {
+      font-family: 'Outfit', monospace;
+      font-weight: 700;
+      font-size: 0.65rem;
+    }
+
+    [data-theme="light"] .passport-watermark-url {
+      color: var(--pink);
+    }
+
+    [data-theme="dark"] .passport-watermark-url {
+      color: rgba(255, 42, 133, 0.65);
+    }
+
+    /* PASSPORT FOOTER */
+    .passport-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px 14px;
+      border-top: 1px solid;
+    }
+
+    .passport-footer .passport-watermark {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+
+    [data-theme="light"] .passport-footer {
+      border-color: rgba(0, 0, 0, 0.07);
+    }
+
+    [data-theme="dark"] .passport-footer {
+      border-color: rgba(255, 255, 255, 0.07);
+    }
+
+    /* DARK SCANLINE DECORATION */
+    [data-theme="dark"] .passport-card-box::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      background: repeating-linear-gradient(90deg,
+          rgba(255, 42, 133, 0.05) 0px, rgba(255, 42, 133, 0.05) 2px,
+          transparent 2px, transparent 8px);
+      pointer-events: none;
+      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    }
+
+    /* ============================================================
+       EXPORT CARD — Hidden div, designed purely for PNG export
+       No buttons, no UI chrome. Captured by html2canvas.
+    ============================================================ */
+    #passportExportCard {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      width: 400px;
+      font-family: 'Prompt', 'Outfit', sans-serif;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    [data-theme="light"] #passportExportCard {
+      background: #ffffff;
+    }
+
+    [data-theme="dark"] #passportExportCard {
+      background: linear-gradient(180deg, #090518 0%, #13082e 100%);
+    }
+
+    /* Top stripe */
+    .ec-stripe {
+      height: 6px;
+      background: linear-gradient(90deg, #d81b60 0%, #7b1fa2 50%, #00838f 100%);
+    }
+
+    /* Header */
+    .ec-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 8px;
+    }
+
+    .ec-badge {
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    [data-theme="light"] .ec-badge {
+      background: linear-gradient(135deg, #d81b60, #7b1fa2);
+      color: #fff;
+    }
+
+    [data-theme="dark"] .ec-badge {
+      background: linear-gradient(135deg, rgba(255, 42, 133, 0.2), rgba(180, 77, 255, 0.2));
+      border: 1px solid rgba(255, 42, 133, 0.5);
+      color: #ff2a85;
+    }
+
+    .ec-certified {
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    [data-theme="light"] .ec-certified {
+      color: #d97706;
+    }
+
+    [data-theme="dark"] .ec-certified {
+      color: #ffc600;
+    }
+
+    /* Photo — portrait-friendly 420px */
+    .ec-photo {
+      width: 100%;
+      height: 420px;
+      overflow: hidden;
+      background: #1a1025;
+      position: relative;
+    }
+
+    [data-theme="light"] .ec-photo {
+      background: #f0e6f6;
+    }
+
+    .ec-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+
+
+    /* === CONDOM SIZE HERO — บนสุด เด่นที่สุด === */
+    .ec-condom-hero {
+      text-align: center;
+      padding: 12px 16px 8px;
+      border-bottom: 1px solid;
+    }
+
+    [data-theme="light"] .ec-condom-hero {
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    [data-theme="dark"] .ec-condom-hero {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .ec-condom-num {
+      font-family: 'Outfit', monospace;
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    [data-theme="light"] .ec-condom-num {
+      color: #d97706;
+    }
+
+    [data-theme="dark"] .ec-condom-num {
+      color: #ffc600;
+    }
+
+    .ec-condom-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 2px;
+    }
+
+    [data-theme="light"] .ec-condom-label {
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="dark"] .ec-condom-label {
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    /* === DIMENSIONS: ยาว | รอบวง === */
+    .ec-dims {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid;
+    }
+
+    [data-theme="light"] .ec-dims {
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    [data-theme="dark"] .ec-dims {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .ec-dim-cell {
+      padding: 10px 16px;
+      text-align: center;
+    }
+
+    .ec-dim-cell:first-child {
+      border-right: 1px solid;
+    }
+
+    [data-theme="light"] .ec-dim-cell {
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    [data-theme="dark"] .ec-dim-cell {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .ec-dim-num {
+      font-family: 'Outfit', monospace;
+      font-size: 1.9rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .ec-dim-unit {
+      font-family: 'Outfit', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      opacity: 0.55;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    /* === INFO ROW: ชื่อสาย | Rank === */
+    .ec-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 16px;
+      border-bottom: 1px solid;
+    }
+
+    [data-theme="light"] .ec-info-row {
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    [data-theme="dark"] .ec-info-row {
+      border-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .ec-arch-text {
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    [data-theme="light"] .ec-arch-text {
+      color: #d81b60;
+    }
+
+    [data-theme="dark"] .ec-arch-text {
+      color: #ff2a85;
+    }
+
+    .ec-rank-text {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    [data-theme="light"] .ec-rank-text {
+      color: #7b1fa2;
+    }
+
+    [data-theme="dark"] .ec-rank-text {
+      color: rgba(180, 77, 255, 0.9);
+    }
+
+    /* CTA + URL footer */
+    .ec-footer {
+      padding: 7px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .ec-cta {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    [data-theme="light"] .ec-cta {
+      color: #d81b60;
+    }
+
+    [data-theme="dark"] .ec-cta {
+      color: rgba(255, 42, 133, 0.8);
+    }
+
+    .ec-url {
+      font-family: 'Outfit', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    [data-theme="light"] .ec-url {
+      color: rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="dark"] .ec-url {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ============================================================ */
+
+    /* --- LIGHT THEME PASSPORT --- */
+    [data-theme="light"] .passport-card-box {
+      background: linear-gradient(145deg, #ffffff 0%, #fdf4ff 60%, #fff0f6 100%);
+      border: 1.5px solid rgba(216, 27, 96, 0.25);
+      box-shadow: 0 24px 64px rgba(216, 27, 96, 0.10), 0 4px 16px rgba(0, 0, 0, 0.07);
+    }
+
+    /* --- DARK THEME PASSPORT --- */
+    [data-theme="dark"] .passport-card-box {
+      background: linear-gradient(145deg, rgba(10, 5, 22, 0.97) 0%, rgba(22, 8, 40, 0.97) 60%, rgba(18, 6, 32, 0.97) 100%);
+      border: 1px solid rgba(255, 42, 133, 0.35);
+      box-shadow: 0 0 0 1px rgba(180, 77, 255, 0.15), 0 24px 70px rgba(180, 77, 255, 0.3), 0 0 50px rgba(255, 42, 133, 0.12);
+      backdrop-filter: blur(24px);
+    }
+
+    /* PASSPORT TOP STRIPE */
+    .passport-stripe {
+      height: 6px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--pink) 0%, var(--purple) 50%, var(--cyan) 100%);
+    }
+
+    /* PASSPORT INNER PADDING */
+    .passport-inner {
+      padding: 20px;
+    }
+
+    /* PASSPORT HEADER */
+    .passport-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .passport-badge-title {
+      font-family: 'Outfit', monospace;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    [data-theme="light"] .passport-badge-title {
+      background: linear-gradient(135deg, #d81b60, #7b1fa2);
+      color: #fff;
+    }
+
+    [data-theme="dark"] .passport-badge-title {
+      background: linear-gradient(135deg, rgba(255, 42, 133, 0.2), rgba(180, 77, 255, 0.2));
+      border: 1px solid rgba(255, 42, 133, 0.5);
+      color: var(--pink);
+      text-shadow: 0 0 8px rgba(255, 42, 133, 0.6);
+    }
+
+    /* PASSPORT BODY GRID */
+    .passport-body-grid {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* PHOTO FRAME */
+    .photo-upload-frame {
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 120px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    [data-theme="light"] .photo-upload-frame {
+      border: 2px dashed rgba(216, 27, 96, 0.35);
+      background: rgba(216, 27, 96, 0.04);
+    }
+
+    [data-theme="dark"] .photo-upload-frame {
+      border: 2px dashed rgba(255, 42, 133, 0.4);
+      background: rgba(255, 42, 133, 0.05);
+      box-shadow: 0 0 20px rgba(255, 42, 133, 0.1) inset;
+    }
+
+    .photo-upload-frame:hover {
+      border-color: var(--pink);
+      transform: scale(1.01);
+    }
+
+    .photo-upload-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* PHOTO HOVER OVERLAY — hidden by default, show on hover */
+    .photo-hover-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.52);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      border-radius: 10px;
+      pointer-events: none;
+    }
+
+    .photo-upload-frame:hover .photo-hover-overlay {
+      opacity: 1;
+    }
+
+    .photo-hover-overlay span {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .photo-hover-overlay small {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* PASSPORT SHAREABLE WATERMARK (always visible, styled for screenshots) */
+    .passport-watermark {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.65rem;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    [data-theme="light"] .passport-watermark {
+      color: rgba(120, 100, 140, 0.7);
+    }
+
+    [data-theme="dark"] .passport-watermark {
+      color: rgba(200, 170, 230, 0.45);
+    }
+
+    .passport-watermark-url {
+      font-family: 'Outfit', monospace;
+      font-weight: 700;
+      font-size: 0.7rem;
+    }
+
+    [data-theme="light"] .passport-watermark-url {
+      color: var(--pink);
+    }
+
+    [data-theme="dark"] .passport-watermark-url {
+      color: rgba(255, 42, 133, 0.7);
+    }
+
+    /* NAME INPUT */
+    .pass-name-input {
+      width: 100%;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      border: none;
+      border-bottom: 2px solid;
+      background: transparent;
+      outline: none;
+      margin-bottom: 12px;
+      padding: 2px 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    [data-theme="light"] .pass-name-input {
+      color: #0f172a;
+      border-color: rgba(216, 27, 96, 0.3);
+    }
+
+    [data-theme="dark"] .pass-name-input {
+      color: #f0f0ff;
+      border-color: rgba(255, 42, 133, 0.4);
+      text-shadow: 0 0 10px rgba(255, 42, 133, 0.3);
+    }
+
+    .pass-name-input:focus {
+      border-color: var(--pink);
+    }
+
+    /* NAME DISPLAY (view mode) — styled per theme */
+    #passNameDisplay {
+      border-bottom: 2px solid;
+    }
+
+    [data-theme="light"] #passNameDisplay {
+      color: #0f172a;
+      border-color: rgba(216, 27, 96, 0.25);
+    }
+
+    [data-theme="dark"] #passNameDisplay {
+      color: #f0f0ff;
+      border-color: rgba(255, 42, 133, 0.35);
+      text-shadow: 0 0 10px rgba(255, 42, 133, 0.25);
+    }
+
+    #passNameDisplay:hover {
+      border-color: var(--pink);
+    }
+
+    /* FIELD ROWS */
+    .pass-field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid;
+      gap: 8px;
+    }
+
+    [data-theme="light"] .pass-field-row {
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    [data-theme="dark"] .pass-field-row {
+      border-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .pass-field-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .pass-field-val {
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: 'Outfit', monospace;
+      text-align: right;
+    }
+
+    [data-theme="dark"] .pass-field-val {
+      letter-spacing: 0.3px;
+    }
+
+    /* PASSPORT FOOTER */
+    .passport-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid;
+    }
+
+    [data-theme="light"] .passport-footer {
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    [data-theme="dark"] .passport-footer {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* DARK SCANLINE DECORATION */
+    [data-theme="dark"] .passport-card-box::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      background: repeating-linear-gradient(90deg,
+          rgba(255, 42, 133, 0.06) 0px, rgba(255, 42, 133, 0.06) 2px,
+          transparent 2px, transparent 8px);
+      pointer-events: none;
+      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    }
+
+    /* MEDICAL REPORT STYLING */
+    .med-report-box {
+      background: #ffffff;
+      border: 2px solid #0284c7;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      max-width: 650px;
+      width: 100%;
+      box-shadow: 0 25px 70px rgba(2, 132, 199, 0.25);
+      position: relative;
+      color: #0f172a;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .med-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .med-title-main {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #0369a1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .med-subtitle {
+      font-size: 0.76rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .med-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+      font-size: 0.82rem;
+    }
+
+    .med-table th,
+    .med-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    .med-table th {
+      background: #f1f5f9;
+      color: #0369a1;
+      font-weight: 800;
+    }
+
+    .med-sec-header {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin: 12px 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-left: 3px solid #0284c7;
+      padding-left: 8px;
+    }
+
+    .med-analysis-summary {
+      overflow: hidden;
+      margin: 0 0 8px;
+      border: 1px solid #bae6fd;
+      border-radius: 10px;
+      background: #f8fcff;
+    }
+
+    .med-summary-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 9px 12px;
+      border-bottom: 1px solid #dbeafe;
+      background: #eff8ff;
+    }
+
+    .med-summary-kicker {
+      display: block;
+      margin-bottom: 1px;
+      color: #64748b;
+      font-size: 0.61rem;
+      font-weight: 750;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .med-summary-profile {
+      color: #b45309;
+      font-size: 0.92rem;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .med-summary-bfpi {
+      flex: 0 0 auto;
+      min-width: 70px;
+      padding: 5px 8px;
+      border: 1px solid #fed7aa;
+      border-radius: 9px;
+      background: #fff7ed;
+      color: #9a3412;
+      text-align: center;
+    }
+
+    .med-summary-bfpi span {
+      display: block;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .med-summary-bfpi strong {
+      display: block;
+      margin-top: 1px;
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+
+    .med-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .med-summary-item {
+      min-width: 0;
+      padding: 7px 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .med-summary-item:nth-child(odd) { border-right: 1px solid #e2e8f0; }
+    .med-summary-item:nth-last-child(-n + 2) { border-bottom: 0; }
+
+    .med-summary-label {
+      display: block;
+      margin-bottom: 1px;
+      color: #64748b;
+      font-size: 0.61rem;
+      font-weight: 750;
+    }
+
+    .med-summary-value {
+      display: block;
+      color: #0369a1;
+      font-size: 0.86rem;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .med-summary-detail {
+      display: block;
+      margin-top: 1px;
+      color: #475569;
+      font-size: 0.63rem;
+      line-height: 1.35;
+    }
+
+    .med-summary-note {
+      margin: 0;
+      padding: 5px 12px;
+      border-top: 1px solid #dbeafe;
+      background: #ffffff;
+      color: #64748b;
+      font-size: 0.59rem;
+      line-height: 1.35;
+    }
+
+    .med-details-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 10px;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #0369a1;
+      font-size: 0.76rem;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .med-details-toggle:hover,
+    .med-details-toggle:focus-visible {
+      border-color: #0284c7;
+      outline: none;
+    }
+
+    .med-details-toggle-icon {
+      font-size: 0.9rem;
+      transition: transform 160ms ease;
+    }
+
+    .med-details-toggle[aria-expanded="true"] .med-details-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .med-details-panel[hidden] { display: none; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--green);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      box-shadow: 0 6px 20px rgba(22, 163, 74, 0.3);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 9999999;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    .passport-save-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      background: rgba(4, 3, 10, 0.88);
+      backdrop-filter: blur(12px);
+    }
+
+    .passport-save-overlay.open { display: flex; }
+
+    .passport-save-dialog {
+      width: min(100%, 460px);
+      max-height: calc(100dvh - 28px);
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 20px;
+      background: #100b1c;
+      color: #fff;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+
+    .passport-save-header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(16, 11, 28, 0.94);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+    }
+
+    .passport-save-title { font-size: 0.88rem; font-weight: 900; }
+
+    .passport-save-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .passport-save-body { padding: 12px; }
+
+    .passport-save-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      background: #050407;
+      -webkit-touch-callout: default;
+      user-select: auto;
+    }
+
+    .passport-save-hint {
+      margin: 12px 2px 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.76rem;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .passport-save-actions { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+
+    .passport-save-share {
+      display: none;
+      width: 100%;
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      font: 800 0.8rem var(--font);
+      cursor: pointer;
+    }
+
+    .passport-save-share.available { display: block; }
+
+    /* PROGRESSIVE DISCLOSURE WIZARD STYLES */
+    .wizard-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 8px;
+      box-shadow: var(--shadow);
+      width: 100%;
+    }
+
+    .wizard-step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+    }
+
+    .wizard-step:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .wizard-step.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(230, 0, 118, 0.25), rgba(156, 39, 176, 0.25));
+      border-color: rgba(230, 0, 118, 0.4);
+      box-shadow: 0 2px 10px rgba(230, 0, 118, 0.2);
+    }
+
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .wizard-step.active .step-num {
+      background: var(--pink);
+      color: #ffffff;
+    }
+
+    .step-view {
+      animation: fadeInStep 0.35s ease-out forwards;
+    }
+
+    @keyframes fadeInStep {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .wizard-step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      font-family: var(--font);
+      appearance: none;
+    }
+
+    .step-label {
+      white-space: nowrap;
+    }
+
+    /* SINGLE UNIFIED NAVIGATION BAR — GOLD ACCENT FOR CONDOM TAB */
+    .wizard-step-condom {
+      border: 1.5px solid var(--gold) !important;
+      background: rgba(217, 119, 6, 0.08);
+      color: var(--gold) !important;
+      font-weight: 800;
+    }
+
+    [data-theme="dark"] .wizard-step-condom {
+      border: 1.5px solid #ffc600 !important;
+      background: rgba(255, 198, 0, 0.08);
+      color: #ffc600 !important;
+    }
+
+    .wizard-step-condom:hover {
+      background: rgba(217, 119, 6, 0.16);
+      box-shadow: 0 0 12px rgba(217, 119, 6, 0.25);
+    }
+
+    .wizard-step-condom.active {
+      background: linear-gradient(135deg, #d97706, #dc2626) !important;
+      color: #ffffff !important;
+      border-color: transparent !important;
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35) !important;
+    }
+
+    /* RESULT CONTINUATION — prominent paths beyond the summary */
+    /* PERSONAL RESULT INSIGHTS */
+    .result-insights { margin:0 0 14px; padding:14px; border:1px solid var(--border); border-radius:var(--radius-xl); background:var(--card); box-shadow:var(--shadow); }
+    .result-insights-heading { display:flex; align-items:center; gap:8px; margin-bottom:10px; color:var(--text); font-size:0.86rem; font-weight:900; }
+    .result-insights-heading span { color:var(--muted); font-size:0.66rem; font-weight:700; }
+    .result-insights-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .result-insight { min-width:0; padding:11px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--metric-bg); }
+    .result-insight-top { display:flex; align-items:center; gap:6px; margin-bottom:5px; color:var(--pink); font-size:0.72rem; font-weight:900; }
+    .result-insight-text { color:var(--text); font-size:0.72rem; line-height:1.55; }
+
+    .foreskin-toggle { display:inline-flex; flex:0 0 auto; padding:3px; border:1px solid var(--border); border-radius:999px; background:var(--metric-bg); }
+    .foreskin-option { min-height:27px; padding:4px 9px; border:0; border-radius:999px; background:transparent; color:var(--muted); font:800 .62rem var(--font); cursor:pointer; }
+    .foreskin-option.active { background:var(--card); color:var(--pink); box-shadow:0 2px 7px rgba(15,23,42,.10); }
+    .foreskin-option:focus-visible { outline:2px solid var(--pink); outline-offset:1px; }
+    /* GROWTH EXPLORER */
+    .growth-explorer { display:grid; grid-template-columns:38px minmax(140px,1fr) auto; align-items:center; gap:10px; margin-top:8px; padding:8px 10px; border:1px solid rgba(123,31,162,.18); border-radius:14px; background:linear-gradient(135deg,rgba(216,27,96,.06),rgba(0,131,143,.05)); }
+    .growth-explorer-head { min-width:150px; text-align:right; }
+    .growth-state { display:flex; align-items:center; justify-content:flex-end; gap:6px; color:var(--text); font-size:.7rem; font-weight:900; white-space:nowrap; }
+    .growth-state-dot { width:7px; height:7px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--pink)); box-shadow:0 0 0 3px rgba(216,27,96,.10); }
+    .growth-live-values { margin-top:2px; color:var(--muted); font-size:.62rem; font-weight:700; white-space:nowrap; }
+    .growth-play { display:grid; place-items:center; width:38px; height:38px; padding:0; border:0; border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--purple)); color:#fff; box-shadow:0 4px 12px rgba(123,31,162,.22); font:900 .78rem var(--font); cursor:pointer; transition:transform .18s ease,box-shadow .18s ease; }
+    .growth-play:hover,.growth-play:focus-visible { transform:translateY(-1px); box-shadow:0 7px 17px rgba(123,31,162,.28); outline:none; }
+    .growth-range-wrap { min-width:0; }
+    .growth-slider { display:block; width:100%; height:5px; margin:0; appearance:none; border-radius:999px; background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink)); cursor:pointer; }
+    .growth-slider::-webkit-slider-thumb { width:19px; height:19px; appearance:none; border:3px solid #fff; border-radius:50%; background:var(--pink); box-shadow:0 2px 8px rgba(123,31,162,.35); }
+    .growth-slider::-moz-range-thumb { width:14px; height:14px; border:3px solid #fff; border-radius:50%; background:var(--pink); box-shadow:0 2px 8px rgba(123,31,162,.35); }
+    .growth-scale { display:flex; justify-content:space-between; margin-top:4px; color:var(--muted); font-size:.56rem; font-weight:700; }
+    @media (max-width:520px) { .growth-explorer{grid-template-columns:34px minmax(0,1fr);gap:8px}.growth-play{width:34px;height:34px}.growth-explorer-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;min-width:0;text-align:left}.growth-state{justify-content:flex-start}.growth-live-values{margin:0} }
+    @media (prefers-reduced-motion:reduce) { .growth-play{transition:none} }    .result-next-panel {
+      margin: 0 0 14px;
+      padding: 16px;
+      border: 1px solid rgba(123, 31, 162, 0.18);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(216, 27, 96, 0.10), transparent 42%),
+        linear-gradient(135deg, var(--card), rgba(123, 31, 162, 0.045));
+      box-shadow: var(--shadow);
+      animation: fadeInStep 0.45s ease both;
+    }
+
+    .result-next-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 11px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .result-next-heading span {
+      color: var(--pink);
+      font-size: 0.68rem;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .result-next-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .result-next-card {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.64);
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    [data-theme="dark"] .result-next-card {
+      background: rgba(18, 23, 42, 0.72);
+    }
+
+    .result-next-card:hover,
+    .result-next-card:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(216, 27, 96, 0.42);
+      box-shadow: 0 8px 24px rgba(123, 31, 162, 0.12);
+      outline: none;
+    }
+
+    .result-next-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, rgba(216, 27, 96, 0.14), rgba(123, 31, 162, 0.16));
+      font-size: 1.25rem;
+    }
+
+    .result-next-card.analysis .result-next-icon {
+      background: linear-gradient(135deg, rgba(0, 131, 143, 0.14), rgba(66, 165, 245, 0.16));
+    }
+
+    .result-next-title {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .result-next-desc {
+      display: block;
+      color: var(--muted);
+      font-size: 0.7rem;
+      line-height: 1.45;
+    }
+
+    .result-next-arrow {
+      color: var(--pink);
+      font-size: 1.05rem;
+      font-weight: 900;
+    }
+
+    .result-next-card.analysis .result-next-arrow {
+      color: var(--cyan);
+    }
+    /* RESPONSIVE LAYOUT */
+    .position-guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .result-next-panel {
+        padding: 13px;
+      }
+
+      .result-insights-grid { grid-template-columns: 1fr; }
+
+      .result-next-actions {
+        grid-template-columns: 1fr;
+      }
+body {
+        padding: 8px 8px 32px;
+      }
+
+      header {
+        padding: 10px 12px 12px;
+      }
+
+      .header-top-right {
+        position: static;
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 6px;
+      }
+
+      .badge-phase {
+        max-width: 100%;
+        white-space: normal;
+        line-height: 1.35;
+      }
+
+      .wizard-bar {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px !important;
+        padding: 6px;
+      }
+
+      .wizard-step {
+        min-width: 0;
+        min-height: 48px;
+        padding: 7px 6px;
+        gap: 5px;
+        font-size: 0.74rem;
+        white-space: normal;
+      }
+
+      .step-num {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+      }
+
+      .step-label {
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        line-height: 1.3;
+        text-align: center;
+      }
+
+      .card {
+        padding: 12px;
+      }
+
+      .card-title,
+      .card-title-text {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .input-row,
+      .position-guide-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-match-measurement,
+      .results-header,
+      .results-footer-main,
+      .med-meta,
+      .med-footer-actions {
+        flex-direction: column;
+        align-items: stretch !important;
+      }
+
+      .quick-match-measurement {
+        gap: 8px;
+      }
+
+      #qcGirthDisplay {
+        align-self: flex-start;
+      }
+
+      .results-header {
+        gap: 10px;
+      }
+
+      .results-header .btn-preset,
+      .results-footer-actions,
+      .results-footer-actions .btn-preset,
+      .med-footer-actions .btn-action-med {
+        width: 100%;
+      }
+
+      .results-footer-actions {
+        display: grid !important;
+        grid-template-columns: 1fr;
+      }
+
+      .results-footer-info {
+        grid-template-columns: 1fr !important;
+      }
+
+      #anatomySvg {
+        display: block;
+        height: auto;
+        min-height: 170px;
+      }
+
+      .modal-overlay {
+        align-items: flex-start;
+        padding: 8px;
+        overflow-y: auto;
+      }
+
+      .passport-card-box,
+      .med-report-box {
+        max-height: calc(100dvh - 16px);
+      }
+
+      .passport-header-row {
+        flex-wrap: wrap;
+      }
+
+      .passport-certified {
+        order: 3;
+        width: 100%;
+      }
+
+      .passport-photo-hero {
+        height: auto;
+        aspect-ratio: 20 / 21;
+      }
+
+      .passport-spec-value,
+      .passport-watermark-url {
+        overflow-wrap: anywhere;
+      }
+
+      .passport-footer,
+      .passport-watermark {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .passport-footer {
+        gap: 10px;
+      }
+
+      .passport-footer .btn-action {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .med-report-box {
+        padding: 14px;
+      }
+
+      .med-header {
+        gap: 8px;
+      }
+
+      .med-title-main,
+      .med-subtitle,
+      .med-sec-header,
+      .med-meta,
+      .med-footer-actions {
+        overflow-wrap: anywhere;
+      }
+
+      .med-meta,
+      .med-footer-actions {
+        gap: 8px;
+      }
+
+      .med-table {
+        table-layout: fixed;
+        font-size: 0.68rem;
+      }
+
+      .med-table th,
+      .med-table td {
+        padding: 5px 4px;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .toast {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: none;
+        text-align: center;
+        transform: translateY(100px);
+      }
+
+      .toast.show {
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 340px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .passport-specs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .passport-spec-cell:nth-child(odd) {
+        border-right: none;
+      }
+    }
+
+    .brand-chip {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
