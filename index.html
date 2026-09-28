@@ -2287,6 +2287,7 @@ body {
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -2333,7 +2334,7 @@ body {
           <div class="card-title-text">🛡️ เทียบไซส์ถุงยางอนามัย</div>
         </div>
         <div style="font-size:0.8rem; color:var(--muted); margin-bottom:16px;">
-          เลื่อนปรับเส้นรอบวงตอนแข็งตัว เพื่อเทียบกับช่วงไซส์มาตรฐาน 49–72 มม.
+          เลื่อนปรับเส้นรอบวงตอนแข็งตัว เพื่อเทียบกับช่วงไซส์หลัก 47–72 มม.
         </div>
 
         <!-- UNIT TOGGLE -->
@@ -2346,17 +2347,18 @@ body {
         <div style="background:var(--metric-bg); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; margin-bottom:16px;">
           <div class="quick-match-measurement" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <span style="font-size:0.88rem; font-weight:800; color:var(--text);">⭕ เส้นรอบวงตอนแข็งตัว (Girth):</span>
-            <div style="background:rgba(216, 27, 96, 0.12); border:1px solid rgba(216, 27, 96, 0.3); color:var(--pink); font-family:'Outfit',monospace; font-weight:900; font-size:1.15rem; padding:3px 14px; border-radius:8px;" id="qcGirthDisplay">15.4 cm</div>
+            <div style="background:rgba(216, 27, 96, 0.12); border:1px solid rgba(216, 27, 96, 0.3); color:var(--pink); font-family:'Outfit',monospace; font-weight:900; font-size:1.15rem; padding:3px 14px; border-radius:8px;" id="qcGirthDisplay">12.0 cm</div>
           </div>
-          <input type="range" id="qcGirthSlider" min="70" max="200" step="0.5" value="154" style="width:100%; height:8px; border-radius:50px; cursor:pointer; accent-color:var(--pink);" oninput="syncCondomSlider(this.value)">
+          <input type="range" id="qcGirthSlider" min="70" max="200" step="0.5" value="120" style="width:100%; height:8px; border-radius:50px; cursor:pointer; accent-color:var(--pink);" oninput="syncCondomSlider(this.value)">
+          <div style="font-size:0.7rem; color:var(--muted); margin-top:8px;">ค่าตัวอย่างเริ่มต้น · ปรับสไลเดอร์เป็นรอบวงของคุณ</div>
         </div>
 
         <!-- RESULT HERO CARD -->
         <div style="background:linear-gradient(135deg, rgba(217,119,6,0.1), rgba(216,27,96,0.08)); border:2px solid var(--gold); border-radius:var(--radius-xl); padding:22px; text-align:center; margin-bottom:18px; box-shadow:0 8px 30px rgba(217,119,6,0.15);">
           <div style="font-size:0.75rem; font-weight:800; color:var(--gold); letter-spacing:1.5px; text-transform:uppercase;">CONDOM SIZE ESTIMATE</div>
-          <div id="qcResultSize" style="font-family:'Outfit',monospace; font-size:3.6rem; font-weight:900; color:var(--gold); line-height:1.1; margin:8px 0; text-shadow:0 0 20px rgba(217,119,6,0.3);">69 มม.</div>
+          <div id="qcResultSize" style="font-family:'Outfit',monospace; font-size:3.6rem; font-weight:900; color:var(--gold); line-height:1.1; margin:8px 0; text-shadow:0 0 20px rgba(217,119,6,0.3);">52 มม.</div>
           <div id="qcResultFit" style="font-size:0.9rem; font-weight:800; color:var(--text); margin-bottom:4px;">ไซส์ใกล้เคียงจากรอบวง</div>
-          <div id="qcResultFormula" style="font-size:0.76rem; color:var(--muted);">ค่าประมาณ: รอบวง 154 มม. ÷ 2.3 = 67 มม.</div>
+          <div id="qcResultFormula" style="font-size:0.76rem; color:var(--muted);">ค่าประมาณ: รอบวง 120 มม. ÷ 2.3 = 52.2 มม.</div>
 
           <!-- BRAND TAGS -->
           <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
@@ -2392,7 +2394,7 @@ body {
             <div>
               <div class="field-sublabel">📐 ความยาวอ่อนตัว (Length)</div>
               <div class="input-wrapper">
-                <input type="number" id="l_flaccid" class="form-input" value="13.5" min="0.1" max="50" step="any"
+                <input type="number" id="l_flaccid" class="form-input" value="" placeholder="กรอกค่า" min="0.1" max="50" step="any"
                   required autocomplete="off" aria-label="ความยาวตอนอ่อนตัว" aria-describedby="unit_l1 l_flaccid_error"
                   oninput="handleMeasurementInput('l_flaccid')" onblur="validateMeasurementField('l_flaccid')">
                 <span class="input-unit" id="unit_l1">cm</span>
@@ -2402,7 +2404,7 @@ body {
             <div>
               <div class="field-sublabel">⭕ รอบวงอ่อนตัว (Girth)</div>
               <div class="input-wrapper">
-                <input type="number" id="g_flaccid" class="form-input" value="12.7" min="0.1" max="50" step="any"
+                <input type="number" id="g_flaccid" class="form-input" value="" placeholder="กรอกค่า" min="0.1" max="50" step="any"
                   required autocomplete="off" aria-label="เส้นรอบวงตอนอ่อนตัว" aria-describedby="unit_g1 g_flaccid_error"
                   oninput="handleMeasurementInput('g_flaccid')" onblur="validateMeasurementField('g_flaccid')">
                 <span class="input-unit" id="unit_g1">cm</span>
@@ -2433,9 +2435,9 @@ body {
           <div class="form-label">🔹 สภาวะแข็งตัวเต็มที่ (Erect State)</div>
           <div class="input-row">
             <div>
-              <div class="field-sublabel">📐 ความยาวแข็งตัว (Length)</div>
+              <div class="field-sublabel">📐 ความยาวแข็งตัวแบบไม่กดถึงกระดูก (NBPEL)</div>
               <div class="input-wrapper">
-                <input type="number" id="l_erect" class="form-input" value="16.2" min="0.1" max="50" step="any"
+                <input type="number" id="l_erect" class="form-input" value="" placeholder="กรอกค่า" min="0.1" max="50" step="any"
                   required autocomplete="off" aria-label="ความยาวตอนแข็งตัว" aria-describedby="unit_l2 l_erect_error"
                   oninput="handleMeasurementInput('l_erect')" onblur="validateMeasurementField('l_erect')">
                 <span class="input-unit" id="unit_l2">cm</span>
@@ -2445,7 +2447,7 @@ body {
             <div>
               <div class="field-sublabel">⭕ รอบวงแข็งตัว (Girth)</div>
               <div class="input-wrapper">
-                <input type="number" id="g_erect" class="form-input" value="15.4" min="0.1" max="50" step="any"
+                <input type="number" id="g_erect" class="form-input" value="" placeholder="กรอกค่า" min="0.1" max="50" step="any"
                   required autocomplete="off" aria-label="เส้นรอบวงตอนแข็งตัว" aria-describedby="unit_g2 g_erect_error"
                   oninput="handleMeasurementInput('g_erect')" onblur="validateMeasurementField('g_erect')">
                 <span class="input-unit" id="unit_g2">cm</span>
@@ -2457,12 +2459,15 @@ body {
 
         <!-- FAT LAYER -->
         <div class="form-group">
-          <div class="form-label"><span>🔹 ชั้นไขมันโคนควย/เนินหัวหน่าว (T<sub>fat</sub>)</span></div>
+          <div class="form-label"><span>🔹 ส่วนต่างเมื่อกดถึงกระดูก (T<sub>fat</sub>)</span></div>
           <div class="input-wrapper">
-            <input type="number" id="t_fat" class="form-input" value="1.5" min="0" max="20" step="any"
-              required autocomplete="off" aria-label="ชั้นไขมันบริเวณโคน" aria-describedby="unit_tfat t_fat_error"
+            <input type="number" id="t_fat" class="form-input" value="" placeholder="กรอกค่า" min="0" max="20" step="any"
+              required autocomplete="off" aria-label="ชั้นไขมันบริเวณโคน" aria-describedby="unit_tfat t_fat_hint t_fat_error"
               oninput="handleMeasurementInput('t_fat')" onblur="validateMeasurementField('t_fat')">
             <span class="input-unit" id="unit_tfat">cm</span>
+          </div>
+          <div id="t_fat_hint" style="font-size:0.72rem; color:var(--muted); margin-top:6px;">
+            ตัวอย่าง: ไม่กด 14 ซม. กดถึงกระดูก 15 ซม. → กรอก 1 ซม.
           </div>
           <div class="field-error" id="t_fat_error" aria-live="polite"></div>
         </div>
@@ -2546,8 +2551,8 @@ body {
                 <span
                   style="background:rgba(0,131,143,0.2); color:var(--cyan); border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:bold;">ⓘ</span>
               </div>
-              <div class="metric-val" id="resCondom" style="color:var(--cyan); font-size:1.4rem;">69 มม.</div>
-              <div class="metric-sub" id="resCondomSub">ใกล้เคียงจากรอบวง</div>
+              <div class="metric-val" id="resCondom" style="color:var(--cyan); font-size:1.4rem;">—</div>
+              <div class="metric-sub" id="resCondomSub">รอข้อมูล</div>
 
               <div class="condom-tooltip" id="condomTooltip" role="tooltip">
                 <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">🧮
@@ -2555,7 +2560,7 @@ body {
                 <div style="font-size:0.74rem; line-height:1.4;">
                   <strong>1. ประมาณหน้ากว้างแบบราบ (Nominal Width):</strong><br>
                   <code style="color:var(--pink);">หน้ากว้าง = รอบวง (G<sub>erect</sub>) ÷ 2.3</code><br>
-                  <span id="condomCalcStep" style="color:var(--gold);">154.0 มม. ÷ 2.3 = 66.9 มม.</span><br><br>
+                  <span id="condomCalcStep" style="color:var(--gold);">—</span><br><br>
                   <strong>2. เทียบไซส์ในฐานข้อมูล:</strong><br>
                   <span>[49, 52, 54, 56, 58, 60, 64, 69, 72 มม.]</span>
                 </div>
@@ -2564,13 +2569,13 @@ body {
 
             <div class="metric-card" id="cardDiameter">
               <div class="metric-title">เส้นผ่านศูนย์กลาง (D<sub>m</sub>)</div>
-              <div class="metric-val" id="resDiameter" style="color:var(--text);">49 มม.</div>
+              <div class="metric-val" id="resDiameter" style="color:var(--text);">—</div>
               <div class="metric-sub">หน้ากว้างลำควยแข็ง</div>
             </div>
 
             <div class="metric-card" id="cardVolume">
               <div class="metric-title">ปริมาตรขณะแข็งโดยประมาณ (V<sub>erect</sub>)</div>
-              <div class="metric-val" id="resVolume" style="color:var(--purple);">305.7 cc</div>
+              <div class="metric-val" id="resVolume" style="color:var(--purple);">—</div>
               <div class="metric-sub">คำนวณจากแบบจำลองทรงกระบอก</div>
             </div>
           </div>
@@ -2586,9 +2591,9 @@ body {
             style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
             <div>
               <span style="font-size:0.8rem; color:var(--muted);">BFPI: </span>
-              <strong id="resBfpi" style="font-family:'Outfit'; font-size:1.3rem; color:var(--gold);">1.45</strong>
+              <strong id="resBfpi" style="font-family:'Outfit'; font-size:1.3rem; color:var(--gold);">—</strong>
             </div>
-            <span id="resBadgeType" class="badge badge-flesh">🥩 ควยเนื้อ (Flesh Shower)</span>
+            <span id="resBadgeType" class="badge">รอข้อมูล</span>
           </div>
 
           <!-- ACCURATE DYNAMIC GAUGE BAR WITH POINTER PIN -->
@@ -2609,10 +2614,9 @@ body {
             <div>
               <div style="font-size:0.75rem; color:var(--muted); font-weight:700;">👑 ฉายาสรีระ:</div>
               <div id="resArchetypeTitle"
-                style="font-weight:900; font-size:1.25rem; color:var(--pink); margin-top:2px; letter-spacing:-0.2px;">🥖
-                สายปังตอ อวบสะท้านตับ</div>
+                style="font-weight:900; font-size:1.25rem; color:var(--pink); margin-top:2px; letter-spacing:-0.2px;">—</div>
               <div id="resArchetypeSub" style="font-size:0.78rem; color:var(--text); opacity:0.9; margin-top:1px;">
-                รอบวงใหญ่พิเศษ แน่นเต็มมือ ตับไตไส้พุงมีสะเทือน</div>
+                รอข้อมูล</div>
             </div>
           </div>
 
@@ -2620,17 +2624,17 @@ body {
           <div class="metrics-grid" style="margin-top:10px;">
             <div class="metric-card" id="cardDeltaL">
               <div class="metric-title">อัตรายืดความยาว (ΔL%)</div>
-              <div class="metric-val" id="resDeltaL" style="color:var(--pink);">+19.3%</div>
-              <div class="metric-sub" id="resSubDeltaL">อ่อน 135 → แข็ง 162 มม.</div>
+              <div class="metric-val" id="resDeltaL" style="color:var(--pink);">—</div>
+              <div class="metric-sub" id="resSubDeltaL">รอข้อมูล</div>
             </div>
             <div class="metric-card" id="cardDeltaG">
               <div class="metric-title">อัตราขยายรอบวง (ΔG%)</div>
-              <div class="metric-val" id="resDeltaG" style="color:var(--cyan);">+21.3%</div>
-              <div class="metric-sub" id="resSubDeltaG">อ่อน 127 → แข็ง 154 มม.</div>
+              <div class="metric-val" id="resDeltaG" style="color:var(--cyan);">—</div>
+              <div class="metric-sub" id="resSubDeltaG">รอข้อมูล</div>
             </div>
             <div class="metric-card" id="cardBloodVol">
               <div class="metric-title">ปริมาตรเพิ่มจากตอนอ่อน (ΔV)</div>
-              <div class="metric-val" id="resBloodVol" style="color:var(--gold);">+132.5 cc</div>
+              <div class="metric-val" id="resBloodVol" style="color:var(--gold);">—</div>
               <div class="metric-sub" id="resSubBloodVol">ผลต่างระหว่างปริมาตรแข็งและอ่อน</div>
             </div>
           </div>
@@ -2662,18 +2666,18 @@ body {
           <div class="metrics-grid">
             <div class="metric-card" id="cardLenRank">
               <div class="metric-title">ความยาว (Length Rank)</div>
-              <div class="metric-val" id="resLenRank" style="color:var(--pink);">Top 0.5%</div>
-              <div class="metric-sub" id="resSubLenRank">ยาวกว่า 99.5% (เทียบชายไทย)</div>
+              <div class="metric-val" id="resLenRank" style="color:var(--pink);">—</div>
+              <div class="metric-sub" id="resSubLenRank">รอข้อมูล</div>
             </div>
             <div class="metric-card" id="cardGirthRank">
               <div class="metric-title">รอบวง (Girth Rank)</div>
-              <div class="metric-val" id="resGirthRank" style="color:var(--cyan);">Top 0.01%</div>
-              <div class="metric-sub" id="resSubGirthRank">ใหญ่กว่า 99.99% (+42.0 มม.)</div>
+              <div class="metric-val" id="resGirthRank" style="color:var(--cyan);">—</div>
+              <div class="metric-sub" id="resSubGirthRank">รอข้อมูล</div>
             </div>
             <div class="metric-card" id="cardFatPercent">
               <div class="metric-title">ไขมันบดบังความยาว</div>
-              <div class="metric-val" id="resFatPercent" style="color:var(--gold);">8.5%</div>
-              <div class="metric-sub" id="resSubBPEL">ชิดกระดูก: 177 มม.</div>
+              <div class="metric-val" id="resFatPercent" style="color:var(--gold);">—</div>
+              <div class="metric-sub" id="resSubBPEL">รอข้อมูล</div>
             </div>
           </div>
         </div>
@@ -2710,7 +2714,7 @@ body {
             <div class="card-title-text">📐 แนวทางท่าตามสรีระ</div>
           </div>
           <div style="font-size:0.75rem; color:var(--muted); margin-bottom:10px;">
-            สำรวจมุม จังหวะ และระยะจากค่าที่กรอก ผลจริงขึ้นกับคู่และความสบาย:
+            แนวทางทดลองจากค่าที่กรอก เริ่มช้า สื่อสารกัน และหยุดเมื่อไม่สบาย:
           </div>
 
           <div class="position-guide-grid">
@@ -2721,9 +2725,9 @@ body {
                 <span>⭐ ท่าที่น่าลอง (Try First)</span>
               </div>
               <ul style="font-size:0.75rem; list-style:none; padding-left:0; line-height:1.6;" id="posBestList">
-                <li>🛋️ <strong>Spooning (ตะแคงซ้อน):</strong> กระชับแนบแน่น คุมลึกดีเยี่ยม</li>
-                <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> เพิ่มการแนบชิดและการเสียดสี</li>
-                <li>📐 <strong>CAT Technique:</strong> เสียดสีเต็มพื้นที่ โดยไม่ต้องแทงลึก</li>
+                <li>🛋️ <strong>Spooning (ตะแคงซ้อน):</strong> เอื้อต่อจังหวะช้าและการคุมระยะ</li>
+                <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> ช่วยให้ทั้งคู่สื่อสารและปรับจังหวะใกล้กัน</li>
+                <li>📐 <strong>CAT Technique:</strong> เน้นการแนบมากกว่าความลึก</li>
               </ul>
             </div>
 
@@ -2734,8 +2738,8 @@ body {
                 <span>⚠️ ท่าที่ควรระวัง (Caution Positions)</span>
               </div>
               <ul style="font-size:0.75rem; list-style:none; padding-left:0; line-height:1.6;" id="posCautionList">
-                <li>🐕 <strong>Deep Doggy:</strong> อาจลึกหรือกระแทกเกินสบาย ควรเริ่มช้า ๆ</li>
-                <li>🤠 <strong>Cowboy (ผู้หญิงคุม):</strong> คุมมุมยาก อาจพับโคนหากอวบใหญ่</li>
+                <li>🐕 <strong>Deep Doggy:</strong> อาจเพิ่มความลึก ควรเริ่มตื้นและปรับตามความสบาย</li>
+                <li>🤠 <strong>Cowboy (ฝ่ายบนคุม):</strong> ระวังการลงน้ำหนักหรือเปลี่ยนมุมกะทันหัน</li>
               </ul>
             </div>
           </div>
@@ -2835,27 +2839,27 @@ body {
       <div class="passport-specs-grid">
         <div class="passport-spec-cell">
           <div class="passport-spec-label">👑 ฉายาสรีระ</div>
-          <div class="passport-spec-value" style="color:var(--pink);" id="passArchetype">🥩 Flesh Shower</div>
+          <div class="passport-spec-value" style="color:var(--pink);" id="passArchetype">—</div>
         </div>
         <div class="passport-spec-cell">
           <div class="passport-spec-label">📏 ยาว × รอบวง</div>
-          <div class="passport-spec-value" id="passSize">16.2 × 15.4 ซม.</div>
+          <div class="passport-spec-value" id="passSize">—</div>
         </div>
         <div class="passport-spec-cell">
           <div class="passport-spec-label">🛡️ ไซส์ถุงยาง</div>
-          <div class="passport-spec-value" style="color:var(--gold);" id="passCondom">69 มม.</div>
+          <div class="passport-spec-value" style="color:var(--gold);" id="passCondom">—</div>
         </div>
         <div class="passport-spec-cell">
           <div class="passport-spec-label">📐 ปริมาตรเพิ่มโดยประมาณ</div>
-          <div class="passport-spec-value" style="color:var(--cyan);" id="passBloodVol">+132.5 cc</div>
+          <div class="passport-spec-value" style="color:var(--cyan);" id="passBloodVol">—</div>
         </div>
         <div class="passport-spec-cell" style="border-bottom:none;">
           <div class="passport-spec-label" id="passPercentileLabel">🌐 เปอร์เซ็นต์ไทล์โลก</div>
-          <div class="passport-spec-value" style="color:var(--purple);" id="passPercentile">Top 0.5%</div>
+          <div class="passport-spec-value" style="color:var(--purple);" id="passPercentile">—</div>
         </div>
         <div class="passport-spec-cell" style="border-bottom:none;">
           <div class="passport-spec-label">🩸 BFPI</div>
-          <div class="passport-spec-value" style="color:var(--gold);" id="passBfpi">1.45</div>
+          <div class="passport-spec-value" style="color:var(--gold);" id="passBfpi">—</div>
         </div>
       </div>
 
@@ -2870,8 +2874,8 @@ body {
           <span>⚕ male calculator</span>
           <span class="passport-watermark-url" id="passportSiteUrl">—</span>
         </div>
-        <button class="btn-action" style="padding:5px 14px; font-size:0.78rem;" onclick="exportPassportCard()">
-          <span class="export-btn-text">📲 แชร์ / บันทึก</span>
+        <button class="btn-action" id="passportExportButton" style="padding:5px 14px; font-size:0.78rem;" onclick="exportPassportCard()">
+          <span class="export-btn-text" id="passportExportButtonText">📲 แชร์ / บันทึก</span>
         </button>
       </div>
     </div>
@@ -2892,26 +2896,26 @@ body {
 
     <!-- ถุงยาง — เด่นบนสุด เข้าใจง่ายที่สุด -->
     <div class="ec-condom-hero">
-      <div class="ec-condom-num" id="exportCondom">64</div>
+      <div class="ec-condom-num" id="exportCondom">—</div>
       <div class="ec-condom-label">มม. · ไซส์ถุงยางโดยประมาณ</div>
     </div>
 
     <!-- ยาว | รอบวง -->
     <div class="ec-dims">
       <div class="ec-dim-cell">
-        <div class="ec-dim-num" id="exportLength" style="color:#d81b60;">11</div>
+        <div class="ec-dim-num" id="exportLength" style="color:#d81b60;">—</div>
         <div class="ec-dim-unit">ซม. · ความยาว</div>
       </div>
       <div class="ec-dim-cell">
-        <div class="ec-dim-num" id="exportGirth" style="color:#7b1fa2;">14.5</div>
+        <div class="ec-dim-num" id="exportGirth" style="color:#7b1fa2;">—</div>
         <div class="ec-dim-unit">ซม. · รอบวง</div>
       </div>
     </div>
 
     <!-- ฉายาสรีระ | เปอร์เซ็นต์ไทล์ -->
     <div class="ec-info-row">
-      <div class="ec-arch-text" id="exportArchetype">🥩 Flesh Shower</div>
-      <div class="ec-rank-text" id="exportPercentile">Top 85.8% 🌎</div>
+      <div class="ec-arch-text" id="exportArchetype">—</div>
+      <div class="ec-rank-text" id="exportPercentile">—</div>
     </div>
 
     <!-- Footer CTA + URL -->
@@ -2927,7 +2931,7 @@ body {
       <div class="med-header">
         <div>
           <div class="med-title-main" id="medicalDialogTitle">🔬 MALE ANATOMICAL DEEP ANALYSIS</div>
-          <div class="med-subtitle">รายงานวิเคราะห์สรีระและการเปลี่ยนแปลงจากค่าที่คุณกรอก · <span id="medDate">10/08/2026</span></div>
+          <div class="med-subtitle">รายงานวิเคราะห์สรีระและการเปลี่ยนแปลงจากค่าที่คุณกรอก · <span id="medDate">—</span></div>
         </div>
         <button type="button" id="medicalCloseButton" aria-label="ปิด Deep Analysis" onclick="closeMedicalModal()"
           style="background:transparent; border:none; color:#64748b; font-size:1.4rem; cursor:pointer;">✕</button>
@@ -2938,34 +2942,34 @@ body {
         <div class="med-summary-head">
           <div>
             <span class="med-summary-kicker" id="medSummaryTitle">สรุปผลวิเคราะห์ประเภทสรีระ</span>
-            <div class="med-summary-profile" id="medSummaryProfile">🥩 Pure Flesh Shower</div>
+            <div class="med-summary-profile" id="medSummaryProfile">—</div>
           </div>
           <div class="med-summary-bfpi">
             <span>BFPI</span>
-            <strong id="medSummaryBfpi">1.45</strong>
+            <strong id="medSummaryBfpi">—</strong>
           </div>
         </div>
 
         <div class="med-summary-grid">
           <div class="med-summary-item">
             <span class="med-summary-label">การขยายเมื่อแข็ง</span>
-            <strong class="med-summary-value" id="medSummaryLengthGrowth">ยาว +19.3%</strong>
-            <span class="med-summary-detail" id="medSummaryGirthGrowth">รอบวง +21.3%</span>
+            <strong class="med-summary-value" id="medSummaryLengthGrowth">—</strong>
+            <span class="med-summary-detail" id="medSummaryGirthGrowth">—</span>
           </div>
           <div class="med-summary-item">
             <span class="med-summary-label">ขนาดตอนแข็ง</span>
-            <strong class="med-summary-value" id="medSummaryErectSize">16.2 × 15.4 ซม.</strong>
+            <strong class="med-summary-value" id="medSummaryErectSize">—</strong>
             <span class="med-summary-detail">ความยาว × รอบวง</span>
           </div>
           <div class="med-summary-item">
             <span class="med-summary-label">ไซส์ถุงยางใกล้เคียง</span>
-            <strong class="med-summary-value" id="medSummaryCondom">69 มม.</strong>
+            <strong class="med-summary-value" id="medSummaryCondom">—</strong>
             <span class="med-summary-detail" id="medSummaryCondomDetail">ค่าประมาณจากรอบวง</span>
           </div>
           <div class="med-summary-item">
             <span class="med-summary-label">อันดับประชากร</span>
-            <strong class="med-summary-value" id="medSummaryLengthRank">ยาว Top 0.5%</strong>
-            <span class="med-summary-detail" id="medSummaryGirthRank">รอบวง Top 0.01% · โลก</span>
+            <strong class="med-summary-value" id="medSummaryLengthRank">—</strong>
+            <span class="med-summary-detail" id="medSummaryGirthRank">—</span>
           </div>
         </div>
 
@@ -2990,22 +2994,21 @@ body {
         <tbody>
           <tr>
             <td>ความยาวสรีระ (Length)</td>
-            <td id="medLenFlaccid">135 มม.</td>
-            <td id="medLenErect">162 มม.</td>
+            <td id="medLenFlaccid">—</td>
+            <td id="medLenErect">—</td>
           </tr>
           <tr>
             <td>เส้นรอบวง (Girth)</td>
-            <td id="medGirthFlaccid">127 มม.</td>
-            <td id="medGirthErect">154 มม.</td>
+            <td id="medGirthFlaccid">—</td>
+            <td id="medGirthErect">—</td>
           </tr>
           <tr>
             <td>ความยาวชิดกระดูก (BPEL)</td>
-            <td colspan="2" id="medBPEL" style="text-align:center; font-weight:700;">177 มม. (ชั้นไขมันโคน
-              T<sub>fat</sub> = 15)</td>
+            <td colspan="2" id="medBPEL" style="text-align:center; font-weight:700;">—</td>
           </tr>
           <tr>
             <td>เส้นผ่านศูนย์กลางลำควย (Mid-Shaft D<sub>m</sub>)</td>
-            <td colspan="2" id="medDiameter" style="text-align:center; font-weight:700;">49 มม.</td>
+            <td colspan="2" id="medDiameter" style="text-align:center; font-weight:700;">—</td>
           </tr>
         </tbody>
       </table>
@@ -3015,15 +3018,15 @@ body {
         <tbody>
           <tr>
             <td style="width:45%;"><strong>ควยเลือด vs ควยเนื้อ (BFPI):</strong></td>
-            <td id="medBFPI" style="font-weight:700; color:#d97706;">1.45 (🥩 Pure Flesh Shower)</td>
+            <td id="medBFPI" style="font-weight:700; color:#d97706;">—</td>
           </tr>
           <tr>
             <td><strong>ปริมาตรเพิ่มโดยประมาณ (Estimated Volume Change ΔV):</strong></td>
-            <td id="medBloodVol" style="font-weight:700; color:#00838f;">+132.5 cc (แบบจำลองทรงกระบอก · 1.76×)</td>
+            <td id="medBloodVol" style="font-weight:700; color:#00838f;">—</td>
           </tr>
           <tr>
             <td><strong>อัตราการยืดขยายตัว (Axial & Radial Ratio):</strong></td>
-            <td id="medExpandRatios">ความยาว +19.3% | รอบวง +21.3%</td>
+            <td id="medExpandRatios">—</td>
           </tr>
           <tr>
             <td><strong>ไซส์ถุงยางใกล้เคียง (Nominal Width Estimate):</strong></td>
@@ -3037,11 +3040,11 @@ body {
         <tbody>
           <tr>
             <td style="width:45%;"><strong>Length Percentile Rank:</strong></td>
-            <td id="medLenPercentile">Top 0.5% (ยาวกว่า 99.5% ของประชากร)</td>
+            <td id="medLenPercentile">—</td>
           </tr>
           <tr>
             <td><strong>Girth Percentile Rank:</strong></td>
-            <td id="medGirthPercentile">Top 0.01% (ใหญ่กว่า 99.99% ของประชากร)</td>
+            <td id="medGirthPercentile">—</td>
           </tr>
         </tbody>
       </table>
@@ -3051,8 +3054,7 @@ body {
       <div class="med-footer-actions"
         style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:2px solid #0284c7; padding-top:12px;">
         <div style="font-size:0.7rem; color:#64748b;">PERSONAL SPEC ANALYSIS • MYSEX</div>
-        <button class="btn-action-med" style="padding:8px 20px;" onclick="downloadMedicalReport()">💾
-          ดาวน์โหลด Deep Analysis (PNG)</button>
+        <button class="btn-action-med" id="medicalExportButton" style="padding:8px 20px;" onclick="downloadMedicalReport()">💾 ดาวน์โหลด Deep Analysis (PNG)</button>
       </div>
 
     </div>
@@ -3135,15 +3137,76 @@ body {
     });
     const VALIDATION_EPSILON_MM = 1e-9;
     const DEFAULT_MEASUREMENTS_MM = Object.freeze({
-      l_flaccid: 135,
-      g_flaccid: 127,
-      l_erect: 162,
-      g_erect: 154,
-      t_fat: 15
+      l_flaccid: null,
+      g_flaccid: null,
+      l_erect: null,
+      g_erect: null,
+      t_fat: null
     });
     const canonicalMeasurementsMm = { ...DEFAULT_MEASUREMENTS_MM };
     const lastRenderedInputValues = Object.create(null);
     let latestMetricsSnapshot = null;
+    const LOCAL_TEST_MEASUREMENTS_KEY = 'mysex_local_test_measurements_v1';
+
+    function isLocalTestHost() {
+      return location.hostname === '127.0.0.1' || location.hostname === 'localhost';
+    }
+
+    function saveLocalTestMeasurements() {
+      if (!isLocalTestHost()) return false;
+      try {
+        const values = MEASUREMENT_IDS.reduce((saved, id) => {
+          saved[id] = document.getElementById(id)?.value ?? '';
+          return saved;
+        }, {});
+        const canonicalMm = MEASUREMENT_IDS.reduce((saved, id) => {
+          if (values[id].trim() && Number.isFinite(canonicalMeasurementsMm[id])) {
+            saved[id] = canonicalMeasurementsMm[id];
+          }
+          return saved;
+        }, {});
+        localStorage.setItem(LOCAL_TEST_MEASUREMENTS_KEY, JSON.stringify({ unit: currentUnit, values, canonicalMm }));
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function restoreLocalTestMeasurements() {
+      if (!isLocalTestHost()) return false;
+      try {
+        const saved = JSON.parse(localStorage.getItem(LOCAL_TEST_MEASUREMENTS_KEY) || 'null');
+        if (!saved?.values || !['cm', 'in'].includes(saved.unit)) return false;
+
+        currentUnit = saved.unit;
+        MEASUREMENT_IDS.forEach(id => {
+          const input = document.getElementById(id);
+          if (!input) return;
+          if (Number.isFinite(saved.canonicalMm?.[id])) {
+            canonicalMeasurementsMm[id] = saved.canonicalMm[id];
+            input.value = formatMeasurementForDisplay(id, currentUnit);
+            lastRenderedInputValues[id] = input.value.trim();
+          } else {
+            input.value = typeof saved.values[id] === 'string' ? saved.values[id] : '';
+          }
+        });
+        document.querySelectorAll('.unit-btn').forEach(button => button.classList.remove('active'));
+        document.getElementById(`u_${currentUnit}`)?.classList.add('active');
+        ['unit_l1', 'unit_g1', 'unit_l2', 'unit_g2', 'unit_tfat'].forEach(id => {
+          const unit = document.getElementById(id);
+          if (unit) unit.innerText = currentUnit;
+        });
+        updateValidationConstraints();
+
+        const populatedIds = MEASUREMENT_IDS.filter(id => document.getElementById(id)?.value.trim());
+        const populatedResult = readAndValidateMeasurements({ ids: populatedIds });
+        if (populatedResult.valid) syncChangedMeasurementsFromInputs(populatedResult, populatedIds);
+        if (readAndValidateMeasurements().valid) calculate(false, false);
+        return populatedIds.length > 0;
+      } catch {
+        return false;
+      }
+    }
 
     function getScaleToMmForUnit(unit) {
       return unit === 'cm' ? 10 : (unit === 'in' ? 25.4 : 1);
@@ -3185,13 +3248,16 @@ body {
       return `${sign}${formatMetricNumber(numericValue, maxDecimals)} มม.`;
     }
 
-    const CONDOM_STANDARD_SIZES_MM = Object.freeze([49, 52, 54, 56, 58, 60, 64, 69, 72]);
+    const CONDOM_STANDARD_SIZES_MM = Object.freeze([47, 49, 52, 54, 56, 58, 60, 64, 69, 72]);
+    const CONDOM_MAX_GIRTH_MM = 172;
 
     function getCondomSizeMatch(girthMm) {
-      const nominalWidthMm = Number(girthMm) / 2.3;
+      const numericGirthMm = Number(girthMm);
+      const nominalWidthMm = numericGirthMm / 2.3;
       const minSizeMm = CONDOM_STANDARD_SIZES_MM[0];
       const maxSizeMm = CONDOM_STANDARD_SIZES_MM[CONDOM_STANDARD_SIZES_MM.length - 1];
-      const withinRange = nominalWidthMm >= minSizeMm && nominalWidthMm <= maxSizeMm;
+      const isLargestAvailable = nominalWidthMm > maxSizeMm && numericGirthMm <= CONDOM_MAX_GIRTH_MM;
+      const withinRange = nominalWidthMm >= minSizeMm && numericGirthMm <= CONDOM_MAX_GIRTH_MM;
       const closestSizeMm = withinRange
         ? CONDOM_STANDARD_SIZES_MM.reduce((previous, current) =>
           Math.abs(current - nominalWidthMm) < Math.abs(previous - nominalWidthMm) ? current : previous)
@@ -3201,7 +3267,9 @@ body {
         nominalWidthMm,
         minSizeMm,
         maxSizeMm,
+        maxGirthMm: CONDOM_MAX_GIRTH_MM,
         withinRange,
+        isLargestAvailable,
         closestSizeMm,
         displaySizeMm: withinRange ? closestSizeMm : nominalWidthMm
       };
@@ -3230,6 +3298,7 @@ body {
 
     function formatMeasurementForDisplay(id, unit = currentUnit) {
       const valueMm = canonicalMeasurementsMm[id];
+      if (valueMm === null || !Number.isFinite(Number(valueMm))) return '';
       const rule = MEASUREMENT_RULES_MM[id];
       const scaleToMm = getScaleToMmForUnit(unit);
       const converted = valueMm / scaleToMm;
@@ -3324,6 +3393,7 @@ body {
     function handleMeasurementInput(id) {
       const fieldResult = readAndValidateMeasurements({ ids: [id] });
       if (fieldResult.valid) syncChangedMeasurementsFromInputs(fieldResult, [id]);
+      saveLocalTestMeasurements();
 
       const allMeasurements = readAndValidateMeasurements();
       updateMeasurementWarning(allMeasurements.valid ? getCanonicalMeasurements() : null);
@@ -3465,32 +3535,35 @@ body {
       document.documentElement.setAttribute('data-theme', currentTheme);
       document.getElementById('themeIcon').innerText = currentTheme === 'light' ? '☀️' : '🌙';
       document.getElementById('themeText').innerText = currentTheme === 'light' ? 'ธีมสว่าง' : 'ธีมมืด';
-      calculate(false, false);
+      if (readAndValidateMeasurements().valid) calculate(false, false);
     }
 
     function setUnit(unit) {
       if (!['cm', 'in'].includes(unit)) return false;
       if (unit === currentUnit) return true;
 
-      const currentValidation = readAndValidateMeasurements({ showErrors: true });
+      const populatedIds = MEASUREMENT_IDS.filter(id => document.getElementById(id)?.value.trim());
+      const currentValidation = readAndValidateMeasurements({ ids: populatedIds, showErrors: true });
       if (!currentValidation.valid) {
         focusInvalidMeasurement(currentValidation.firstInvalid);
         return false;
       }
-      syncChangedMeasurementsFromInputs(currentValidation);
+      syncChangedMeasurementsFromInputs(currentValidation, populatedIds);
 
       currentUnit = unit;
       document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(`u_${unit}`)?.classList.add('active');
-      renderMeasurementInputsFromCanonical();
+      renderMeasurementInputsFromCanonical(populatedIds);
+      MEASUREMENT_IDS.filter(id => !populatedIds.includes(id)).forEach(id => setFieldValidity(id));
 
       ['unit_l1', 'unit_g1', 'unit_l2', 'unit_g2', 'unit_tfat'].forEach(id => {
         document.getElementById(id).innerText = unit;
       });
 
       updateValidationConstraints();
-      calculate(false, false);
+      if (readAndValidateMeasurements().valid) calculate(false, false);
       updateCondomMatchView();
+      saveLocalTestMeasurements();
       triggerPulseAnimation();
       return true;
     }
@@ -3508,7 +3581,7 @@ body {
       if (subText) subText.innerText = dataset.subText;
       if (sourceText) sourceText.innerText = dataset.sourceText;
 
-      calculate(false, false);
+      if (readAndValidateMeasurements().valid) calculate(false, false);
       triggerPulseAnimation();
       return true;
     }
@@ -3528,18 +3601,58 @@ body {
 
 
     let currentAppMode = 'analysis'; // 'analysis' | 'condom'
+    let quickCondomGirthMm = 120;
 
-    const CONDOM_BRANDS_DB = {
-      49: ['Durex Kingtex (49mm)', 'Okamoto 003 (49mm)', 'Onetouch 49 (49mm)', 'Sagami Original 0.02 (S)'],
-      52: ['Durex Fetherlite / Performa (52.5mm)', 'Okamoto 0.01 / 0.02 / 0.03 (52mm)', 'Onetouch Maxx Dot / Happy (52mm)', 'Sagami Original 0.01 / 0.02 (52mm)'],
-      54: ['Durex Love / Pleasuremax (53-54mm)', 'Onetouch 54 (54mm)', 'My.One 54 (54mm)', 'Playboy Sweet (54mm)'],
-      56: ['Durex Dual Pleasure / Comfort (56mm)', 'Okamoto XL (56mm)', 'Onetouch 56 (56mm)', 'Sagami Original L (56mm)'],
-      58: ['My.One Perfect Fit 58 (58mm)', 'Pasante King Size (58mm)', 'Skyn Large (56-58mm)'],
-      60: ['My.One Custom Fit 60 (60mm)', 'Pasante Extra Large (60mm)', 'Trojan Magnum (60mm)'],
-      64: ['My.One Custom Fit 64 (64mm)', 'Pasante Super King (64mm)', 'Trojan Magnum XL (64mm)'],
-      69: ['Pasante Super King / Huge (69mm)', 'My.One Custom 69 (69mm)', 'TheyFit 69 (69mm)'],
-      72: ['My.One Custom 72 (72mm)', 'Pasante Colossal (72mm)']
-    };
+    // Thai-market audit: show one main size, then no more than three products.
+    // Each product label keeps its actual nominal width even when it is only
+    // a nearby option for the recommended main size.
+    const CONDOM_BRANDS_DB = Object.freeze({
+      47: Object.freeze([
+        { label: 'MY.SIZE pro 47 · 47 มม.', source: 'https://www.ibodythailand.com/product/2671/my-size%C2%AE-pro-natural-rubber-latex-condoms-size-47-mm-%E0%B8%96%E0%B8%B8%E0%B8%87%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B8%AD%E0%B8%99%E0%B8%B2%E0%B8%A1%E0%B8%B1%E0%B8%A2-%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-47-%E0%B8%A1%E0%B8%A1' }
+      ]),
+      49: Object.freeze([
+        { label: 'Durex Kingtex · 49 มม.', source: 'https://www.watsons.co.th/en/durex-durex-kingtex-condom-49-mm.-12-pcs-x-4/p/BP_305916' },
+        { label: 'OneTouch 49 · 49 มม.', source: 'https://www.watsons.co.th/en/health/condom/c/050601' },
+        { label: 'Okamoto Suprema Lite · 49 มม.', source: 'https://www.bigc.co.th/product/okamoto-condom-suprema-lite-smooth-surface-49-mm-x-2-units.62438' }
+      ]),
+      52: Object.freeze([
+        { label: 'Durex Airy · 52 มม.', source: 'https://www.watsons.co.th/en/durex-durex-airy-condom-52-mm.-pack-16-pcs./p/BP_312250' },
+        { label: 'OneTouch 52 · 52 มม.', source: 'https://www.watsons.co.th/en/health/condom/c/050601' },
+        { label: 'Okamoto 003 · 52 มม.', source: 'https://www.watsons.co.th/th/%E0%B8%AA%E0%B8%B4%E0%B8%99%E0%B8%84%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%9E%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%A0%E0%B8%B2%E0%B8%9E/%E0%B8%96%E0%B8%B8%E0%B8%87%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B8%AD%E0%B8%99%E0%B8%B2%E0%B8%A1%E0%B8%B1%E0%B8%A2/c/050601' }
+      ]),
+      54: Object.freeze([
+        { label: 'Okamoto XL · 54 มม.', source: 'https://www.watsons.co.th/th/okamoto-%E0%B8%96%E0%B8%B8%E0%B8%87%E0%B8%A2%E0%B8%B2%E0%B8%87%E0%B8%AD%E0%B8%99%E0%B8%B2%E0%B8%A1%E0%B8%B1%E0%B8%A2-okamoto-%E0%B9%82%E0%B8%AD%E0%B8%81%E0%B8%B2%E0%B9%82%E0%B8%A1%E0%B9%82%E0%B8%95-%E0%B9%80%E0%B8%AD%E0%B9%87%E0%B8%81%E0%B8%8B%E0%B9%8C%E0%B9%81%E0%B8%AD%E0%B8%A5-2-%E0%B8%8A%E0%B8%B4%E0%B9%89%E0%B8%99/p/BP_248860' },
+        { label: 'Durex Excita · 53 มม.', source: 'https://www.homepro.co.th/p/888134800543' },
+        { label: 'Durex Performa · 52.5 มม.', source: 'https://www.watsons.co.th/en/all-brands/list/155077/durex' }
+      ]),
+      56: Object.freeze([
+        { label: 'Durex Comfort · 56 มม.', source: 'https://www.bigc.co.th/product/durex-comfort-condom-56-mm-10-units.6665033' },
+        { label: 'OneTouch Excite · 56 มม.', source: 'https://www.watsons.co.th/en/health/condom/c/050601' },
+        { label: 'Okamoto Super Big Boy · 55 มม.', source: 'https://grandcondom.com/okamoto-brand/okamoto-super-big-boy' }
+      ]),
+      58: Object.freeze([
+        { label: 'TRUSTEX Extra Large · 58 มม.', source: 'https://grandcondom.com/trustex/%E0%B8%96%E0%B8%B8%E0%B8%87%E0%B8%A2%E0%B8%B2%E0%B8%87-58-%E0%B8%A1%E0%B8%A1-trustex-extra-large-1-%E0%B8%8A%E0%B8%B4%E0%B9%89%E0%B8%99' },
+        { label: 'Okamoto XXL · 57 มม.', source: 'https://www.watsons.co.th/en/okamoto-okamoto-condom-xxl-3-pcs/p/BP_308042' },
+        { label: 'Durex Comfort · 56 มม.', source: 'https://www.bigc.co.th/product/durex-comfort-condom-56-mm-10-units.6665033' }
+      ]),
+      60: Object.freeze([
+        { label: 'OneTouch WONDERR · 60 มม.', source: 'https://shop.line.me/%40vmu3239n/product/1005151952' },
+        { label: 'MY.SIZE pro 60 · 60 มม.', source: 'https://pro.mysize-condoms.com/your-mysize-pro-condom/more-than-you-perhaps-expect/mysize-60/' },
+        { label: 'Pasante King Size · 60 ±2 มม.', source: 'https://pasante.com/pages/condom-specifications' }
+      ]),
+      64: Object.freeze([
+        { label: 'SAX Super Max · 64 มม.', source: 'https://grandcondom.com/sax-condom/sax-condom-super-max-64mm' },
+        { label: 'MY.SIZE pro 64 · 64 มม.', source: 'https://pro.mysize-condoms.com/your-mysize-pro-condom/more-than-you-perhaps-expect/mysize-64' },
+        { label: 'MyONE Custom Fit · 64 มม.', source: 'https://onecondoms.com/products/myone-size-64l' }
+      ]),
+      69: Object.freeze([
+        { label: 'Pasante Super King · 69 ±2 มม.', source: 'https://pasante.com/pages/condom-specifications' },
+        { label: 'MY.SIZE pro 69 · 69 มม.', source: 'https://pro.mysize-condoms.com/your-mysize-pro-condom/more-than-you-perhaps-expect/mysize-69' }
+      ]),
+      72: Object.freeze([
+        { label: 'MY.SIZE pro 72 · 72 มม.', source: 'https://pro.mysize-condoms.com/your-mysize-pro-condom/more-than-you-perhaps-expect/mysize-72' }
+      ])
+    });
 
     function switchAppMode(mode, targetStep = null) {
       currentAppMode = mode;
@@ -3571,33 +3684,14 @@ body {
     function syncCondomSlider(val) {
       const gMm = Number(val);
       if (!Number.isFinite(gMm)) return false;
-      canonicalMeasurementsMm.g_erect = gMm;
-      renderMeasurementInputsFromCanonical(['g_erect']);
-      calculate(false, false);
+      quickCondomGirthMm = gMm;
       updateCondomMatchView();
       return true;
     }
 
     function updateCondomMatchView() {
-      const girthResult = readAndValidateMeasurements({ ids: ['g_erect'] });
-      if (!girthResult.valid) {
-        const qcGirthDisplay = document.getElementById('qcGirthDisplay');
-        const qcResultSize = document.getElementById('qcResultSize');
-        const qcResultFormula = document.getElementById('qcResultFormula');
-        const qcResultFit = document.getElementById('qcResultFit');
-        const qcBrandList = document.getElementById('qcBrandList');
-        if (qcGirthDisplay) qcGirthDisplay.innerText = `— ${currentUnit}`;
-        if (qcResultSize) qcResultSize.innerText = '—';
-        if (qcResultFormula) qcResultFormula.innerText = 'กรุณากรอกรอบวงตอนแข็งตัวให้ถูกต้อง';
-        if (qcResultFit) qcResultFit.innerText = 'ยังไม่สามารถคำนวณได้';
-        if (qcBrandList) qcBrandList.innerHTML = '';
-        syncCondomUnitButtons();
-        return false;
-      }
-
-      syncChangedMeasurementsFromInputs(girthResult, ['g_erect']);
-      let g_erect = canonicalMeasurementsMm.g_erect;
-      let displayVal = formatMeasurementForDisplay('g_erect');
+      const g_erect = quickCondomGirthMm;
+      const displayVal = formatMetricNumber(g_erect / getScaleToMm(), currentUnit === 'in' ? 2 : 1);
 
       const qcGirthDisplay = document.getElementById('qcGirthDisplay');
       if (qcGirthDisplay) qcGirthDisplay.innerText = `${displayVal} ${currentUnit}`;
@@ -3621,7 +3715,9 @@ body {
 
       const qcResultFit = document.getElementById('qcResultFit');
       if (qcResultFit) {
-        qcResultFit.innerText = condomMatch.withinRange
+        qcResultFit.innerText = condomMatch.isLargestAvailable
+          ? 'ไซส์ใหญ่สุดที่มี · ใกล้เคียงที่สุด'
+          : condomMatch.withinRange
           ? 'ไซส์ใกล้เคียงจากรอบวง'
           : `อยู่นอกช่วง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ตรวจตารางผู้ผลิต`;
       }
@@ -3630,9 +3726,18 @@ body {
       const qcBrandList = document.getElementById('qcBrandList');
       if (qcBrandList) {
         if (condomMatch.withinRange) {
-          const brands = CONDOM_BRANDS_DB[bestSize] || [`ไซส์ ${formatMm(bestSize)}`];
-          if (qcBrandLabel) qcBrandLabel.innerText = '🏷️ ตัวอย่างแบรนด์และรุ่นในไซส์นี้:';
-          qcBrandList.innerHTML = brands.map(b => `<span class="brand-chip">${b}</span>`).join('');
+          const products = CONDOM_BRANDS_DB[bestSize] || [];
+          if (qcBrandLabel) qcBrandLabel.innerText = '🏷️ รุ่นใกล้เคียงในไทย:';
+          qcBrandList.replaceChildren(...products.map(product => {
+            const link = document.createElement('a');
+            link.className = 'brand-chip';
+            link.href = product.source;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.textContent = product.label;
+            link.title = 'เปิดข้อมูลขนาดจากผู้ผลิต';
+            return link;
+          }));
         } else {
           if (qcBrandLabel) qcBrandLabel.innerText = 'ค่านี้อยู่นอกช่วงฐานข้อมูลแบรนด์';
           qcBrandList.innerHTML = '<span class="brand-chip">ตรวจตารางไซส์ของผู้ผลิต</span>';
@@ -3753,10 +3858,12 @@ body {
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      renderMeasurementInputsFromCanonical();
       updateValidationConstraints();
+      const restoredLocalTestValues = restoreLocalTestMeasurements();
       goToStep(1);
       updateCondomMatchView();
+      updateExportActionLabels();
+      if (restoredLocalTestValues) setTimeout(() => showToast('เรียกคืนค่าทดสอบในเครื่องแล้ว'), 0);
     });
 
 
@@ -3771,7 +3878,7 @@ body {
       else strongest.textContent = `ความยาวเป็นมิติที่โดดเด่นกว่ารอบวงเมื่อเทียบกับ${regionName}`;
       const labels = { shower:'Shower · ขนาดก่อนและหลังแข็งเปลี่ยนไม่มาก', hybrid:'Hybrid · การเปลี่ยนแปลงอยู่กึ่งกลาง', grower:'Grower · การเปลี่ยนแปลงหลังแข็งเห็นได้ชัด' };
       growth.textContent = `${labels[growthType]} (ยาว ${Number(dL)>=0?'+':''}${dL}% · รอบวง ${Number(dG)>=0?'+':''}${dG}%)`;
-      practical.textContent = condomMatch.withinRange ? `ไซส์ใกล้เคียง ${formatMm(bestSize)} · ควรเทียบตารางของผู้ผลิตก่อนเลือกจริง` : `ค่าประมาณ ${formatMm(bestSize)} อยู่นอกช่วงอ้างอิง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ควรตรวจตารางผู้ผลิต`;
+      practical.textContent = condomMatch.isLargestAvailable ? `${formatMm(bestSize)} เป็นไซส์ใหญ่สุดที่มีและใกล้เคียงที่สุด · ควรเทียบตารางของผู้ผลิตก่อนเลือกจริง` : condomMatch.withinRange ? `ไซส์ใกล้เคียง ${formatMm(bestSize)} · ควรเทียบตารางของผู้ผลิตก่อนเลือกจริง` : `ค่าประมาณ ${formatMm(bestSize)} อยู่นอกช่วงอ้างอิง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ควรตรวจตารางผู้ผลิต`;
     }
     function calculate(showErrors = false, syncFromInputs = true) {
       if (syncFromInputs) {
@@ -3794,7 +3901,7 @@ body {
       let diameter = g_erect / Math.PI;
 
       document.getElementById('resCondom').innerText = formatMm(bestSize);
-      document.getElementById('resCondomSub').innerText = condomMatch.withinRange ? 'ใกล้เคียงจากรอบวง' : `นอกช่วง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ตรวจตารางผู้ผลิต`;
+      document.getElementById('resCondomSub').innerText = condomMatch.isLargestAvailable ? 'ไซส์ใหญ่สุดที่มี · ใกล้เคียงที่สุด' : condomMatch.withinRange ? 'ใกล้เคียงจากรอบวง' : `นอกช่วง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ตรวจตารางผู้ผลิต`;
       document.getElementById('condomCalcStep').innerText = `${formatMm(g_erect)} ÷ 2.3 = ${formatMm(w_condom)}`;
       document.getElementById('resDiameter').innerText = formatMm(diameter);
 
@@ -3912,7 +4019,7 @@ body {
 
       document.getElementById('passSize').innerText = `${formatMetricNumber(l_erect / 10)} × ${formatMetricNumber(g_erect / 10)} ซม.`;
       document.getElementById('passBloodVol').innerText = (bloodVol >= 0 ? `+${bloodVol.toFixed(1)} cc` : `${bloodVol.toFixed(1)} cc`);
-      document.getElementById('passCondom').innerText = condomMatch.withinRange ? formatMm(bestSize) : `${formatMm(bestSize)} · นอกช่วง`;
+      document.getElementById('passCondom').innerText = condomMatch.isLargestAvailable ? `${formatMm(bestSize)} · ใหญ่สุด` : condomMatch.withinRange ? formatMm(bestSize) : `${formatMm(bestSize)} · นอกช่วง`;
       document.getElementById('passPercentileLabel').innerText = regionDataset.passportLabel;
       document.getElementById('passPercentile').innerText = topL < 0.1 ? 'Top 0.01%' : `Top ${topL.toFixed(1)}%`;
 
@@ -3929,14 +4036,14 @@ body {
       document.getElementById('medLenErect').innerText = formatMm(l_erect);
       document.getElementById('medGirthFlaccid').innerText = formatMm(g_flaccid);
       document.getElementById('medGirthErect').innerText = formatMm(g_erect);
-      document.getElementById('medBPEL').innerHTML = `${formatMm(l_bpel)} (ชั้นไขมันโคน T<sub>fat</sub> = ${formatMetricNumber(t_fat)})`;
+      document.getElementById('medBPEL').innerHTML = `${formatMm(l_bpel)} (ชั้นไขมันโคน T<sub>fat</sub> = ${formatMm(t_fat)})`;
       document.getElementById('medDiameter').innerText = formatMm(diameter);
 
       const medGrowthProfile = bfpi >= 2.5 ? '🩸 Pure Blood Grower' : (bfpi >= 1.8 ? '🟣 Hybrid' : '🥩 Pure Flesh Shower');
       document.getElementById('medBFPI').innerText = `${bfpi.toFixed(2)} (${medGrowthProfile})`;
       document.getElementById('medBloodVol').innerText = `${bloodVol >= 0 ? '+' : ''}${bloodVol.toFixed(1)} cc (แบบจำลองทรงกระบอก · ${volRatio.toFixed(2)}×)`;
       document.getElementById('medExpandRatios').innerText = `ความยาว ${dL >= 0 ? '+' : ''}${dL}% | รอบวง ${dG >= 0 ? '+' : ''}${dG}%`;
-      document.getElementById('medCondomSize').innerText = condomMatch.withinRange ? `${formatMm(bestSize)} (ค่าประมาณ)` : `${formatMm(bestSize)} (นอกช่วง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ตรวจตารางผู้ผลิต)`;
+      document.getElementById('medCondomSize').innerText = condomMatch.isLargestAvailable ? `${formatMm(bestSize)} (ไซส์ใหญ่สุดที่มี · ใกล้เคียงที่สุด)` : condomMatch.withinRange ? `${formatMm(bestSize)} (ค่าประมาณ)` : `${formatMm(bestSize)} (นอกช่วง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ตรวจตารางผู้ผลิต)`;
 
       document.getElementById('medLenPercentile').innerText = `Top ${(100 - pctL).toFixed(2)}% (ยาวกว่า ${pctL.toFixed(1)}% ของ${regionName})`;
       document.getElementById('medGirthPercentile').innerText = `Top ${(100 - pctG).toFixed(2)}% (ใหญ่กว่า ${pctG.toFixed(2)}% ของ${regionName})`;
@@ -3948,8 +4055,8 @@ body {
       document.getElementById('medSummaryLengthGrowth').innerText = `ยาว ${dL >= 0 ? '+' : ''}${dL}%`;
       document.getElementById('medSummaryGirthGrowth').innerText = `รอบวง ${dG >= 0 ? '+' : ''}${dG}%`;
       document.getElementById('medSummaryErectSize').innerText = `${formatMetricNumber(l_erect / 10)} × ${formatMetricNumber(g_erect / 10)} ซม.`;
-      document.getElementById('medSummaryCondom').innerText = condomMatch.withinRange ? formatMm(bestSize) : `${formatMm(bestSize)} · นอกช่วง`;
-      document.getElementById('medSummaryCondomDetail').innerText = condomMatch.withinRange ? 'ค่าประมาณจากรอบวง' : 'ตรวจตารางขนาดของผู้ผลิต';
+      document.getElementById('medSummaryCondom').innerText = condomMatch.isLargestAvailable ? `${formatMm(bestSize)} · ใหญ่สุด` : condomMatch.withinRange ? formatMm(bestSize) : `${formatMm(bestSize)} · นอกช่วง`;
+      document.getElementById('medSummaryCondomDetail').innerText = condomMatch.isLargestAvailable ? 'ไซส์ใหญ่สุดที่มี · ใกล้เคียงที่สุด' : condomMatch.withinRange ? 'ค่าประมาณจากรอบวง' : 'ตรวจตารางขนาดของผู้ผลิต';
       document.getElementById('medSummaryLengthRank').innerText = `ยาว ${medTopLength}`;
       document.getElementById('medSummaryGirthRank').innerText = `รอบวง ${medTopGirth} · ${regionName}`;
 
@@ -3958,30 +4065,30 @@ body {
 
       if (dL >= 100) {
         // High Expansion Grower (ควยเลือด)
-        bestPos = `<li>🩸 <strong>Grower Doggy Style:</strong> รองรับสภาวะพองตัวยืดขยายพุ่งสูงสุด</li>
-                   <li>🛏️ <strong>Elevated Missionary:</strong> การหนุนสะโพกช่วยเปลี่ยนมุมและคุมระยะ</li>
-                   <li>🛋️ <strong>Spooning:</strong> จังหวะช้าและมุมตื้นช่วยคุมระยะ</li>`;
-        cautionPos = `<li>🤠 <strong>Fast Cowboy:</strong> หากสลับจังหวะเร็วเกินไปขณะพองตัวอาจพับโคน</li>
-                      <li>🤸 <strong>Standing Acrobatics:</strong> เสี่ยงหลุดจังหวะช่วงก่อนขยายเต็มที่</li>`;
+        bestPos = `<li>🩸 <strong>Grower Doggy Style:</strong> เริ่มตื้นและช้า แล้วค่อยปรับระยะเมื่อพร้อม</li>
+                   <li>🛏️ <strong>Elevated Missionary:</strong> การหนุนสะโพกช่วยเปลี่ยนมุมและคุมระยะได้</li>
+                   <li>🛋️ <strong>Spooning:</strong> เอื้อต่อจังหวะช้าและการคุมระยะ</li>`;
+        cautionPos = `<li>🤠 <strong>Fast Cowboy:</strong> จังหวะหรือมุมที่เปลี่ยนเร็วอาจทำให้ไม่สบาย</li>
+                      <li>🤸 <strong>Standing Acrobatics:</strong> ทรงตัวและคุมมุมยากขึ้น ควรระวังการหลุดหรือพับ</li>`;
       } else if (l_erect >= 155 || g_erect >= 140) {
         // Extra Large / Thick Girth (สายอวบยาวพิเศษ / พี่โด Master)
-        bestPos = `<li>🛋️ <strong>Spooning (ตะแคงซ้อน):</strong> กระชับแนบแน่น คุมลึกดีเยี่ยมไม่ชนจุก</li>
-                   <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> เพิ่มการแนบชิดและการเสียดสี</li>
-                   <li>📐 <strong>CAT Technique:</strong> เสียดสีเต็มพื้นที่แนบชิด โดยไม่ต้องแทงลึก</li>`;
-        cautionPos = `<li>🐕 <strong>Deep Doggy:</strong> อาจลึกหรือกระแทกเกินสบาย ควรเริ่มช้า ๆ</li>
-                      <li>🤠 <strong>Cowboy (ผู้หญิงคุม):</strong> คุมมุมยาก อาจพับโคนหรือจุกแรงหากอวบใหญ่</li>`;
+        bestPos = `<li>🛋️ <strong>Spooning (ตะแคงซ้อน):</strong> เอื้อต่อจังหวะช้าและการคุมระยะ</li>
+                   <li>🧘 <strong>Lotus (นั่งสวมกอด):</strong> ช่วยให้ทั้งคู่สื่อสารและปรับจังหวะใกล้กัน</li>
+                   <li>📐 <strong>CAT Technique:</strong> เน้นการแนบมากกว่าความลึก</li>`;
+        cautionPos = `<li>🐕 <strong>Deep Doggy:</strong> อาจเพิ่มความลึก ควรเริ่มตื้นและปรับตามความสบาย</li>
+                      <li>🤠 <strong>Cowboy (ฝ่ายบนคุม):</strong> ระวังการลงน้ำหนักหรือเปลี่ยนมุมกะทันหัน</li>`;
       } else if (l_erect < 130 || g_erect < 112) {
         // Compact Specs
-        bestPos = `<li>🐕 <strong>Doggy Style (เน้นเข้าลึก):</strong> ช่วยปรับมุมสัมผัสผนังด้านหน้า</li>
-                   <li>🛏️ <strong>Pillow Missionary:</strong> ช่วยเปลี่ยนมุมให้เข้าลึกขึ้น</li>
-                   <li>🤸 <strong>Standing Position:</strong> คุมจังหวะและทิศทางสอดใส่ได้อย่างคล่องแคล่ว</li>`;
-        cautionPos = `<li>🧘 <strong>Lotus Position:</strong> เข้าไม่ลึกเท่าที่ควร หากช่องคลอดคู่รักยืดขยายกว้าง</li>`;
+        bestPos = `<li>🐕 <strong>Doggy Style:</strong> ปรับมุมและระยะได้หลายระดับ ให้คู่ช่วยบอกความสบาย</li>
+                   <li>🛏️ <strong>Pillow Missionary:</strong> การหนุนสะโพกช่วยทดลองเปลี่ยนมุมได้</li>
+                   <li>🤸 <strong>Standing Position:</strong> ควรจัดท่าที่มั่นคงก่อนเพิ่มจังหวะ</li>`;
+        cautionPos = `<li>🧘 <strong>Lotus Position:</strong> ระยะอาจจำกัด ควรปรับมุมร่วมกันตามความสบาย</li>`;
       } else {
         // Standard / Balanced Specs (ค่าเฉลี่ยมาตรฐาน)
         bestPos = `<li>🛏️ <strong>Missionary (คลาสสิก):</strong> คุมจังหวะและแรงได้ง่าย</li>
-                   <li>🐕 <strong>Doggy Style:</strong> ได้มิติสัมผัสผนังช่องคลอดและความลึกกำลังดี</li>
-                   <li>🛋️ <strong>Spooning:</strong> ผ่อนคลายสบาย สัมผัสความแนบแน่นระดับมาตรฐาน</li>`;
-        cautionPos = `<li>🤸 <strong>Standing Acrobatics:</strong> ใช้แรงอุ้มเยอะ เสี่ยงหลุดจังหวะ</li>`;
+                   <li>🐕 <strong>Doggy Style:</strong> ปรับมุมและระยะตามความสบายของทั้งคู่</li>
+                   <li>🛋️ <strong>Spooning:</strong> เอื้อต่อจังหวะช้าและการสื่อสารกัน</li>`;
+        cautionPos = `<li>🤸 <strong>Standing Acrobatics:</strong> ใช้แรงและการทรงตัวมาก ควรระวังการหลุดหรือพับ</li>`;
       }
 
       if (document.getElementById('posBestList')) document.getElementById('posBestList').innerHTML = bestPos;
@@ -3991,6 +4098,7 @@ body {
         measurements: Object.freeze({ ...measurements }),
         bestSize,
         condomInRange: condomMatch.withinRange,
+        condomIsLargestAvailable: condomMatch.isLargestAvailable,
         nominalWidthMm: w_condom,
         diameterMm: diameter,
         erectVolumeCc: v_erect,
@@ -4429,6 +4537,7 @@ body {
       _passportReturnFocus = document.activeElement;
       document.getElementById('passportModalOverlay').style.display = 'flex';
       requestAnimationFrame(() => document.getElementById('passportCloseButton')?.focus());
+      schedulePassportSharePreparation();
       return true;
     }
     function closePassportModal() {
@@ -4612,6 +4721,7 @@ body {
       _passportPhotoCrop.suppressClick = _passportPhotoCrop.moved;
       event.currentTarget.classList.remove('is-dragging');
       if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+      schedulePassportSharePreparation();
     }
 
     function setPassportPhotoZoom(value) {
@@ -4619,6 +4729,7 @@ body {
       const output = document.getElementById('passportPhotoZoomValue');
       if (output) output.textContent = Math.round(_passportPhotoCrop.zoom * 100) + '%';
       applyPassportPhotoCrop();
+      schedulePassportSharePreparation();
     }
 
     function resetPassportPhotoCrop() {
@@ -4632,7 +4743,7 @@ body {
 
     function finishPassportPhotoCrop() {
       setPassportPhotoEditor(false);
-      showToast('✓ บันทึกตำแหน่งรูปแล้ว');
+      schedulePassportSharePreparation();
     }
 
     function chooseNewPassportPhoto() {
@@ -4655,6 +4766,7 @@ body {
           updatePassportPhotoOverlay();
           modalImg.onload = null;
           showToast('📸 ลากรูปเพื่อจัดตำแหน่ง แล้วปรับซูมได้');
+          schedulePassportSharePreparation();
           if (typeof sendAnonymousAnalytics === 'function') sendAnonymousAnalytics(true, 300);
         };
         modalImg.src = photoSource;
@@ -4665,18 +4777,55 @@ body {
     }
 
     window.addEventListener('resize', function () {
-      if (_userPhotoUploaded) applyPassportPhotoCrop();
+      if (_userPhotoUploaded) {
+        applyPassportPhotoCrop();
+        schedulePassportSharePreparation();
+      }
     });
 
     // ใช้ canonical production domain บน Passport Preview และ Passport PNG เสมอ
     const SITE_URL = 'www.mysex.dev';
+    let _preparedPassportShareFile = null;
+    let _preparedPassportShareDataUrl = '';
+    let _passportSharePrepareTimer = null;
+    let _passportSharePrepareVersion = 0;
     // ===================================================
 
     async function exportPassportCard() {
       const validation = validateMeasurementsForAction({ onInvalid: closePassportModal });
       if (!validation.valid || !calculate(true, false)) return false;
+
+      if (canUseImmediateMobileShare() && _preparedPassportShareFile) {
+        try {
+          const sharePromise = navigator.share({
+            files: [_preparedPassportShareFile],
+            title: 'MySex Spec Passport'
+          });
+          sharePromise.catch(error => {
+            if (error?.name !== 'AbortError') {
+              openPassportSavePreview(_preparedPassportShareFile, _preparedPassportShareDataUrl);
+            }
+          });
+          return true;
+        } catch (_) {
+          openPassportSavePreview(_preparedPassportShareFile, _preparedPassportShareDataUrl);
+          return true;
+        }
+      }
+
+      showToast('⏳ กำลังสร้างการ์ด...');
+      const canvas = await renderPassportCardCanvas();
+      if (!canvas) {
+        showToast('❌ ส่งออกไม่สำเร็จ ลองใหม่');
+        return false;
+      }
+      _downloadCanvas(canvas);
+      return true;
+    }
+
+    async function renderPassportCardCanvas() {
       const card = document.getElementById('passportExportCard');
-      if (!card) return;
+      if (!card) return null;
 
       // sync URL
       const urlEl = document.getElementById('exportSiteUrl');
@@ -4695,8 +4844,6 @@ body {
         });
       }
 
-      showToast('⏳ กำลังสร้างการ์ด...');
-
       // ขยับ card มาหน้าจอชั่วคราว — ไม่เปลี่ยน position type เพื่อไม่ให้ layout เปลี่ยน
       card.style.left = '0px';
       card.style.top = '0px';
@@ -4710,7 +4857,7 @@ body {
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
 
       try {
-        const canvas = await html2canvas(card, {
+        return await html2canvas(card, {
           scale: 2,
           useCORS: true,
           allowTaint: true,
@@ -4718,16 +4865,59 @@ body {
           logging: false
         });
 
-        _hideExportCard(card);
-
-        // ทุก platform → download PNG ก่อน (ทำงานได้แน่นอน)
-        _downloadCanvas(canvas);
-
       } catch (err) {
-        _hideExportCard(card);
         console.error('Export error:', err);
-        showToast('❌ ส่งออกไม่สำเร็จ ลองใหม่');
+        return null;
+      } finally {
+        _hideExportCard(card);
       }
+    }
+
+    function canUseImmediateMobileShare() {
+      return isMobileSaveEnvironment() && window.isSecureContext && Boolean(navigator.share && navigator.canShare && window.File);
+    }
+
+    function setPassportSharePreparing(preparing) {
+      if (!canUseImmediateMobileShare()) return;
+      const button = document.getElementById('passportExportButton');
+      const label = document.getElementById('passportExportButtonText');
+      if (button) button.disabled = preparing;
+      if (label) label.textContent = preparing ? '⏳ กำลังเตรียมรูป...' : '✓ พร้อมแชร์ / บันทึก';
+    }
+
+    function schedulePassportSharePreparation() {
+      _preparedPassportShareFile = null;
+      _preparedPassportShareDataUrl = '';
+      const version = ++_passportSharePrepareVersion;
+      if (_passportSharePrepareTimer) clearTimeout(_passportSharePrepareTimer);
+      if (!canUseImmediateMobileShare()) return;
+      setPassportSharePreparing(true);
+      _passportSharePrepareTimer = setTimeout(async () => {
+        const canvas = await renderPassportCardCanvas();
+        if (!canvas || version !== _passportSharePrepareVersion) return;
+        try {
+          const dataUrl = canvas.toDataURL('image/png');
+          const blob = dataUrlToBlob(dataUrl);
+          const file = new File([blob], 'spec_passport.png', { type: 'image/png' });
+          if (!navigator.canShare({ files: [file] })) throw new Error('File sharing unavailable');
+          _preparedPassportShareDataUrl = dataUrl;
+          _preparedPassportShareFile = file;
+        } catch (_) {
+          _preparedPassportShareDataUrl = '';
+          _preparedPassportShareFile = null;
+        } finally {
+          if (version === _passportSharePrepareVersion) setPassportSharePreparing(false);
+        }
+      }, 300);
+    }
+
+    function dataUrlToBlob(dataUrl) {
+      const parts = dataUrl.split(',');
+      const mimeMatch = parts[0].match(/data:([^;]+)/);
+      const binary = atob(parts[1]);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+      return new Blob([bytes], { type: mimeMatch?.[1] || 'image/png' });
     }
 
     // Pre-crop รูปด้วย canvas → จำลอง object-fit:cover แบบ manual
@@ -4848,11 +5038,46 @@ body {
       }
     }
 
+    function isMobileSaveEnvironment() {
+      const userAgent = navigator.userAgent || '';
+      const isMobileUserAgent = /iPhone|iPad|iPod|Android/i.test(userAgent);
+      const isTouchIPad = /Macintosh/i.test(userAgent) && navigator.maxTouchPoints > 1;
+      return isMobileUserAgent || isTouchIPad;
+    }
+
+    function updateExportActionLabels() {
+      const isMobile = isMobileSaveEnvironment();
+      const passportLabel = document.getElementById('passportExportButtonText');
+      const medicalButton = document.getElementById('medicalExportButton');
+      if (passportLabel) passportLabel.textContent = isMobile ? '📲 แชร์ / บันทึก' : '💾 ดาวน์โหลด PNG';
+      if (medicalButton) medicalButton.textContent = isMobile ? '📲 แชร์ / บันทึก Deep Analysis' : '💾 ดาวน์โหลด Deep Analysis (PNG)';
+    }
+
+    async function tryNativeShareBlob(blob, options = {}) {
+      if (!window.isSecureContext || !blob || !navigator.share || !navigator.canShare) return false;
+      const fileName = options.fileName || 'spec_passport.png';
+      const shareTitle = options.shareTitle || 'MySex Spec Passport';
+      let file;
+      try {
+        file = new File([blob], fileName, { type: 'image/png' });
+        if (!navigator.canShare({ files: [file] })) return false;
+      } catch (_) {
+        return false;
+      }
+
+      try {
+        await navigator.share({ files: [file], title: shareTitle });
+        return true;
+      } catch (error) {
+        return error?.name === 'AbortError';
+      }
+    }
+
     function _downloadCanvas(canvas, options = {}) {
       const fileName = options.fileName || 'spec_passport.png';
       const shareTitle = options.shareTitle || 'MySex Spec Passport';
       const previewTitle = options.previewTitle || 'บันทึก Spec Passport';
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const isMobile = isMobileSaveEnvironment();
       if (!isMobile) {
         const link = document.createElement('a');
         link.download = fileName;
@@ -4868,7 +5093,8 @@ body {
         return;
       }
 
-      canvas.toBlob(function (blob) {
+      canvas.toBlob(async function (blob) {
+        if (await tryNativeShareBlob(blob, { fileName, shareTitle })) return;
         openPassportSavePreview(blob, fallbackDataUrl, { fileName, shareTitle, previewTitle });
       }, 'image/png');
     }
@@ -4904,7 +5130,7 @@ body {
       ctx.fillText(`🔹 ความยาวชิดกระดูก (BPEL): ${formatMetricNumber(l_erect)} + ${formatMetricNumber(t_fat)} = ${formatMm(report.bpelMm)}`, 30, 185);
       ctx.fillText(`🔹 ดัชนีควยเลือด (BFPI): ${report.bfpi.toFixed(2)}`, 30, 215);
       ctx.fillText(`🔹 ปริมาตรเพิ่มโดยประมาณ (ΔV): ${report.bloodVolumeCc >= 0 ? '+' : ''}${report.bloodVolumeCc.toFixed(1)} cc · แบบจำลองทรงกระบอก`, 30, 245);
-      ctx.fillText(`🔹 ไซส์ถุงยางโดยประมาณ: ${formatMm(report.bestSize)}${report.condomInRange ? ' · ใกล้เคียง' : ' · นอกช่วง 49–72 มม. ตรวจผู้ผลิต'}`, 30, 275);
+      ctx.fillText(`🔹 ไซส์ถุงยางโดยประมาณ: ${formatMm(report.bestSize)}${report.condomIsLargestAvailable ? ' · ไซส์ใหญ่สุดที่มี' : report.condomInRange ? ' · ใกล้เคียง' : ' · นอกช่วง 47–72 มม. ตรวจผู้ผลิต'}`, 30, 275);
       ctx.fillText(`🔹 สถิติความยาวเปรียบเทียบ: Top ${(100 - report.lengthPercentile).toFixed(2)}%`, 30, 305);
       ctx.fillText(`🔹 สถิติรอบวงเปรียบเทียบ: Top ${(100 - report.girthPercentile).toFixed(2)}%`, 30, 335);
 
@@ -4926,7 +5152,6 @@ body {
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    window.onload = () => calculate(false, false);
   </script>
 </body>
 
