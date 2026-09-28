@@ -1,0 +1,163 @@
+[
+  {
+    "name": "known-large-global",
+    "snapshot": {
+      "measurements": { "l_flaccid": 135, "g_flaccid": 127, "l_erect": 162, "g_erect": 154, "t_fat": 15 },
+      "bestSize": 69,
+      "condomInRange": true,
+      "condomIsLargestAvailable": false,
+      "nominalWidthMm": 66.95652173913044,
+      "diameterMm": 49.01972247230376,
+      "erectVolumeCc": 305.73600905975854,
+      "flaccidVolumeCc": 173.27318020621965,
+      "bloodVolumeCc": 132.4628288535389,
+      "volumeRatio": 1.7644739289478577,
+      "bfpi": 1.4551181102362205,
+      "archetypeKey": "shower_balanced",
+      "lengthGrowthPercent": 20,
+      "girthGrowthPercent": 21.3,
+      "bpelMm": 177,
+      "fatRatioPercent": 8.5,
+      "lengthPercentile": 96.82320503815248,
+      "girthPercentile": 99.96630192063834
+    }
+  },
+  {
+    "name": "balanced-zero-fat-thai",
+    "snapshot": {
+      "measurements": { "l_flaccid": 100, "g_flaccid": 100, "l_erect": 140, "g_erect": 120, "t_fat": 0 },
+      "bestSize": 52,
+      "condomInRange": true,
+      "condomIsLargestAvailable": false,
+      "nominalWidthMm": 52.173913043478265,
+      "diameterMm": 38.197186342054884,
+      "erectVolumeCc": 160.4281826366305,
+      "flaccidVolumeCc": 79.57747154594766,
+      "bloodVolumeCc": 80.85071109068285,
+      "volumeRatio": 2.0160000000000005,
+      "bfpi": 1.68,
+      "archetypeKey": "shower_slim",
+      "lengthGrowthPercent": 40,
+      "girthGrowthPercent": 20,
+      "bpelMm": 140,
+      "fatRatioPercent": 0,
+      "lengthPercentile": 85.80116101498548,
+      "girthPercentile": 78.8144712356602
+    }
+  },
+  {
+    "name": "compact-china",
+    "snapshot": {
+      "measurements": { "l_flaccid": 80, "g_flaccid": 90, "l_erect": 120, "g_erect": 105, "t_fat": 5 },
+      "bestSize": 45.652173913043484,
+      "condomInRange": false,
+      "condomIsLargestAvailable": false,
+      "nominalWidthMm": 45.652173913043484,
+      "diameterMm": 33.42253804929802,
+      "erectVolumeCc": 105.28099485528875,
+      "flaccidVolumeCc": 51.566201561774086,
+      "bloodVolumeCc": 53.71479329351467,
+      "volumeRatio": 2.0416666666666665,
+      "bfpi": 1.75,
+      "archetypeKey": "shower_slim",
+      "lengthGrowthPercent": 50,
+      "girthGrowthPercent": 16.7,
+      "bpelMm": 125,
+      "fatRatioPercent": 4,
+      "lengthPercentile": 39.83312443669078,
+      "girthPercentile": 42.59998997398388
+    }
+  },
+  {
+    "name": "largest-condom-boundary-global",
+    "snapshot": {
+      "measurements": { "l_flaccid": 135, "g_flaccid": 127, "l_erect": 170, "g_erect": 172, "t_fat": 15 },
+      "bestSize": 72,
+      "condomInRange": true,
+      "condomIsLargestAvailable": true,
+      "nominalWidthMm": 74.78260869565219,
+      "diameterMm": 54.749300423612,
+      "erectVolumeCc": 400.2173860966037,
+      "flaccidVolumeCc": 173.27318020621965,
+      "bloodVolumeCc": 226.94420589038407,
+      "volumeRatio": 2.309748026903461,
+      "bfpi": 1.705453484981044,
+      "archetypeKey": "shower_balanced",
+      "lengthGrowthPercent": 25.9,
+      "girthGrowthPercent": 35.4,
+      "bpelMm": 185,
+      "fatRatioPercent": 8.1,
+      "lengthPercentile": 99.0289510070876,
+      "girthPercentile": 99.99
+    }
+  },
+  {
+    "name": "hybrid-slim-thai",
+    "snapshot": {
+      "measurements": { "l_flaccid": 80, "g_flaccid": 90, "l_erect": 144, "g_erect": 120, "t_fat": 10 },
+      "bestSize": 52,
+      "condomInRange": true,
+      "condomIsLargestAvailable": false,
+      "nominalWidthMm": 52.173913043478265,
+      "diameterMm": 38.197186342054884,
+      "erectVolumeCc": 165.0118449976771,
+      "flaccidVolumeCc": 51.566201561774086,
+      "bloodVolumeCc": 113.44564343590301,
+      "volumeRatio": 3.2,
+      "bfpi": 2.4,
+      "archetypeKey": "hybrid_slim",
+      "lengthGrowthPercent": 80,
+      "girthGrowthPercent": 33.3,
+      "bpelMm": 154,
+      "fatRatioPercent": 6.5,
+      "lengthPercentile": 91.26320443155582,
+      "girthPercentile": 78.8144712356602
+    }
+  },
+  {
+    "name": "grower-thick-global",
+    "snapshot": {
+      "measurements": { "l_flaccid": 60, "g_flaccid": 70, "l_erect": 110, "g_erect": 150, "t_fat": 20 },
+      "bestSize": 64,
+      "condomInRange": true,
+      "condomIsLargestAvailable": false,
+      "nominalWidthMm": 65.21739130434783,
+      "diameterMm": 47.7464829275686,
+      "erectVolumeCc": 196.95424207622048,
+      "flaccidVolumeCc": 23.395776634508614,
+      "bloodVolumeCc": 173.55846544171186,
+      "volumeRatio": 8.418367346938776,
+      "bfpi": 3.9285714285714284,
+      "archetypeKey": "grower_thick",
+      "lengthGrowthPercent": 83.3,
+      "girthGrowthPercent": 114.3,
+      "bpelMm": 130,
+      "fatRatioPercent": 15.4,
+      "lengthPercentile": 10.078203143308857,
+      "girthPercentile": 99.88026790252725
+    }
+  },
+  {
+    "name": "above-condom-range-global",
+    "snapshot": {
+      "measurements": { "l_flaccid": 135, "g_flaccid": 127, "l_erect": 170, "g_erect": 173, "t_fat": 15 },
+      "bestSize": 75.21739130434783,
+      "condomInRange": false,
+      "condomIsLargestAvailable": false,
+      "nominalWidthMm": 75.21739130434783,
+      "diameterMm": 55.06761030979579,
+      "erectVolumeCc": 404.8846048027736,
+      "flaccidVolumeCc": 173.27318020621965,
+      "bloodVolumeCc": 231.61142459655395,
+      "volumeRatio": 2.336683636330236,
+      "bfpi": 1.7153689122193059,
+      "archetypeKey": "shower_balanced",
+      "lengthGrowthPercent": 25.9,
+      "girthGrowthPercent": 36.2,
+      "bpelMm": 185,
+      "fatRatioPercent": 8.1,
+      "lengthPercentile": 99.0289510070876,
+      "girthPercentile": 99.99
+    }
+  }
+]

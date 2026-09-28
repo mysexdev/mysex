@@ -14,6 +14,7 @@
     rel="stylesheet">
   <!-- html2canvas for passport PNG export -->
   <script src="/vendor/html2canvas.min.js"></script>
+  <script src="/calculator-core.js"></script>
   <style>
     /* ============================================================
        CSS VARIABLES — LIGHT THEME (DEFAULT) & DARK THEME TOGGLE
@@ -3248,31 +3249,11 @@ body {
       return `${sign}${formatMetricNumber(numericValue, maxDecimals)} มม.`;
     }
 
-    const CONDOM_STANDARD_SIZES_MM = Object.freeze([47, 49, 52, 54, 56, 58, 60, 64, 69, 72]);
-    const CONDOM_MAX_GIRTH_MM = 172;
+    const CONDOM_STANDARD_SIZES_MM = MySexCalculatorCore.CONDOM_STANDARD_SIZES_MM;
+    const CONDOM_MAX_GIRTH_MM = MySexCalculatorCore.CONDOM_MAX_GIRTH_MM;
 
     function getCondomSizeMatch(girthMm) {
-      const numericGirthMm = Number(girthMm);
-      const nominalWidthMm = numericGirthMm / 2.3;
-      const minSizeMm = CONDOM_STANDARD_SIZES_MM[0];
-      const maxSizeMm = CONDOM_STANDARD_SIZES_MM[CONDOM_STANDARD_SIZES_MM.length - 1];
-      const isLargestAvailable = nominalWidthMm > maxSizeMm && numericGirthMm <= CONDOM_MAX_GIRTH_MM;
-      const withinRange = nominalWidthMm >= minSizeMm && numericGirthMm <= CONDOM_MAX_GIRTH_MM;
-      const closestSizeMm = withinRange
-        ? CONDOM_STANDARD_SIZES_MM.reduce((previous, current) =>
-          Math.abs(current - nominalWidthMm) < Math.abs(previous - nominalWidthMm) ? current : previous)
-        : null;
-
-      return {
-        nominalWidthMm,
-        minSizeMm,
-        maxSizeMm,
-        maxGirthMm: CONDOM_MAX_GIRTH_MM,
-        withinRange,
-        isLargestAvailable,
-        closestSizeMm,
-        displaySizeMm: withinRange ? closestSizeMm : nominalWidthMm
-      };
+      return MySexCalculatorCore.getCondomSizeMatch(girthMm);
     }
 
     function getCanonicalMeasurements(ids = MEASUREMENT_IDS) {
@@ -3442,6 +3423,51 @@ body {
     let _lastSentSignature = '';
     let _lastSentTime = 0;
 
+    function getMaleAnalyticsMetrics(measurements) {
+      const snapshotMatches = latestMetricsSnapshot?.measurements
+        && MEASUREMENT_IDS.every(id => latestMetricsSnapshot.measurements[id] === measurements[id]);
+      if (snapshotMatches) {
+        return Object.freeze({
+          bestSize: latestMetricsSnapshot.bestSize,
+          bfpi: latestMetricsSnapshot.bfpi,
+          growthType: latestMetricsSnapshot.archetypeKey.split('_')[0],
+          erectVolumeCc: latestMetricsSnapshot.erectVolumeCc
+        });
+      }
+
+      const geometry = MySexCalculatorCore.calculateGeometry(measurements);
+      const condomMatch = MySexCalculatorCore.getCondomSizeMatch(measurements.g_erect);
+      const classification = MySexCalculatorCore.classifyArchetype(measurements, geometry.bfpi);
+      return Object.freeze({
+        bestSize: condomMatch.displaySizeMm,
+        bfpi: geometry.bfpi,
+        growthType: classification.growthType,
+        erectVolumeCc: geometry.erectVolumeCc
+      });
+    }
+
+    function buildMaleAnalyticsPayload(measurements, analyticsMetrics, archetypeName, photoBase64) {
+      return {
+        mode: 'male',
+        sessionId: _sessionId,
+        erectLength: measurements.l_erect.toFixed(1),
+        erectGirth: measurements.g_erect.toFixed(1),
+        flaccidLength: measurements.l_flaccid.toFixed(1),
+        flaccidGirth: measurements.g_flaccid.toFixed(1),
+        fat: measurements.t_fat.toFixed(1),
+        condomSize: analyticsMetrics.bestSize,
+        bfpiType: analyticsMetrics.growthType === 'shower' ? 'ควยเนื้อ' : (analyticsMetrics.growthType === 'grower' ? 'ควยเลือด' : 'Hybrid'),
+        archetype: archetypeName,
+        bloodVolume: analyticsMetrics.erectVolumeCc.toFixed(1),
+        vaginalResting: '',
+        vaginalExpanded: '',
+        labiaAsym: '',
+        cervicalImpact: '',
+        score: '',
+        photoBase64: photoBase64
+      };
+    }
+
     function sendAnonymousAnalytics(force = false, delay = 3000) {
       clearTimeout(_analyticsTimer);
       _analyticsTimer = setTimeout(() => {
@@ -3452,16 +3478,10 @@ body {
             return;
           }
           syncChangedMeasurementsFromInputs(measurementResult);
-          const { l_flaccid, g_flaccid, l_erect, g_erect, t_fat } = getCanonicalMeasurements();
-          updateMeasurementWarning({ l_flaccid, g_flaccid, l_erect, g_erect, t_fat });
-
-          let condomMatch = getCondomSizeMatch(g_erect);
-          let w_condom = condomMatch.nominalWidthMm;
-          let bestSize = condomMatch.displaySizeMm;
-
-          let r_erect = g_erect / (2 * Math.PI);
-          let v_erect = Math.PI * r_erect * r_erect * l_erect / 1000;
-          let bfpi = (l_erect * g_erect) / (l_flaccid * g_flaccid || 1);
+          const measurements = getCanonicalMeasurements();
+          const { l_flaccid, g_flaccid, l_erect, g_erect, t_fat } = measurements;
+          updateMeasurementWarning(measurements);
+          const analyticsMetrics = getMaleAnalyticsMetrics(measurements);
 
           let photoImg = document.getElementById('passportImgView');
           let photoBase64 = "";
@@ -3472,25 +3492,7 @@ body {
           let archTitleElem = document.getElementById('resArchetypeTitle');
           let archName = archTitleElem ? archTitleElem.innerText.trim() : '';
 
-          const payload = {
-            mode: 'male',
-            sessionId: _sessionId,
-            erectLength: l_erect.toFixed(1),
-            erectGirth: g_erect.toFixed(1),
-            flaccidLength: l_flaccid.toFixed(1),
-            flaccidGirth: g_flaccid.toFixed(1),
-            fat: t_fat.toFixed(1),
-            condomSize: bestSize,
-            bfpiType: bfpi < 1.8 ? 'ควยเนื้อ' : (bfpi >= 2.5 ? 'ควยเลือด' : 'Hybrid'),
-            archetype: archName,
-            bloodVolume: v_erect.toFixed(1),
-            vaginalResting: '',
-            vaginalExpanded: '',
-            labiaAsym: '',
-            cervicalImpact: '',
-            score: '',
-            photoBase64: photoBase64
-          };
+          const payload = buildMaleAnalyticsPayload(measurements, analyticsMetrics, archName, photoBase64);
 
           const now = Date.now();
           const signature = `male_${l_erect.toFixed(1)}_${g_erect.toFixed(1)}_${l_flaccid.toFixed(1)}_${g_flaccid.toFixed(1)}_${t_fat.toFixed(1)}_${Boolean(photoBase64)}_${photoBase64 ? photoBase64.length : 0}`;
@@ -3512,10 +3514,7 @@ body {
 
     // ACCURATE NORMAL CUMULATIVE DISTRIBUTION FUNCTION (CDF)
     function normalCDF(z) {
-      let t = 1 / (1 + 0.2316419 * Math.abs(z));
-      let d = 0.3989423 * Math.exp(-z * z / 2);
-      let p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
-      return z >= 0 ? 1 - p : p;
+      return MySexCalculatorCore.normalCDF(z);
     }
 
     function triggerPulseAnimation() {
@@ -3893,12 +3892,13 @@ body {
       const measurements = getCanonicalMeasurements();
       updateMeasurementWarning(measurements);
       const { l_flaccid, g_flaccid, l_erect, g_erect, t_fat } = measurements;
+      const geometry = MySexCalculatorCore.calculateGeometry(measurements);
 
       // 1. CONDOM FIT & DIAMETER
       let condomMatch = getCondomSizeMatch(g_erect);
       let w_condom = condomMatch.nominalWidthMm;
       let bestSize = condomMatch.displaySizeMm;
-      let diameter = g_erect / Math.PI;
+      let diameter = geometry.diameterMm;
 
       document.getElementById('resCondom').innerText = formatMm(bestSize);
       document.getElementById('resCondomSub').innerText = condomMatch.isLargestAvailable ? 'ไซส์ใหญ่สุดที่มี · ใกล้เคียงที่สุด' : condomMatch.withinRange ? 'ใกล้เคียงจากรอบวง' : `นอกช่วง ${formatMetricNumber(condomMatch.minSizeMm)}–${formatMm(condomMatch.maxSizeMm)} · ตรวจตารางผู้ผลิต`;
@@ -3906,44 +3906,22 @@ body {
       document.getElementById('resDiameter').innerText = formatMm(diameter);
 
       // 2. VOLUME & HEMODYNAMICS
-      let r_erect = g_erect / (2 * Math.PI);
-      let r_flaccid = g_flaccid / (2 * Math.PI);
-      let v_erect = Math.PI * r_erect * r_erect * l_erect / 1000;
-      let v_flaccid = Math.PI * r_flaccid * r_flaccid * l_flaccid / 1000;
-      let bloodVol = v_erect - v_flaccid;
-      let volRatio = v_flaccid > 0 ? (v_erect / v_flaccid) : 1;
+      let v_erect = geometry.erectVolumeCc;
+      let v_flaccid = geometry.flaccidVolumeCc;
+      let bloodVol = geometry.bloodVolumeCc;
+      let volRatio = geometry.volumeRatio;
 
       // 3. BFPI INDEX & ARCHETYPE (9 types: Growth × Shape)
-      let bfpi = (l_erect * g_erect) / (l_flaccid * g_flaccid);
+      let bfpi = geometry.bfpi;
       let badgeElem = document.getElementById('resBadgeType');
       let archTitleElem = document.getElementById('resArchetypeTitle');
       let archSubElem = document.getElementById('resArchetypeSub');
-
-      let pointerLeftPercent = 0;
-      if (bfpi < 1.8) {
-        let ratio = Math.max(0, Math.min(1, (bfpi - 1.0) / 0.8));
-        pointerLeftPercent = ratio * 33.3;
-      } else if (bfpi < 2.5) {
-        let ratio = Math.max(0, Math.min(1, (bfpi - 1.8) / 0.7));
-        pointerLeftPercent = 33.3 + (ratio * 33.3);
-      } else {
-        let ratio = Math.max(0, Math.min(1, (bfpi - 2.5) / 1.0));
-        pointerLeftPercent = 66.6 + (ratio * 33.4);
-      }
+      const archetypeClassification = MySexCalculatorCore.classifyArchetype(measurements, bfpi);
+      const pointerLeftPercent = archetypeClassification.gaugePointerPercent;
       document.getElementById('resGaugePointer').style.left = `${pointerLeftPercent.toFixed(1)}%`;
 
       // --- Growth type ---
-      let growthType; // 'shower' | 'hybrid' | 'grower'
-      if (bfpi < 1.8) growthType = 'shower';
-      else if (bfpi < 2.5) growthType = 'hybrid';
-      else growthType = 'grower';
-
-      // --- Shape type (L/G ratio ใช้ค่า erect) ---
-      let lgRatio = l_erect / g_erect;
-      let shapeType; // 'slim' | 'balanced' | 'thick'
-      if (lgRatio > 1.1) shapeType = 'slim';
-      else if (lgRatio >= 0.85) shapeType = 'balanced';
-      else shapeType = 'thick';
+      const growthType = archetypeClassification.growthType;
 
       // --- 9 Archetypes ---
       const ARCHETYPES = {
@@ -3958,7 +3936,7 @@ body {
         'grower_thick': { emoji: '🐉', name: 'มังกรซ่อนกาย', desc: 'ตอนอ่อนเล็ก แข็งแล้วพองหนาสุดทาง', badge: 'badge-blood', export: '🐉 มังกรซ่อนกาย' },
       };
 
-      const archKey = `${growthType}_${shapeType}`;
+      const archKey = archetypeClassification.archetypeKey;
       const arch = ARCHETYPES[archKey] || ARCHETYPES['hybrid_balanced'];
 
       badgeElem.className = `badge ${arch.badge}`;
@@ -3973,10 +3951,10 @@ body {
       document.getElementById('resBfpi').innerText = bfpi.toFixed(2);
 
       // 4. EXPANSION RATIOS & BPEL (BOX 1, 2, 3)
-      let dL = ((l_erect - l_flaccid) / l_flaccid * 100).toFixed(1);
-      let dG = ((g_erect - g_flaccid) / g_flaccid * 100).toFixed(1);
-      let l_bpel = l_erect + t_fat;
-      let fatRatio = ((t_fat / l_bpel) * 100).toFixed(1);
+      let dL = geometry.lengthGrowthDisplay;
+      let dG = geometry.girthGrowthDisplay;
+      let l_bpel = geometry.bpelMm;
+      let fatRatio = geometry.fatRatioDisplay;
 
       document.getElementById('resDeltaL').innerText = (dL >= 0 ? `+${dL}%` : `${dL}%`);
       document.getElementById('resSubDeltaL').innerText = `อ่อน ${formatMetricNumber(l_flaccid)} → แข็ง ${formatMm(l_erect)}`;
@@ -3986,21 +3964,14 @@ body {
 
       // 5. REGIONAL PERCENTILES (BOX 4, 5, 6 — DYNAMICALLY DEPENDENT ON REGION TOGGLE)
       const regionDataset = REGION_DATASETS[currentRegion] || REGION_DATASETS.global;
-      const meanLen = regionDataset.meanLengthMm;
-      const sdLen = regionDataset.sdLengthMm;
-      const meanGirth = regionDataset.meanGirthMm;
-      const sdGirth = regionDataset.sdGirthMm;
       const regionName = regionDataset.regionName;
 
-      let zL = (l_erect - meanLen) / sdLen;
-      let zG = (g_erect - meanGirth) / sdGirth;
-
-      let pctL = Math.min(99.99, Math.max(0.01, normalCDF(zL) * 100));
-      let pctG = Math.min(99.99, Math.max(0.01, normalCDF(zG) * 100));
-      let topL = (100 - pctL);
-      let topG = (100 - pctG);
-
-      let diffGirth = g_erect - meanGirth;
+      const percentileMetrics = MySexCalculatorCore.calculatePercentiles(measurements, regionDataset);
+      let pctL = percentileMetrics.lengthPercentile;
+      let pctG = percentileMetrics.girthPercentile;
+      let topL = percentileMetrics.lengthTopPercent;
+      let topG = percentileMetrics.girthTopPercent;
+      let diffGirth = percentileMetrics.girthDifferenceMm;
       let diffGirthText = formatSignedMm(diffGirth);
 
       document.getElementById('resLenRank').innerText = topL < 0.1 ? 'Top 0.01%' : `Top ${topL.toFixed(1)}%`;
