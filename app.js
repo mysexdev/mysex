@@ -601,6 +601,25 @@
       return true;
     }
 
+    function continueFromCondomMatch() {
+      canonicalMeasurementsMm.g_erect = quickCondomGirthMm;
+      renderMeasurementInputsFromCanonical(['g_erect']);
+      setFieldValidity('g_erect');
+      saveLocalTestMeasurements();
+
+      const validation = readAndValidateMeasurements();
+      if (validation.valid) {
+        selectTab(3);
+        return true;
+      }
+
+      const targetStep = validation.firstInvalid === 'l_flaccid' || validation.firstInvalid === 'g_flaccid' ? 1 : 2;
+      goToStep(targetStep);
+      document.getElementById(validation.firstInvalid)?.focus();
+      showToast('ใส่รอบวงตอนแข็งให้แล้ว กรุณากรอกข้อมูลที่เหลือ');
+      return false;
+    }
+
     function updateCondomMatchView() {
       const g_erect = quickCondomGirthMm;
       const displayVal = formatMetricNumber(g_erect / getScaleToMm(), currentUnit === 'in' ? 2 : 1);
@@ -769,7 +788,130 @@
       return true;
     }
 
+    function bindWizardInputEvents() {
+      [
+        ['stepTab1', 1],
+        ['stepTab2', 2],
+        ['stepTab3', 3]
+      ].forEach(([id, step]) => {
+        document.getElementById(id)?.addEventListener('click', () => selectTab(step));
+      });
+
+      [
+        ['u_cm', 'cm'],
+        ['u_in', 'in']
+      ].forEach(([id, unit]) => {
+        document.getElementById(id)?.addEventListener('click', () => setUnit(unit));
+      });
+
+      MEASUREMENT_IDS.forEach((id) => {
+        const input = document.getElementById(id);
+        input?.addEventListener('input', () => handleMeasurementInput(id));
+        input?.addEventListener('blur', () => validateMeasurementField(id));
+      });
+
+      document.getElementById('step1NextButton')?.addEventListener('click', () => goToStep(2));
+      document.getElementById('step2BackButton')?.addEventListener('click', () => goToStep(1));
+      document.getElementById('step2CalculateButton')?.addEventListener('click', () => goToStep(3, true));
+      document.getElementById('resultEditButton')?.addEventListener('click', () => goToStep(1));
+    }
+
+    function bindRegionCondomEvents() {
+      document.getElementById('stepTabCondom')?.addEventListener('click', () => selectTab('condom'));
+      document.getElementById('condomFullAnalysisButton')?.addEventListener('click', continueFromCondomMatch);
+
+      [
+        ['qc_u_cm', 'cm'],
+        ['qc_u_in', 'in']
+      ].forEach(([id, unit]) => {
+        document.getElementById(id)?.addEventListener('click', () => setUnit(unit));
+      });
+
+      document.getElementById('qcGirthSlider')?.addEventListener('input', (event) => {
+        syncCondomSlider(event.currentTarget.value);
+      });
+
+      [
+        ['regGlobal', 'global'],
+        ['regChina', 'china'],
+        ['regThai', 'thai']
+      ].forEach(([id, region]) => {
+        document.getElementById(id)?.addEventListener('click', () => switchRegion(region));
+      });
+
+      const condomCard = document.getElementById('cardCondom');
+      condomCard?.addEventListener('click', toggleCondomTooltip);
+      condomCard?.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        toggleCondomTooltip(event);
+      });
+    }
+
+    function bindSvgEvents() {
+      document.getElementById('foreskinCut')?.addEventListener('click', () => setForeskinMode('cut'));
+      document.getElementById('foreskinUncut')?.addEventListener('click', () => setForeskinMode('uncut'));
+      document.getElementById('growthPlayButton')?.addEventListener('click', playGrowthAnimation);
+      document.getElementById('growthSlider')?.addEventListener('input', (event) => {
+        cancelGrowthAnimation();
+        renderGrowthStage(event.currentTarget.value);
+      });
+    }
+
+    function bindPassportExportEvents() {
+      document.getElementById('openPassportButton')?.addEventListener('click', openPassportModal);
+      document.getElementById('passportCloseButton')?.addEventListener('click', closePassportModal);
+      document.getElementById('passportModalOverlay')?.addEventListener('click', (event) => {
+        if (event.target === event.currentTarget) closePassportModal();
+      });
+
+      const photoHero = document.getElementById('passportPhotoHero');
+      photoHero?.addEventListener('click', handlePassportPhotoFrameClick);
+      photoHero?.addEventListener('keydown', handlePassportPhotoFrameKeydown);
+      photoHero?.addEventListener('pointerdown', startPassportPhotoDrag);
+      photoHero?.addEventListener('pointermove', movePassportPhotoDrag);
+      photoHero?.addEventListener('pointerup', endPassportPhotoDrag);
+      photoHero?.addEventListener('pointercancel', endPassportPhotoDrag);
+
+      document.getElementById('passportFileUploader')?.addEventListener('change', (event) => {
+        loadPassportPhoto(event.currentTarget);
+      });
+      document.getElementById('passportPhotoZoom')?.addEventListener('input', (event) => {
+        setPassportPhotoZoom(event.currentTarget.value);
+      });
+      document.getElementById('passportChoosePhotoButton')?.addEventListener('click', chooseNewPassportPhoto);
+      document.getElementById('passportResetPhotoButton')?.addEventListener('click', resetPassportPhotoCrop);
+      document.getElementById('passportFinishPhotoButton')?.addEventListener('click', finishPassportPhotoCrop);
+      document.getElementById('passportExportButton')?.addEventListener('click', exportPassportCard);
+
+      document.getElementById('passportSaveOverlay')?.addEventListener('click', (event) => {
+        if (event.target === event.currentTarget) closePassportSavePreview();
+      });
+      document.getElementById('passportSaveCloseButton')?.addEventListener('click', closePassportSavePreview);
+      document.getElementById('passportNativeShareButton')?.addEventListener('click', sharePreparedPassport);
+    }
+
+    function bindMedicalEvents() {
+      document.getElementById('openMedicalButton')?.addEventListener('click', openMedicalModal);
+      document.getElementById('medicalCloseButton')?.addEventListener('click', closeMedicalModal);
+      document.getElementById('medicalModalOverlay')?.addEventListener('click', (event) => {
+        if (event.target === event.currentTarget) closeMedicalModal();
+      });
+      document.getElementById('medicalDetailsToggle')?.addEventListener('click', toggleMedicalDetails);
+      document.getElementById('medicalExportButton')?.addEventListener('click', downloadMedicalReport);
+    }
+
+    function bindThemeEvent() {
+      document.getElementById('themeToggleButton')?.addEventListener('click', toggleTheme);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      bindWizardInputEvents();
+      bindRegionCondomEvents();
+      bindSvgEvents();
+      bindPassportExportEvents();
+      bindMedicalEvents();
+      bindThemeEvent();
       updateValidationConstraints();
       const restoredLocalTestValues = restoreLocalTestMeasurements();
       goToStep(1);

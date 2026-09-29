@@ -25,7 +25,7 @@
     <!-- HEADER -->
     <header>
       <div class="header-top-right">
-        <button class="theme-toggle-btn" onclick="toggleTheme()">
+        <button class="theme-toggle-btn" id="themeToggleButton">
           <span id="themeIcon">☀️</span> <span id="themeText">ธีมสว่าง</span>
         </button>
       </div>
@@ -37,19 +37,19 @@
 
     <!-- SINGLE UNIFIED 4-TAB NAVIGATION BAR (1 ROW ONLY) -->
     <div class="wizard-bar" id="wizardBar" role="tablist" aria-label="ขั้นตอนการคำนวณ" style="display:flex; gap:6px; margin-bottom:14px;">
-      <button type="button" class="wizard-step active" id="stepTab1" role="tab" aria-selected="true" aria-controls="step1View" onclick="selectTab(1)">
+      <button type="button" class="wizard-step active" id="stepTab1" role="tab" aria-selected="true" aria-controls="step1View">
         <span class="step-num">1</span>
         <span class="step-label">💤 ตอนอ่อนตัว</span>
       </button>
-      <button type="button" class="wizard-step" id="stepTab2" role="tab" aria-selected="false" aria-controls="step2View" onclick="selectTab(2)">
+      <button type="button" class="wizard-step" id="stepTab2" role="tab" aria-selected="false" aria-controls="step2View">
         <span class="step-num">2</span>
         <span class="step-label">🍆 ตอนแข็งตัว</span>
       </button>
-      <button type="button" class="wizard-step" id="stepTab3" role="tab" aria-selected="false" aria-controls="step3View" onclick="selectTab(3)">
+      <button type="button" class="wizard-step" id="stepTab3" role="tab" aria-selected="false" aria-controls="step3View">
         <span class="step-num">3</span>
         <span class="step-label">🏆 ผลวิเคราะห์</span>
       </button>
-      <button type="button" class="wizard-step wizard-step-condom" id="stepTabCondom" role="tab" aria-selected="false" aria-controls="condomMatchView" onclick="selectTab('condom')">
+      <button type="button" class="wizard-step wizard-step-condom" id="stepTabCondom" role="tab" aria-selected="false" aria-controls="condomMatchView">
         <span class="step-label">🛡️ เทียบไซส์ถุงยาง</span>
       </button>
     </div>
@@ -66,8 +66,8 @@
 
         <!-- UNIT TOGGLE -->
         <div class="unit-toggle" style="margin-bottom:16px;">
-          <button class="unit-btn active" id="qc_u_cm" onclick="setUnit('cm')">เซนติเมตร (cm)</button>
-          <button class="unit-btn" id="qc_u_in" onclick="setUnit('in')">นิ้ว (inch)</button>
+          <button class="unit-btn active" id="qc_u_cm">เซนติเมตร (cm)</button>
+          <button class="unit-btn" id="qc_u_in">นิ้ว (inch)</button>
         </div>
 
         <!-- GIRTH SLIDER & NUMERIC INPUT -->
@@ -76,7 +76,7 @@
             <span style="font-size:0.88rem; font-weight:800; color:var(--text);">⭕ เส้นรอบวงตอนแข็งตัว (Girth):</span>
             <div style="background:rgba(216, 27, 96, 0.12); border:1px solid rgba(216, 27, 96, 0.3); color:var(--pink); font-family:'Outfit',monospace; font-weight:900; font-size:1.15rem; padding:3px 14px; border-radius:8px;" id="qcGirthDisplay">12.0 cm</div>
           </div>
-          <input type="range" id="qcGirthSlider" min="70" max="200" step="0.5" value="120" style="width:100%; height:8px; border-radius:50px; cursor:pointer; accent-color:var(--pink);" oninput="syncCondomSlider(this.value)">
+          <input type="range" id="qcGirthSlider" min="70" max="200" step="0.5" value="120" style="width:100%; height:8px; border-radius:50px; cursor:pointer; accent-color:var(--pink);">
           <div style="font-size:0.7rem; color:var(--muted); margin-top:8px;">ค่าตัวอย่างเริ่มต้น · ปรับสไลเดอร์เป็นรอบวงของคุณ</div>
         </div>
 
@@ -95,8 +95,8 @@
         </div>
 
         <!-- ACTION TO SWITCH TO FULL ANALYSIS -->
-        <button type="button" class="btn-action" style="width:100%; justify-content:center; padding:12px; font-size:0.92rem;" onclick="selectTab(3)">
-          ✨ ดูยศควยเลือด, สเกล 2D & ออกการ์ดพาสปอร์ตต่อ ➔
+        <button type="button" class="btn-action" id="condomFullAnalysisButton" style="width:100%; justify-content:center; padding:12px; font-size:0.92rem;">
+          ✨ ใช้ค่านี้วิเคราะห์ต่อ ➔
         </button>
       </div>
     </div>
@@ -110,8 +110,8 @@
 
         <!-- UNIT TOGGLE -->
         <div class="unit-toggle">
-          <button class="unit-btn active" id="u_cm" onclick="setUnit('cm')">เซนติเมตร (cm)</button>
-          <button class="unit-btn" id="u_in" onclick="setUnit('in')">นิ้ว (inch)</button>
+          <button class="unit-btn active" id="u_cm">เซนติเมตร (cm)</button>
+          <button class="unit-btn" id="u_in">นิ้ว (inch)</button>
         </div>
 
         <!-- FLACCID STATE INPUTS -->
@@ -123,7 +123,7 @@
               <div class="input-wrapper">
                 <input type="number" id="l_flaccid" class="form-input" value="" placeholder="กรอกค่า" min="0.1" max="50" step="any"
                   required autocomplete="off" aria-label="ความยาวตอนอ่อนตัว" aria-describedby="unit_l1 l_flaccid_error"
-                  oninput="handleMeasurementInput('l_flaccid')" onblur="validateMeasurementField('l_flaccid')">
+                  >
                 <span class="input-unit" id="unit_l1">cm</span>
               </div>
               <div class="field-error" id="l_flaccid_error" aria-live="polite"></div>
@@ -133,7 +133,7 @@
               <div class="input-wrapper">
                 <input type="number" id="g_flaccid" class="form-input" value="" placeholder="กรอกค่า" min="0.1" max="50" step="any"
                   required autocomplete="off" aria-label="เส้นรอบวงตอนอ่อนตัว" aria-describedby="unit_g1 g_flaccid_error"
-                  oninput="handleMeasurementInput('g_flaccid')" onblur="validateMeasurementField('g_flaccid')">
+                  >
                 <span class="input-unit" id="unit_g1">cm</span>
               </div>
               <div class="field-error" id="g_flaccid_error" aria-live="polite"></div>
@@ -142,8 +142,7 @@
         </div>
 
         <div style="margin-top:16px;">
-          <button type="button" class="btn-action" style="width:100%; justify-content:center; padding:12px;"
-            onclick="goToStep(2)">
+          <button type="button" class="btn-action" id="step1NextButton" style="width:100%; justify-content:center; padding:12px;">
             ถัดไป: สภาวะแข็งตัว & ชั้นไขมัน ➔
           </button>
         </div>
@@ -166,7 +165,7 @@
               <div class="input-wrapper">
                 <input type="number" id="l_erect" class="form-input" value="" placeholder="กรอกค่า" min="0.1" max="50" step="any"
                   required autocomplete="off" aria-label="ความยาวตอนแข็งตัว" aria-describedby="unit_l2 l_erect_error"
-                  oninput="handleMeasurementInput('l_erect')" onblur="validateMeasurementField('l_erect')">
+                  >
                 <span class="input-unit" id="unit_l2">cm</span>
               </div>
               <div class="field-error" id="l_erect_error" aria-live="polite"></div>
@@ -176,7 +175,7 @@
               <div class="input-wrapper">
                 <input type="number" id="g_erect" class="form-input" value="" placeholder="กรอกค่า" min="0.1" max="50" step="any"
                   required autocomplete="off" aria-label="เส้นรอบวงตอนแข็งตัว" aria-describedby="unit_g2 g_erect_error"
-                  oninput="handleMeasurementInput('g_erect')" onblur="validateMeasurementField('g_erect')">
+                  >
                 <span class="input-unit" id="unit_g2">cm</span>
               </div>
               <div class="field-error" id="g_erect_error" aria-live="polite"></div>
@@ -190,7 +189,7 @@
           <div class="input-wrapper">
             <input type="number" id="t_fat" class="form-input" value="" placeholder="กรอกค่า" min="0" max="20" step="any"
               required autocomplete="off" aria-label="ชั้นไขมันบริเวณโคน" aria-describedby="unit_tfat t_fat_hint t_fat_error"
-              oninput="handleMeasurementInput('t_fat')" onblur="validateMeasurementField('t_fat')">
+              >
             <span class="input-unit" id="unit_tfat">cm</span>
           </div>
           <div id="t_fat_hint" style="font-size:0.72rem; color:var(--muted); margin-top:6px;">
@@ -204,11 +203,10 @@
         </div>
 
         <div style="display:flex; gap:10px; margin-top:16px;">
-          <button type="button" class="btn-preset" onclick="goToStep(1)" style="padding:10px 16px;">
+          <button type="button" class="btn-preset" id="step2BackButton" style="padding:10px 16px;">
             ⬅️ ย้อนกลับ
           </button>
-          <button type="button" class="btn-action" style="flex:1; justify-content:center; padding:12px;"
-            onclick="goToStep(3, true)">
+          <button type="button" class="btn-action" id="step2CalculateButton" style="flex:1; justify-content:center; padding:12px;">
             🏆 ประมวลผลและเปิดม่านแดชบอร์ด ➔
           </button>
         </div>
@@ -229,7 +227,7 @@
             วิเคราะห์ยศสรีระ · ถุงยางที่แนะนำ · แผนภาพ 2D มาตราส่วน · สถิติประชากร
           </div>
         </div>
-        <button type="button" class="btn-preset" onclick="goToStep(1)" style="font-size:0.8rem; padding:6px 14px;">
+        <button type="button" class="btn-preset" id="resultEditButton" style="font-size:0.8rem; padding:6px 14px;">
           ✏️ กลับไปแก้ข้อมูล
         </button>
       </div>
@@ -240,7 +238,7 @@
           <span>Explore more</span>
         </div>
         <div class="result-next-actions">
-          <button type="button" class="result-next-card" onclick="openPassportModal()">
+          <button type="button" class="result-next-card" id="openPassportButton">
             <span class="result-next-icon" aria-hidden="true">🪪</span>
             <span>
               <span class="result-next-title">สร้าง Spec Passport</span>
@@ -248,7 +246,7 @@
             </span>
             <span class="result-next-arrow" aria-hidden="true">→</span>
           </button>
-          <button type="button" class="result-next-card analysis" onclick="openMedicalModal()">
+          <button type="button" class="result-next-card analysis" id="openMedicalButton">
             <span class="result-next-icon" aria-hidden="true">🔬</span>
             <span>
               <span class="result-next-title">เปิด Deep Analysis</span>
@@ -270,9 +268,7 @@
 
           <div class="metrics-grid">
             <div class="metric-card" id="cardCondom" role="button" tabindex="0" aria-expanded="false" aria-controls="condomTooltip"
-              style="border-color:rgba(0,131,143,0.3); cursor:pointer; position:relative;"
-              onclick="toggleCondomTooltip(event)"
-              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleCondomTooltip(event)}">
+              style="border-color:rgba(0,131,143,0.3); cursor:pointer; position:relative;">
               <div class="metric-title" style="display:flex; justify-content:space-between; align-items:center;">
                 <span>ไซส์ถุงยาง</span>
                 <span
@@ -383,9 +379,9 @@
               <div style="font-size:0.72rem; color:var(--muted); font-weight:600;" id="regionSubText">🌐 ข้อมูลรวมหลายประเทศ · Veale 2015</div>
             </div>
             <div class="region-toggle-group">
-              <button class="region-btn active" id="regGlobal" onclick="switchRegion('global')">🌐 โลก</button>
-              <button class="region-btn" id="regChina" onclick="switchRegion('china')">🇨🇳 จีน</button>
-              <button class="region-btn" id="regThai" onclick="switchRegion('thai')">🇹🇭 ไทย · BETA</button>
+              <button class="region-btn active" id="regGlobal">🌐 โลก</button>
+              <button class="region-btn" id="regChina">🇨🇳 จีน</button>
+              <button class="region-btn" id="regThai">🇹🇭 ไทย · BETA</button>
             </div>
           </div>
 
@@ -414,8 +410,8 @@
           <div class="card-title">
             <div class="card-title-text">📊 แผนภาพเปรียบเทียบสภาวะยืดพองตัว (Anatomical Scaled Visualizer)</div>
             <div class="foreskin-toggle" role="group" aria-label="รูปแบบหนังหุ้มปลาย">
-              <button type="button" class="foreskin-option active" id="foreskinCut" aria-pressed="true" onclick="setForeskinMode('cut')">ขลิบ</button>
-              <button type="button" class="foreskin-option" id="foreskinUncut" aria-pressed="false" onclick="setForeskinMode('uncut')">ไม่ขลิบ</button>
+              <button type="button" class="foreskin-option active" id="foreskinCut" aria-pressed="true">ขลิบ</button>
+              <button type="button" class="foreskin-option" id="foreskinUncut" aria-pressed="false">ไม่ขลิบ</button>
             </div>
           </div>
           <div
@@ -423,9 +419,9 @@
             <svg id="anatomySvg" width="100%" height="220" viewBox="0 0 760 300"></svg>
           </div>
           <div class="growth-explorer">
-            <button type="button" class="growth-play" aria-label="เล่นการเปลี่ยนแปลง" title="เล่นการเปลี่ยนแปลง" onclick="playGrowthAnimation()">▶</button>
+            <button type="button" class="growth-play" id="growthPlayButton" aria-label="เล่นการเปลี่ยนแปลง" title="เล่นการเปลี่ยนแปลง">▶</button>
             <div class="growth-range-wrap">
-              <input class="growth-slider" id="growthSlider" type="range" min="0" max="100" value="0" step="1" aria-label="ดูการเปลี่ยนแปลงจากตอนอ่อนไปตอนแข็ง" oninput="cancelGrowthAnimation(); renderGrowthStage(this.value)">
+              <input class="growth-slider" id="growthSlider" type="range" min="0" max="100" value="0" step="1" aria-label="ดูการเปลี่ยนแปลงจากตอนอ่อนไปตอนแข็ง">
               <div class="growth-scale"><span>อ่อน</span><span>แข็ง</span></div>
             </div>
             <div class="growth-explorer-head">
@@ -513,7 +509,7 @@
 
 
   <!-- PASSPORT MODAL OVERLAY -->
-  <div class="modal-overlay" id="passportModalOverlay" role="dialog" aria-modal="true" aria-labelledby="passportDialogTitle" onclick="if(event.target===this) closePassportModal()">
+  <div class="modal-overlay" id="passportModalOverlay" role="dialog" aria-modal="true" aria-labelledby="passportDialogTitle">
     <div class="passport-card-box" id="passportCard" tabindex="-1">
 
       <!-- TOP GRADIENT STRIPE -->
@@ -523,18 +519,12 @@
       <div class="passport-header-row">
         <div class="passport-badge-title" id="passportDialogTitle">⚕ SPEC PASSPORT</div>
         <div class="passport-certified" style="font-size:0.68rem; font-weight:800; color:var(--gold); letter-spacing:1px;">★ SPEC UNLOCKED ★</div>
-        <button type="button" id="passportCloseButton" aria-label="ปิด Spec Passport" onclick="closePassportModal()"
+        <button type="button" id="passportCloseButton" aria-label="ปิด Spec Passport"
           style="background:transparent; border:none; color:var(--muted); font-size:1rem; cursor:pointer; line-height:1; padding:0 2px;">✕</button>
       </div>
 
       <!-- HERO PHOTO AREA: full width, click to upload -->
       <div class="passport-photo-hero" id="passportPhotoHero" role="button" tabindex="0" aria-label="อัปโหลดหรือจัดตำแหน่งรูปภาพ"
-        onclick="handlePassportPhotoFrameClick(event)"
-        onkeydown="handlePassportPhotoFrameKeydown(event)"
-        onpointerdown="startPassportPhotoDrag(event)"
-        onpointermove="movePassportPhotoDrag(event)"
-        onpointerup="endPassportPhotoDrag(event)"
-        onpointercancel="endPassportPhotoDrag(event)"
         title="คลิกเพื่ออัปโหลดหรือจัดตำแหน่งรูป">
         <img id="passportImgView"
           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 260' width='380' height='260'><defs><radialGradient id='bg' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='rgba(216,27,96,0.06)'/><stop offset='100%25' stop-color='rgba(123,31,162,0.04)'/></radialGradient></defs><rect width='380' height='260' fill='url(%23bg)'/><g transform='translate(190,130)'><ellipse cx='0' cy='-55' rx='28' ry='28' fill='rgba(216,27,96,0.18)' stroke='rgba(216,27,96,0.5)' stroke-width='1.5'/><rect x='-18' y='-36' width='36' height='85' rx='18' fill='rgba(216,27,96,0.15)' stroke='rgba(216,27,96,0.45)' stroke-width='1.5'/><ellipse cx='-22' cy='58' rx='12' ry='8' fill='rgba(180,77,255,0.12)' stroke='rgba(180,77,255,0.3)' stroke-width='1'/><ellipse cx='22' cy='58' rx='12' ry='8' fill='rgba(180,77,255,0.12)' stroke='rgba(180,77,255,0.3)' stroke-width='1'/></g><text x='190' y='230' text-anchor='middle' font-family='Outfit,sans-serif' font-size='11' fill='rgba(216,27,96,0.45)' letter-spacing='2'>📷 TAP TO UPLOAD YOUR PHOTO</text></svg>"
@@ -545,19 +535,17 @@
           <small id="passportPhotoOverlayText">อัปโหลดรูปภาพ</small>
         </div>
       </div>
-      <input type="file" id="passportFileUploader" accept="image/*" style="display:none;"
-        onchange="loadPassportPhoto(this)">
+      <input type="file" id="passportFileUploader" accept="image/*" style="display:none;">
       <div class="passport-photo-editor" id="passportPhotoEditor" hidden>
         <div class="passport-photo-editor-top">
           <label class="passport-photo-editor-label" for="passportPhotoZoom">🔎 ซูม</label>
-          <input class="passport-photo-zoom" id="passportPhotoZoom" type="range" min="1" max="3" step="0.01" value="1"
-            oninput="setPassportPhotoZoom(this.value)">
+          <input class="passport-photo-zoom" id="passportPhotoZoom" type="range" min="1" max="3" step="0.01" value="1">
           <output class="passport-photo-zoom-value" id="passportPhotoZoomValue" for="passportPhotoZoom">100%</output>
         </div>
         <div class="passport-photo-editor-actions">
-          <button type="button" class="passport-photo-tool" onclick="chooseNewPassportPhoto()">เปลี่ยนรูป</button>
-          <button type="button" class="passport-photo-tool" onclick="resetPassportPhotoCrop()">รีเซ็ต</button>
-          <button type="button" class="passport-photo-tool done" onclick="finishPassportPhotoCrop()">จัดภาพเสร็จ</button>
+          <button type="button" class="passport-photo-tool" id="passportChoosePhotoButton">เปลี่ยนรูป</button>
+          <button type="button" class="passport-photo-tool" id="passportResetPhotoButton">รีเซ็ต</button>
+          <button type="button" class="passport-photo-tool done" id="passportFinishPhotoButton">จัดภาพเสร็จ</button>
         </div>
       </div>
       <input type="hidden" id="passName" value="">
@@ -601,7 +589,7 @@
           <span>⚕ male calculator</span>
           <span class="passport-watermark-url" id="passportSiteUrl">—</span>
         </div>
-        <button class="btn-action" id="passportExportButton" style="padding:5px 14px; font-size:0.78rem;" onclick="exportPassportCard()">
+        <button class="btn-action" id="passportExportButton" style="padding:5px 14px; font-size:0.78rem;">
           <span class="export-btn-text" id="passportExportButtonText">📲 แชร์ / บันทึก</span>
         </button>
       </div>
@@ -653,14 +641,14 @@
   </div>
 
   <!-- MEDICAL REPORT MODAL OVERLAY -->
-  <div class="modal-overlay" id="medicalModalOverlay" role="dialog" aria-modal="true" aria-labelledby="medicalDialogTitle" onclick="if(event.target===this) closeMedicalModal()">
+  <div class="modal-overlay" id="medicalModalOverlay" role="dialog" aria-modal="true" aria-labelledby="medicalDialogTitle">
     <div class="med-report-box" id="medReportCard" tabindex="-1">
       <div class="med-header">
         <div>
           <div class="med-title-main" id="medicalDialogTitle">🔬 MALE ANATOMICAL DEEP ANALYSIS</div>
           <div class="med-subtitle">รายงานวิเคราะห์สรีระและการเปลี่ยนแปลงจากค่าที่คุณกรอก · <span id="medDate">—</span></div>
         </div>
-        <button type="button" id="medicalCloseButton" aria-label="ปิด Deep Analysis" onclick="closeMedicalModal()"
+        <button type="button" id="medicalCloseButton" aria-label="ปิด Deep Analysis"
           style="background:transparent; border:none; color:#64748b; font-size:1.4rem; cursor:pointer;">✕</button>
       </div>
 
@@ -703,7 +691,7 @@
         <p class="med-summary-note">สรุปจากค่าที่กรอกและแบบจำลองเดียวกับตารางด้านล่าง ไม่ใช่การวินิจฉัยทางการแพทย์</p>
       </section>
 
-      <button class="med-details-toggle" id="medicalDetailsToggle" type="button" aria-expanded="false" aria-controls="medicalDetailsPanel" onclick="toggleMedicalDetails()">
+      <button class="med-details-toggle" id="medicalDetailsToggle" type="button" aria-expanded="false" aria-controls="medicalDetailsPanel">
         <span id="medicalDetailsToggleText">ดูรายละเอียดและตารางทั้งหมด 3 หมวด</span>
         <span class="med-details-toggle-icon" aria-hidden="true">⌄</span>
       </button>
@@ -781,19 +769,19 @@
       <div class="med-footer-actions"
         style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:2px solid #0284c7; padding-top:12px;">
         <div style="font-size:0.7rem; color:#64748b;">PERSONAL SPEC ANALYSIS • MYSEX</div>
-        <button class="btn-action-med" id="medicalExportButton" style="padding:8px 20px;" onclick="downloadMedicalReport()">💾 ดาวน์โหลด Deep Analysis (PNG)</button>
+        <button class="btn-action-med" id="medicalExportButton" style="padding:8px 20px;">💾 ดาวน์โหลด Deep Analysis (PNG)</button>
       </div>
 
     </div>
   </div>
 
   <div class="passport-save-overlay" id="passportSaveOverlay" role="dialog" aria-modal="true"
-    aria-labelledby="passportSaveTitle" onclick="if(event.target===this) closePassportSavePreview()">
+    aria-labelledby="passportSaveTitle">
     <div class="passport-save-dialog">
       <div class="passport-save-header">
         <div class="passport-save-title" id="passportSaveTitle">บันทึก Spec Passport</div>
         <button type="button" class="passport-save-close" id="passportSaveCloseButton"
-          aria-label="ปิดหน้าพรีวิว" onclick="closePassportSavePreview()">✕</button>
+          aria-label="ปิดหน้าพรีวิว">✕</button>
       </div>
       <div class="passport-save-body">
         <img class="passport-save-image" id="passportSaveImage" alt="รูป Spec Passport พร้อมบันทึก">
@@ -801,8 +789,7 @@
           กดค้างที่รูป แล้วเลือก “บันทึกรูปภาพ” หรือ “เพิ่มไปยังรูปภาพ”
         </p>
         <div class="passport-save-actions">
-          <button type="button" class="passport-save-share" id="passportNativeShareButton"
-            onclick="sharePreparedPassport()">📲 เปิดเมนูแชร์ / บันทึก</button>
+          <button type="button" class="passport-save-share" id="passportNativeShareButton">📲 เปิดเมนูแชร์ / บันทึก</button>
         </div>
       </div>
     </div>
