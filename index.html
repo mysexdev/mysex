@@ -36,7 +36,7 @@
     </header>
 
     <!-- SINGLE UNIFIED 4-TAB NAVIGATION BAR (1 ROW ONLY) -->
-    <div class="wizard-bar" id="wizardBar" role="tablist" aria-label="ขั้นตอนการคำนวณ" style="display:flex; gap:6px; margin-bottom:14px;">
+    <div class="wizard-bar" id="wizardBar" role="tablist" aria-label="ขั้นตอนการคำนวณ">
       <button type="button" class="wizard-step active" id="stepTab1" role="tab" aria-selected="true" aria-controls="step1View">
         <span class="step-num">1</span>
         <span class="step-label">💤 ตอนอ่อนตัว</span>
@@ -55,54 +55,54 @@
     </div>
 
     <!-- CONDOM MATCHING VIEW (QUICK MATCH MODE) -->
-    <div id="condomMatchView" class="step-view" role="tabpanel" aria-labelledby="stepTabCondom" style="display:none; width:100%;">
-      <div class="card" style="padding: 20px;">
+    <div id="condomMatchView" class="step-view" role="tabpanel" aria-labelledby="stepTabCondom">
+      <div class="card">
         <div class="card-title">
           <div class="card-title-text">🛡️ เทียบไซส์ถุงยางอนามัย</div>
         </div>
-        <div style="font-size:0.8rem; color:var(--muted); margin-bottom:16px;">
+        <div class="quick-match-intro">
           เลื่อนปรับเส้นรอบวงตอนแข็งตัว เพื่อเทียบกับช่วงไซส์หลัก 47–72 มม.
         </div>
 
         <!-- UNIT TOGGLE -->
-        <div class="unit-toggle" style="margin-bottom:16px;">
+        <div class="unit-toggle">
           <button class="unit-btn active" id="qc_u_cm">เซนติเมตร (cm)</button>
           <button class="unit-btn" id="qc_u_in">นิ้ว (inch)</button>
         </div>
 
         <!-- GIRTH SLIDER & NUMERIC INPUT -->
-        <div style="background:var(--metric-bg); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; margin-bottom:16px;">
-          <div class="quick-match-measurement" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <span style="font-size:0.88rem; font-weight:800; color:var(--text);">⭕ เส้นรอบวงตอนแข็งตัว (Girth):</span>
-            <div style="background:rgba(216, 27, 96, 0.12); border:1px solid rgba(216, 27, 96, 0.3); color:var(--pink); font-family:'Outfit',monospace; font-weight:900; font-size:1.15rem; padding:3px 14px; border-radius:8px;" id="qcGirthDisplay">12.0 cm</div>
+        <div class="quick-match-control">
+          <div class="quick-match-measurement">
+            <span class="quick-match-label">⭕ เส้นรอบวงตอนแข็งตัว (Girth):</span>
+            <div id="qcGirthDisplay">12.0 cm</div>
           </div>
-          <input type="range" id="qcGirthSlider" min="70" max="200" step="0.5" value="120" style="width:100%; height:8px; border-radius:50px; cursor:pointer; accent-color:var(--pink);">
-          <div style="font-size:0.7rem; color:var(--muted); margin-top:8px;">ค่าตัวอย่างเริ่มต้น · ปรับสไลเดอร์เป็นรอบวงของคุณ</div>
+          <input type="range" id="qcGirthSlider" min="70" max="200" step="0.5" value="120">
+          <div class="quick-match-hint">ค่าตัวอย่างเริ่มต้น · ปรับสไลเดอร์เป็นรอบวงของคุณ</div>
         </div>
 
         <!-- RESULT HERO CARD -->
-        <div style="background:linear-gradient(135deg, rgba(217,119,6,0.1), rgba(216,27,96,0.08)); border:2px solid var(--gold); border-radius:var(--radius-xl); padding:22px; text-align:center; margin-bottom:18px; box-shadow:0 8px 30px rgba(217,119,6,0.15);">
-          <div style="font-size:0.75rem; font-weight:800; color:var(--gold); letter-spacing:1.5px; text-transform:uppercase;">CONDOM SIZE ESTIMATE</div>
-          <div id="qcResultSize" style="font-family:'Outfit',monospace; font-size:3.6rem; font-weight:900; color:var(--gold); line-height:1.1; margin:8px 0; text-shadow:0 0 20px rgba(217,119,6,0.3);">52 มม.</div>
-          <div id="qcResultFit" style="font-size:0.9rem; font-weight:800; color:var(--text); margin-bottom:4px;">ไซส์ใกล้เคียงจากรอบวง</div>
-          <div id="qcResultFormula" style="font-size:0.76rem; color:var(--muted);">ค่าประมาณ: รอบวง 120 มม. ÷ 2.3 = 52.2 มม.</div>
+        <div class="quick-match-result">
+          <div class="quick-match-result-kicker">CONDOM SIZE ESTIMATE</div>
+          <div id="qcResultSize">52 มม.</div>
+          <div id="qcResultFit">ไซส์ใกล้เคียงจากรอบวง</div>
+          <div id="qcResultFormula">ค่าประมาณ: รอบวง 120 มม. ÷ 2.3 = 52.2 มม.</div>
 
           <!-- BRAND TAGS -->
-          <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
-            <div id="qcBrandLabel" style="font-size:0.74rem; color:var(--muted); font-weight:700; margin-bottom:8px;">🏷️ ตัวอย่างแบรนด์และรุ่นในไซส์นี้:</div>
-            <div id="qcBrandList" style="display:flex; flex-wrap:wrap; justify-content:center; gap:6px;"></div>
+          <div class="quick-match-brands">
+            <div id="qcBrandLabel">🏷️ ตัวอย่างแบรนด์และรุ่นในไซส์นี้:</div>
+            <div id="qcBrandList"></div>
           </div>
         </div>
 
         <!-- ACTION TO SWITCH TO FULL ANALYSIS -->
-        <button type="button" class="btn-action" id="condomFullAnalysisButton" style="width:100%; justify-content:center; padding:12px; font-size:0.92rem;">
+        <button type="button" class="btn-action" id="condomFullAnalysisButton">
           ✨ ใช้ค่านี้วิเคราะห์ต่อ ➔
         </button>
       </div>
     </div>
 
     <!-- STEP 1 VIEW: FLACCID STATE (CENTERED) -->
-    <div id="step1View" class="step-view" role="tabpanel" aria-labelledby="stepTab1" style="width:100%;">
+    <div id="step1View" class="step-view" role="tabpanel" aria-labelledby="stepTab1">
       <div class="card">
         <div class="card-title">
           <div class="card-title-text">💤 สเต็ปที่ 1: กรอกสภาวะอ่อนตัว (Flaccid State)</div>
@@ -141,8 +141,8 @@
           </div>
         </div>
 
-        <div style="margin-top:16px;">
-          <button type="button" class="btn-action" id="step1NextButton" style="width:100%; justify-content:center; padding:12px;">
+        <div class="step1-actions">
+          <button type="button" class="btn-action" id="step1NextButton">
             ถัดไป: สภาวะแข็งตัว & ชั้นไขมัน ➔
           </button>
         </div>
@@ -150,7 +150,7 @@
     </div>
 
     <!-- STEP 2 VIEW: ERECT STATE & FAT LAYER (CENTERED) -->
-    <div id="step2View" class="step-view" role="tabpanel" aria-labelledby="stepTab2" style="display:none; width:100%;">
+    <div id="step2View" class="step-view" role="tabpanel" aria-labelledby="stepTab2">
       <div class="card">
         <div class="card-title">
           <div class="card-title-text">🍆 สเต็ปที่ 2: กรอกสภาวะแข็งตัว & ชั้นไขมัน</div>
@@ -192,7 +192,7 @@
               >
             <span class="input-unit" id="unit_tfat">cm</span>
           </div>
-          <div id="t_fat_hint" style="font-size:0.72rem; color:var(--muted); margin-top:6px;">
+          <div id="t_fat_hint">
             ตัวอย่าง: ไม่กด 14 ซม. กดถึงกระดูก 15 ซม. → กรอก 1 ซม.
           </div>
           <div class="field-error" id="t_fat_error" aria-live="polite"></div>
@@ -202,11 +202,11 @@
           ⚠️ ค่าตอนแข็งตัวต่ำกว่าตอนอ่อนตัวอย่างน้อยหนึ่งรายการ กรุณาตรวจหน่วยและวิธีวัดอีกครั้ง ระบบยังคำนวณต่อได้
         </div>
 
-        <div style="display:flex; gap:10px; margin-top:16px;">
-          <button type="button" class="btn-preset" id="step2BackButton" style="padding:10px 16px;">
+        <div class="step2-actions">
+          <button type="button" class="btn-preset" id="step2BackButton">
             ⬅️ ย้อนกลับ
           </button>
-          <button type="button" class="btn-action" id="step2CalculateButton" style="flex:1; justify-content:center; padding:12px;">
+          <button type="button" class="btn-action" id="step2CalculateButton">
             🏆 ประมวลผลและเปิดม่านแดชบอร์ด ➔
           </button>
         </div>
@@ -214,20 +214,18 @@
     </div>
 
     <!-- STEP 3 VIEW: GRAND REVEAL & LIVE LAB (FULL DASHBOARD 960PX) -->
-    <div id="step3View" class="step-view" role="tabpanel" aria-labelledby="stepTab3" style="display:none; width:100%;">
-      <div class="results-header"
-        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; background:var(--card); backdrop-filter:blur(16px); padding:12px 18px; border-radius:var(--radius-lg); border:1px solid var(--border); box-shadow:var(--shadow);">
+    <div id="step3View" class="step-view" role="tabpanel" aria-labelledby="stepTab3">
+      <div class="results-header">
         <div>
-          <div style="font-weight:900; color:var(--text); font-size:1.05rem;">
+          <div class="results-header-title">
             🏆 แดชบอร์ดวิเคราะห์สรีระเต็มรูปแบบ (The Grand Reveal & Live Lab)
-            <span
-              style="display:inline-flex; margin-left:8px; padding:2px 7px; border-radius:999px; background:rgba(123,31,162,0.12); color:var(--purple); font-size:0.62rem; letter-spacing:0.8px; vertical-align:middle;">MYSEX MODEL</span>
+            <span class="results-header-badge">MYSEX MODEL</span>
           </div>
-          <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">
+          <div class="results-header-subtitle">
             วิเคราะห์ยศสรีระ · ถุงยางที่แนะนำ · แผนภาพ 2D มาตราส่วน · สถิติประชากร
           </div>
         </div>
-        <button type="button" class="btn-preset" id="resultEditButton" style="font-size:0.8rem; padding:6px 14px;">
+        <button type="button" class="btn-preset" id="resultEditButton">
           ✏️ กลับไปแก้ข้อมูล
         </button>
       </div>
@@ -257,8 +255,8 @@
         </div>
       </section>
 
-      <div class="measurement-warning" id="measurementWarningResult" role="status" style="margin:0 0 14px;" hidden></div>
-      <div style="display:flex; flex-direction:column;">
+      <div class="measurement-warning" id="measurementWarningResult" role="status" hidden></div>
+      <div class="result-dashboard-stack">
 
         <!-- CARD 1: CONDOM SPEC & VOLUME CARD -->
         <div class="card card-top-stack">
@@ -267,23 +265,21 @@
           </div>
 
           <div class="metrics-grid">
-            <div class="metric-card" id="cardCondom" role="button" tabindex="0" aria-expanded="false" aria-controls="condomTooltip"
-              style="border-color:rgba(0,131,143,0.3); cursor:pointer; position:relative;">
-              <div class="metric-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="metric-card" id="cardCondom" role="button" tabindex="0" aria-expanded="false" aria-controls="condomTooltip">
+              <div class="metric-title metric-title-spread">
                 <span>ไซส์ถุงยาง</span>
-                <span
-                  style="background:rgba(0,131,143,0.2); color:var(--cyan); border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:bold;">ⓘ</span>
+                <span class="metric-info-icon">ⓘ</span>
               </div>
-              <div class="metric-val" id="resCondom" style="color:var(--cyan); font-size:1.4rem;">—</div>
+              <div class="metric-val" id="resCondom">—</div>
               <div class="metric-sub" id="resCondomSub">รอข้อมูล</div>
 
               <div class="condom-tooltip" id="condomTooltip" role="tooltip">
-                <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">🧮
+                <div class="condom-tooltip-heading">🧮
                   วิธีประมาณและเทียบไซส์ถุงยางอนามัย:</div>
-                <div style="font-size:0.74rem; line-height:1.4;">
+                <div class="condom-tooltip-body">
                   <strong>1. ประมาณหน้ากว้างแบบราบ (Nominal Width):</strong><br>
-                  <code style="color:var(--pink);">หน้ากว้าง = รอบวง (G<sub>erect</sub>) ÷ 2.3</code><br>
-                  <span id="condomCalcStep" style="color:var(--gold);">—</span><br><br>
+                  <code class="condom-tooltip-formula">หน้ากว้าง = รอบวง (G<sub>erect</sub>) ÷ 2.3</code><br>
+                  <span id="condomCalcStep">—</span><br><br>
                   <strong>2. เทียบไซส์ในฐานข้อมูล:</strong><br>
                   <span>[49, 52, 54, 56, 58, 60, 64, 69, 72 มม.]</span>
                 </div>
@@ -292,13 +288,13 @@
 
             <div class="metric-card" id="cardDiameter">
               <div class="metric-title">เส้นผ่านศูนย์กลาง (D<sub>m</sub>)</div>
-              <div class="metric-val" id="resDiameter" style="color:var(--text);">—</div>
+              <div class="metric-val" id="resDiameter">—</div>
               <div class="metric-sub">หน้ากว้างลำควยแข็ง</div>
             </div>
 
             <div class="metric-card" id="cardVolume">
               <div class="metric-title">ปริมาตรขณะแข็งโดยประมาณ (V<sub>erect</sub>)</div>
-              <div class="metric-val" id="resVolume" style="color:var(--purple);">—</div>
+              <div class="metric-val" id="resVolume">—</div>
               <div class="metric-sub">คำนวณจากแบบจำลองทรงกระบอก</div>
             </div>
           </div>
@@ -310,11 +306,10 @@
             <div class="card-title-text">🩸 ผลวิเคราะห์ประเภทสรีระ (Grower vs Shower)</div>
           </div>
 
-          <div
-            style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+          <div class="growth-summary-head">
             <div>
-              <span style="font-size:0.8rem; color:var(--muted);">BFPI: </span>
-              <strong id="resBfpi" style="font-family:'Outfit'; font-size:1.3rem; color:var(--gold);">—</strong>
+              <span class="growth-bfpi-label">BFPI: </span>
+              <strong id="resBfpi">—</strong>
             </div>
             <span id="resBadgeType" class="badge">รอข้อมูล</span>
           </div>
@@ -322,42 +317,40 @@
           <!-- ACCURATE DYNAMIC GAUGE BAR WITH POINTER PIN -->
           <div class="gauge-container">
             <div class="gauge-bar">
-              <div class="gauge-pointer" id="resGaugePointer" style="left:18.7%;"></div>
+              <div class="gauge-pointer" id="resGaugePointer"></div>
             </div>
             <div class="gauge-labels">
-              <span style="color:var(--gold);">🥩 Shower &lt;1.8</span>
-              <span style="color:var(--purple);">🟣 Hybrid 1.8-2.5</span>
-              <span style="color:var(--pink);">🩸 Grower &gt;2.5</span>
+              <span class="gauge-label-shower">🥩 Shower &lt;1.8</span>
+              <span class="gauge-label-hybrid">🟣 Hybrid 1.8-2.5</span>
+              <span class="gauge-label-grower">🩸 Grower &gt;2.5</span>
             </div>
           </div>
 
           <!-- THAI ARCHEtype BADGE -->
-          <div
-            style="margin-top:10px; padding:12px 14px; background:rgba(216,27,96,0.06); border:1px solid rgba(216,27,96,0.25); border-radius:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+          <div class="archetype-summary">
             <div>
-              <div style="font-size:0.75rem; color:var(--muted); font-weight:700;">👑 ฉายาสรีระ:</div>
-              <div id="resArchetypeTitle"
-                style="font-weight:900; font-size:1.25rem; color:var(--pink); margin-top:2px; letter-spacing:-0.2px;">—</div>
-              <div id="resArchetypeSub" style="font-size:0.78rem; color:var(--text); opacity:0.9; margin-top:1px;">
+              <div class="archetype-summary-label">👑 ฉายาสรีระ:</div>
+              <div id="resArchetypeTitle">—</div>
+              <div id="resArchetypeSub">
                 รอข้อมูล</div>
             </div>
           </div>
 
           <!-- 3 DIAGNOSTIC METRIC CARDS (BOX 1, 2, 3) -->
-          <div class="metrics-grid" style="margin-top:10px;">
+          <div class="metrics-grid growth-metrics-grid">
             <div class="metric-card" id="cardDeltaL">
               <div class="metric-title">อัตรายืดความยาว (ΔL%)</div>
-              <div class="metric-val" id="resDeltaL" style="color:var(--pink);">—</div>
+              <div class="metric-val" id="resDeltaL">—</div>
               <div class="metric-sub" id="resSubDeltaL">รอข้อมูล</div>
             </div>
             <div class="metric-card" id="cardDeltaG">
               <div class="metric-title">อัตราขยายรอบวง (ΔG%)</div>
-              <div class="metric-val" id="resDeltaG" style="color:var(--cyan);">—</div>
+              <div class="metric-val" id="resDeltaG">—</div>
               <div class="metric-sub" id="resSubDeltaG">รอข้อมูล</div>
             </div>
             <div class="metric-card" id="cardBloodVol">
               <div class="metric-title">ปริมาตรเพิ่มจากตอนอ่อน (ΔV)</div>
-              <div class="metric-val" id="resBloodVol" style="color:var(--gold);">—</div>
+              <div class="metric-val" id="resBloodVol">—</div>
               <div class="metric-sub" id="resSubBloodVol">ผลต่างระหว่างปริมาตรแข็งและอ่อน</div>
             </div>
           </div>
@@ -373,10 +366,10 @@
 
         <!-- CARD 3: REGIONAL & GLOBAL PERCENTILE CARD (BOX 4, 5, 6 — FULLY DYNAMIC) -->
         <div class="card">
-          <div class="card-title" style="flex-wrap:wrap; gap:8px;">
+          <div class="card-title region-card-title">
             <div>
               <div class="card-title-text">🌐 สถิติเปรียบเทียบสเกลประชากร</div>
-              <div style="font-size:0.72rem; color:var(--muted); font-weight:600;" id="regionSubText">🌐 ข้อมูลรวมหลายประเทศ · Veale 2015</div>
+              <div id="regionSubText">🌐 ข้อมูลรวมหลายประเทศ · Veale 2015</div>
             </div>
             <div class="region-toggle-group">
               <button class="region-btn active" id="regGlobal">🌐 โลก</button>
@@ -389,17 +382,17 @@
           <div class="metrics-grid">
             <div class="metric-card" id="cardLenRank">
               <div class="metric-title">ความยาว (Length Rank)</div>
-              <div class="metric-val" id="resLenRank" style="color:var(--pink);">—</div>
+              <div class="metric-val" id="resLenRank">—</div>
               <div class="metric-sub" id="resSubLenRank">รอข้อมูล</div>
             </div>
             <div class="metric-card" id="cardGirthRank">
               <div class="metric-title">รอบวง (Girth Rank)</div>
-              <div class="metric-val" id="resGirthRank" style="color:var(--cyan);">—</div>
+              <div class="metric-val" id="resGirthRank">—</div>
               <div class="metric-sub" id="resSubGirthRank">รอข้อมูล</div>
             </div>
             <div class="metric-card" id="cardFatPercent">
               <div class="metric-title">ไขมันบดบังความยาว</div>
-              <div class="metric-val" id="resFatPercent" style="color:var(--gold);">—</div>
+              <div class="metric-val" id="resFatPercent">—</div>
               <div class="metric-sub" id="resSubBPEL">รอข้อมูล</div>
             </div>
           </div>
